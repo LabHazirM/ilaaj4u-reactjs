@@ -138,6 +138,12 @@ class PaymentStatussList extends Component {
     if (selectedValue === 'Payment In Cleared') {
     this.props.history.push('/cleared-in-payments');
     }
+    if (selectedValue === 'Payment In Pending') {
+      this.props.history.push('/pending-in-payments');
+      }
+    if (selectedValue === 'Payment Out Pending') {
+        this.props.history.push('/pending-out-payments');
+        }
 }
   render() {
     const { SearchBar } = Search;
@@ -354,9 +360,9 @@ class PaymentStatussList extends Component {
         editable: false,
         text: "Comments",
         formatter: (cellContent, approvedInPayment) => (
-                <Link
+                  <Link
                   className="fas fa-comment font-size-18"
-                  to={`/activity-log-finance/${approvedInPayment.id}`}
+                  to={`/activity-log-financeadmin/${approvedInPayment.id}`}
                   ></Link>
         ),
         headerStyle: { backgroundColor: '#DCDCDC' },
@@ -433,6 +439,9 @@ class PaymentStatussList extends Component {
                                       >
                                         <option value="Payment Out Cleared">MOF Cleared</option>
                                         <option value="Payment In Cleared">MIF Cleared</option>
+                                        <option value="Payment In Pending">MIF Pending Clearance</option>
+                                        <option value="Payment Out Pending">MOF Pending Clearance</option>
+                                        
                                       </select>
                                     </div></div>
                                 </Col>

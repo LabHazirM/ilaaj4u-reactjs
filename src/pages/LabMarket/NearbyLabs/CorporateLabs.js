@@ -131,7 +131,7 @@ class NearbyLabs extends Component {
     this.toggleTab = this.toggleTab.bind(this);
     this.onSelectRating = this.onSelectRating.bind(this);
     this.togglePatientModal = this.togglePatientModal.bind(this);
-    console.log("yaha ani chahi hai uuid", this.props.match.params.uuid, this.props.match.params.guest_id, this.props.match.params.filnalurl)
+    console.log("yaha ani chahi hai uuid", this.props.match.params.uuid, this.state.user_id, this.props.match.params.filnalurl)
     console.log(this.state.user_type)
   }
 
@@ -897,8 +897,8 @@ class NearbyLabs extends Component {
                         <li className="nav-item">
                           <Link
                             to={
-                              this.props.match.params.guest_id
-                                ? `/tests-offered-labhazir/${this.props.match.params.guest_id}`
+                              this.state.user_id
+                                ? `/tests-offered-labhazir/${this.state.user_id}`
                                 : `/tests-offered-labhazir`
                             }
                             className="dropdown-item"
@@ -910,8 +910,8 @@ class NearbyLabs extends Component {
                         <li className="nav-item">
                           <Link
                             to={
-                              this.props.match.params.guest_id
-                                ? `/labs/${this.props.match.params.guest_id}`
+                              this.state.user_id
+                                ? `/labs/${this.state.user_id}`
                                 : `/labs`
                             }
                             className="dropdown-item"
@@ -924,8 +924,8 @@ class NearbyLabs extends Component {
                         <li className="nav-item">
                           <Link
                             to={
-                              this.props.match.params.guest_id
-                                ? `/nearby-test/${this.props.match.params.guest_id}`
+                              this.state.user_id
+                                ? `/nearby-test/${this.state.user_id}`
                                 : `/nearby-test`
                             }
                             className="dropdown-item"
@@ -937,8 +937,8 @@ class NearbyLabs extends Component {
                         <li className="nav-item">
                           <Link
                             to={
-                              this.props.match.params.guest_id
-                                ? `/nearby-profiles/${this.props.match.params.guest_id}`
+                              this.state.user_id
+                                ? `/nearby-profiles/${this.state.user_id}`
                                 : `/nearby-profiles`
                             }
                             className="dropdown-item"
@@ -950,8 +950,8 @@ class NearbyLabs extends Component {
                         <li className="nav-item">
                           <Link
                             to={
-                              this.props.match.params.guest_id
-                                ? `/nearby-packages/${this.props.match.params.guest_id}`
+                              this.state.user_id
+                                ? `/nearby-packages/${this.state.user_id}`
                                 : `/nearby-packages`
                             }
                             className="dropdown-item"
@@ -963,8 +963,8 @@ class NearbyLabs extends Component {
                         {/* <li className="nav-item">
                         <Link
                           to={
-                            this.props.match.params.guest_id
-                              ? `/nearby-radiology/${this.props.match.params.guest_id}`
+                            this.state.user_id
+                              ? `/nearby-radiology/${this.state.user_id}`
                               : `/nearby-radiology`
                           }
                           className="dropdown-item"
@@ -976,8 +976,8 @@ class NearbyLabs extends Component {
                         {this.state.user_id && this.state.user_type == "patient" && (
                           <li className="nav-item">
                             <Link to={
-                              this.props.match.params.guest_id
-                                ? `/test-appointments/${this.props.match.params.guest_id}`
+                              this.state.user_id
+                                ? `/test-appointments/${this.state.user_id}`
                                 : `/test-appointments`
                             } className="dropdown-item">
                               {/* {this.props.t("My Appointments")} */}
@@ -997,26 +997,26 @@ class NearbyLabs extends Component {
                       id="topnav-menu-content"
                     >
                       <ul className="navbar-nav">
-                        {this.props.match.params.filnalurl && this.props.match.params.guest_id ? (
+                        {this.props.match.params.filnalurl && this.state.user_id ? (
                           <li className="nav-item">
                             <Link
                               to={
                                 this.props.match.params.uuid
-                                  ? `/tests-offered-labhazir/${this.props.match.params.filnalurl}/${this.props.match.params.guest_id}`
-                                  : `/tests-offered-labhazir/${this.props.match.params.filnalurl}/${this.props.match.params.guest_id}`
+                                  ? `/tests-offered-labhazir/${this.props.match.params.filnalurl}/${this.state.user_id}`
+                                  : `/tests-offered-labhazir/${this.props.match.params.filnalurl}/${this.state.user_id}`
                               }
                               className="dropdown-item"
                             >
                               <span className="pt-4 font-size-12">Book a Test</span>
                             </Link>
                           </li>
-                        ) : !this.props.match.params.filnalurl && this.props.match.params.guest_id ? (
+                        ) : !this.props.match.params.filnalurl && this.state.user_id ? (
                           <li className="nav-item">
                             <Link
                               to={
                                 this.props.match.params.uuid
-                                  ? `/tests-offered-labhazir/${this.props.match.params.guest_id}/${this.props.match.params.uuid}`
-                                  : `/tests-offered-labhazir/${this.props.match.params.guest_id}`
+                                  ? `/tests-offered-labhazir/${this.state.user_id}/${this.props.match.params.uuid}`
+                                  : `/tests-offered-labhazir/${this.state.user_id}`
                               }
                               className="dropdown-item"
                             >
@@ -1024,13 +1024,13 @@ class NearbyLabs extends Component {
                             </Link>
                           </li>
                         ) : null}
-                        {this.props.match.params.filnalurl && this.props.match.params.guest_id ? (
+                        {this.props.match.params.filnalurl && this.state.user_id ? (
                           <li className="nav-item">
                             <Link
                               to={
                                 this.props.match.params.uuid
-                                  ? `/labs/${this.props.match.params.filnalurl}/${this.props.match.params.guest_id}`
-                                  : `/labs/${this.props.match.params.filnalurl}/${this.props.match.params.guest_id}`
+                                  ? `/labs/${this.props.match.params.filnalurl}/${this.state.user_id}`
+                                  : `/labs/${this.props.match.params.filnalurl}/${this.state.user_id}`
                               }
                               className="dropdown-item"
                             >
@@ -1038,13 +1038,13 @@ class NearbyLabs extends Component {
 
                             </Link>
                           </li>
-                        ) : !this.props.match.params.filnalurl && this.props.match.params.guest_id ? (
+                        ) : !this.props.match.params.filnalurl && this.state.user_id ? (
                           <li className="nav-item">
                             <Link
                               to={
                                 this.props.match.params.uuid
-                                  ? `/labs/${this.props.match.params.guest_id}/${this.props.match.params.uuid}`
-                                  : `/labs/${this.props.match.params.guest_id}`
+                                  ? `/labs/${this.state.user_id}/${this.props.match.params.uuid}`
+                                  : `/labs/${this.state.user_id}`
                               }
                               className="dropdown-item"
                             >
@@ -1053,26 +1053,26 @@ class NearbyLabs extends Component {
                             </Link>
                           </li>
                         ) : null}
-                        {this.props.match.params.filnalurl && this.props.match.params.guest_id ? (
+                        {this.props.match.params.filnalurl && this.state.user_id ? (
                           <li className="nav-item">
                             <Link
                               to={
                                 this.props.match.params.uuid
-                                  ? `/nearby-test/${this.props.match.params.filnalurl}/${this.props.match.params.guest_id}`
-                                  : `/nearby-test/${this.props.match.params.filnalurl}/${this.props.match.params.guest_id}`
+                                  ? `/nearby-test/${this.props.match.params.filnalurl}/${this.state.user_id}`
+                                  : `/nearby-test/${this.props.match.params.filnalurl}/${this.state.user_id}`
                               }
                               className="dropdown-item"
                             >
                               <span className="pt-4 font-size-12">Tests</span>
                             </Link>
                           </li>
-                        ) : !this.props.match.params.filnalurl && this.props.match.params.guest_id ? (
+                        ) : !this.props.match.params.filnalurl && this.state.user_id ? (
                           <li className="nav-item">
                             <Link
                               to={
                                 this.props.match.params.uuid
-                                  ? `/nearby-test/${this.props.match.params.guest_id}/${this.props.match.params.uuid}`
-                                  : `/nearby-test/${this.props.match.params.guest_id}`
+                                  ? `/nearby-test/${this.state.user_id}/${this.props.match.params.uuid}`
+                                  : `/nearby-test/${this.state.user_id}`
                               }
                               className="dropdown-item"
                             >
@@ -1080,26 +1080,26 @@ class NearbyLabs extends Component {
                             </Link>
                           </li>
                         ) : null}
-                        {this.props.match.params.filnalurl && this.props.match.params.guest_id ? (
+                        {this.props.match.params.filnalurl && this.state.user_id ? (
                           <li className="nav-item">
                             <Link
                               to={
                                 this.props.match.params.uuid
-                                  ? `/nearby-profiles/${this.props.match.params.filnalurl}/${this.props.match.params.guest_id}`
-                                  : `/nearby-profiles/${this.props.match.params.filnalurl}/${this.props.match.params.guest_id}`
+                                  ? `/nearby-profiles/${this.props.match.params.filnalurl}/${this.state.user_id}`
+                                  : `/nearby-profiles/${this.props.match.params.filnalurl}/${this.state.user_id}`
                               }
                               className="dropdown-item"
                             >
                               <span className="pt-4 font-size-12">Profiles</span>
                             </Link>
                           </li>
-                        ) : !this.props.match.params.filnalurl && this.props.match.params.guest_id ? (
+                        ) : !this.props.match.params.filnalurl && this.state.user_id ? (
                           <li className="nav-item">
                             <Link
                               to={
                                 this.props.match.params.uuid
-                                  ? `/nearby-profiles/${this.props.match.params.guest_id}/${this.props.match.params.uuid}`
-                                  : `/nearby-profiles/${this.props.match.params.guest_id}`
+                                  ? `/nearby-profiles/${this.state.user_id}/${this.props.match.params.uuid}`
+                                  : `/nearby-profiles/${this.state.user_id}`
                               }
                               className="dropdown-item"
                             >
@@ -1108,26 +1108,26 @@ class NearbyLabs extends Component {
                           </li>
                         ) : null}
 
-                        {this.props.match.params.filnalurl && this.props.match.params.guest_id ? (
+                        {this.props.match.params.filnalurl && this.state.user_id ? (
                           <li className="nav-item">
                             <Link
                               to={
                                 this.props.match.params.uuid
-                                  ? `/nearby-packages/${this.props.match.params.filnalurl}/${this.props.match.params.guest_id}`
-                                  : `/nearby-packages/${this.props.match.params.filnalurl}/${this.props.match.params.guest_id}`
+                                  ? `/nearby-packages/${this.props.match.params.filnalurl}/${this.state.user_id}`
+                                  : `/nearby-packages/${this.props.match.params.filnalurl}/${this.state.user_id}`
                               }
                               className="dropdown-item"
                             >
                               <span className="pt-4 font-size-12">Packages</span>
                             </Link>
                           </li>
-                        ) : !this.props.match.params.filnalurl && this.props.match.params.guest_id ? (
+                        ) : !this.props.match.params.filnalurl && this.state.user_id ? (
                           <li className="nav-item">
                             <Link
                               to={
                                 this.props.match.params.uuid
-                                  ? `/nearby-packages/${this.props.match.params.guest_id}/${this.props.match.params.uuid}`
-                                  : `/nearby-packages/${this.props.match.params.guest_id}`
+                                  ? `/nearby-packages/${this.state.user_id}/${this.props.match.params.uuid}`
+                                  : `/nearby-packages/${this.state.user_id}`
                               }
                               className="dropdown-item"
                             >
@@ -1136,26 +1136,26 @@ class NearbyLabs extends Component {
                           </li>
                         ) : null}
 
-                        {this.props.match.params.filnalurl && this.props.match.params.guest_id ? (
+                        {this.props.match.params.filnalurl && this.state.user_id ? (
                           <li className="nav-item">
                             <Link
                               to={
                                 this.props.match.params.uuid
-                                  ? `/nearby-radiology/${this.props.match.params.filnalurl}/${this.props.match.params.guest_id}`
-                                  : `/nearby-radiology/${this.props.match.params.filnalurl}/${this.props.match.params.guest_id}`
+                                  ? `/nearby-radiology/${this.props.match.params.filnalurl}/${this.state.user_id}`
+                                  : `/nearby-radiology/${this.props.match.params.filnalurl}/${this.state.user_id}`
                               }
                               className="dropdown-item"
                             >
                               <span className="pt-4 font-size-12">Radiology</span>
                             </Link>
                           </li>
-                        ) : !this.props.match.params.filnalurl && this.props.match.params.guest_id ? (
+                        ) : !this.props.match.params.filnalurl && this.state.user_id ? (
                           <li className="nav-item">
                             <Link
                               to={
                                 this.props.match.params.uuid
-                                  ? `/nearby-radiology/${this.props.match.params.guest_id}/${this.props.match.params.uuid}`
-                                  : `/nearby-radiology/${this.props.match.params.guest_id}`
+                                  ? `/nearby-radiology/${this.state.user_id}/${this.props.match.params.uuid}`
+                                  : `/nearby-radiology/${this.state.user_id}`
                               }
                               className="dropdown-item"
                             >
@@ -1195,8 +1195,8 @@ class NearbyLabs extends Component {
                         {this.state.user_id && this.state.user_type == "patient" && (
                           <li className="nav-item">
                             <Link to={
-                              this.props.match.params.guest_id
-                                ? `/test-appointments/${this.props.match.params.guest_id}`
+                              this.state.user_id
+                                ? `/test-appointments/${this.state.user_id}`
                                 : `/test-appointments`
                             } className="dropdown-item">
                               {/* {this.props.t("My Appointments")} */}
@@ -1245,8 +1245,8 @@ class NearbyLabs extends Component {
                         <li className="nav-item">
                           <Link
                             to={
-                              this.props.match.params.guest_id
-                                ? `/tests-offered-labhazir/${this.props.match.params.guest_id}`
+                              this.state.user_id
+                                ? `/tests-offered-labhazir/${this.state.user_id}`
                                 : `/tests-offered-labhazir/`
                             }
                             className="dropdown-item"
@@ -1257,8 +1257,8 @@ class NearbyLabs extends Component {
                         <li className="nav-item">
                           <Link
                             to={
-                              this.props.match.params.guest_id
-                                ? `/labs/${this.props.match.params.guest_id}`
+                              this.state.user_id
+                                ? `/labs/${this.state.user_id}`
                                 : `/labs`
                             }
                             className="dropdown-item"
@@ -1275,8 +1275,8 @@ class NearbyLabs extends Component {
                     </Link> */}
                           <Link
                             to={
-                              this.props.match.params.guest_id
-                                ? `/nearby-test/${this.props.match.params.guest_id}`
+                              this.state.user_id
+                                ? `/nearby-test/${this.state.user_id}`
                                 : `/nearby-test/`
                             }
                             className="dropdown-item"
@@ -1288,8 +1288,8 @@ class NearbyLabs extends Component {
                         <li className="nav-item">
                           <Link
                             to={
-                              this.props.match.params.guest_id
-                                ? `/nearby-profiles/${this.props.match.params.guest_id}`
+                              this.state.user_id
+                                ? `/nearby-profiles/${this.state.user_id}`
                                 : `/nearby-profiles/`
                             }
                             className="dropdown-item"
@@ -1301,8 +1301,8 @@ class NearbyLabs extends Component {
                         <li className="nav-item">
                           <Link
                             to={
-                              this.props.match.params.guest_id
-                                ? `/nearby-packages/${this.props.match.params.guest_id}`
+                              this.state.user_id
+                                ? `/nearby-packages/${this.state.user_id}`
                                 : `/nearby-packages/`
                             }
                             className="dropdown-item"
@@ -1314,8 +1314,8 @@ class NearbyLabs extends Component {
                         <li className="nav-item">
                           <Link
                             to={
-                              this.props.match.params.guest_id
-                                ? `/nearby-radiology/${this.props.match.params.guest_id}`
+                              this.state.user_id
+                                ? `/nearby-radiology/${this.state.user_id}`
                                 : `/nearby-radiology/`
                             }
                             className="dropdown-item"
@@ -1354,8 +1354,8 @@ class NearbyLabs extends Component {
                         {this.state.user_id && this.state.user_type == "patient" && (
                           <li className="nav-item">
                             <Link to={
-                              this.props.match.params.guest_id
-                                ? `/test-appointments/${this.props.match.params.guest_id}`
+                              this.state.user_id
+                                ? `/test-appointments/${this.state.user_id}`
                                 : `/test-appointments`
                             } className="dropdown-item">
                               {/* {this.props.t("My Appointments")} */}
@@ -1404,8 +1404,8 @@ class NearbyLabs extends Component {
                           <li className="nav-item">
                             <Link
                               to={
-                                this.props.match.params.guest_id
-                                  ? `/tests-offered-labhazir/${this.props.match.params.guest_id}/${this.props.match.params.uuid}`
+                                this.state.user_id
+                                  ? `/tests-offered-labhazir/${this.state.user_id}/${this.props.match.params.uuid}`
                                   : `/tests-offered-labhazir`
                               }
                               className="dropdown-item"
@@ -1417,8 +1417,8 @@ class NearbyLabs extends Component {
                           <li className="nav-item">
                             <Link
                               to={
-                                this.props.match.params.guest_id
-                                  ? `/labs/${this.props.match.params.guest_id}/${this.props.match.params.uuid}`
+                                this.state.user_id
+                                  ? `/labs/${this.state.user_id}/${this.props.match.params.uuid}`
                                   : `/labs`
                               }
                               className="dropdown-item"
@@ -1431,8 +1431,8 @@ class NearbyLabs extends Component {
                           <li className="nav-item">
                             <Link
                               to={
-                                this.props.match.params.guest_id
-                                  ? `/nearby-test/${this.props.match.params.guest_id}/${this.props.match.params.uuid}`
+                                this.state.user_id
+                                  ? `/nearby-test/${this.state.user_id}/${this.props.match.params.uuid}`
                                   : `/nearby-test`
                               }
                               className="dropdown-item"
@@ -1444,8 +1444,8 @@ class NearbyLabs extends Component {
                           <li className="nav-item">
                             <Link
                               to={
-                                this.props.match.params.guest_id
-                                  ? `/nearby-profiles/${this.props.match.params.guest_id}/${this.props.match.params.uuid}`
+                                this.state.user_id
+                                  ? `/nearby-profiles/${this.state.user_id}/${this.props.match.params.uuid}`
                                   : `/nearby-profiles`
                               }
                               className="dropdown-item"
@@ -1457,8 +1457,8 @@ class NearbyLabs extends Component {
                           <li className="nav-item">
                             <Link
                               to={
-                                this.props.match.params.guest_id
-                                  ? `/nearby-packages/${this.props.match.params.guest_id}/${this.props.match.params.uuid}`
+                                this.state.user_id
+                                  ? `/nearby-packages/${this.state.user_id}/${this.props.match.params.uuid}`
                                   : `/nearby-packages`
                               }
                               className="dropdown-item"
@@ -1470,8 +1470,8 @@ class NearbyLabs extends Component {
                           <li className="nav-item">
                             <Link
                               to={
-                                this.props.match.params.guest_id
-                                  ? `/nearby-radiology/${this.props.match.params.guest_id}/${this.props.match.params.uuid}`
+                                this.state.user_id
+                                  ? `/nearby-radiology/${this.state.user_id}/${this.props.match.params.uuid}`
                                   : `/nearby-radiology`
                               }
                               className="dropdown-item"
@@ -1484,8 +1484,8 @@ class NearbyLabs extends Component {
                           {this.state.user_id && this.state.user_type == "patient" && (
                             <li className="nav-item">
                               <Link to={
-                                this.props.match.params.guest_id
-                                  ? `/test-appointments/${this.props.match.params.guest_id}`
+                                this.state.user_id
+                                  ? `/test-appointments/${this.state.user_id}`
                                   : `/test-appointments`
                               } className="dropdown-item">
                                 {/* {this.props.t("My Appointments")} */}
@@ -2201,15 +2201,15 @@ class NearbyLabs extends Component {
 
               {/* ROW FOR ADVERTISEMENT */}
               {/* <Row> */}
-              {!isEmpty(corporateLab) && (!this.state.user_id) && (this.props.match.params.guest_id) &&
+              {!isEmpty(corporateLab) && (!this.state.user_id) && (this.state.user_id) &&
                 corporateLab.map((nearbyLab, key) => (
                   <Col xl="4" sm="6" key={"_col_" + key}>
                     <Card
                       onClick={() =>
                         history.push(
                           this.props.match.params.uuid
-                            ? `/nearby-lab-detail/${nearbyLab.account_id}/${this.props.match.params.guest_id}/${this.props.match.params.uuid}`
-                            : `/nearby-lab-detail/${nearbyLab.account_id}/${this.props.match.params.guest_id}`
+                            ? `/${nearbyLab.account_id}/offered-test-by-lab-corporate/${this.props.match.params.guest_id}/${this.props.match.params.uuid}`
+                            : `/${nearbyLab.account_id}/offered-test-by-lab-corporate`
                         )
                       } style={{ height: "95%" }}
                     >
@@ -2217,8 +2217,8 @@ class NearbyLabs extends Component {
                         <Link
                           to={
                             this.props.match.params.uuid
-                              ? `/nearby-lab-detail/${nearbyLab.account_id}/${this.props.match.params.guest_id}/${this.props.match.params.uuid}`
-                              : `/nearby-lab-detail/${nearbyLab.account_id}/${this.props.match.params.guest_id}`
+                              ? `/${nearbyLab.account_id}/offered-test-by-lab-corporate/${this.props.match.params.guest_id}/${this.props.match.params.uuid}`
+                              : `/${nearbyLab.account_id}/offered-test-by-lab-corporate`
                           }
                         >
                           <div
@@ -2249,8 +2249,8 @@ class NearbyLabs extends Component {
                             <Link
                               to={
                                 this.props.match.params.uuid
-                                  ? `/nearby-lab-detail/${nearbyLab.account_id}/${this.props.match.params.guest_id}/${this.props.match.params.uuid}`
-                                  : `/nearby-lab-detail/${nearbyLab.account_id}/${this.props.match.params.guest_id}`
+                                  ? `/${nearbyLab.account_id}/offered-test-by-lab-corporate/${this.props.match.params.guest_id}/${this.props.match.params.uuid}`
+                                  : `/${nearbyLab.account_id}/offered-test-by-lab-corporate`
                               }
                               className="text-dark"
                             >
@@ -2347,8 +2347,8 @@ class NearbyLabs extends Component {
                           <Link
                             to={
                               this.props.match.params.uuid
-                                ? `/nearby-lab-detail/${nearbyLab.account_id}/${this.props.match.params.guest_id}/${this.props.match.params.uuid}`
-                                : `/nearby-lab-detail/${nearbyLab.account_id}/${this.props.match.params.guest_id}`
+                                ? `/${nearbyLab.account_id}/offered-test-by-lab-corporate/${this.props.match.params.guest_id}/${this.props.match.params.uuid}`
+                                : `/${nearbyLab.account_id}/offered-test-by-lab-corporate`
                             }
                           >
                             <div className="my-0 mt-3">
@@ -2371,8 +2371,8 @@ class NearbyLabs extends Component {
                       onClick={() =>
                         history.push(
                           this.props.match.params.uuid
-                            ? `/nearby-lab-detail/${nearbyLab.account_id}/${this.props.match.params.uuid}`
-                            : `/nearby-lab-detail/${nearbyLab.account_id}`
+                              ? `/${nearbyLab.account_id}/offered-test-by-lab-corporate/${this.props.match.params.guest_id}/${this.props.match.params.uuid}`
+                              : `/${nearbyLab.account_id}/offered-test-by-lab-corporate`
                         )
                       } style={{ height: "95%" }}
                     >
@@ -2380,8 +2380,8 @@ class NearbyLabs extends Component {
                         <Link
                           to={
                             this.props.match.params.uuid
-                              ? `/nearby-lab-detail/${nearbyLab.account_id}/${this.props.match.params.uuid}`
-                              : `/nearby-lab-detail/${nearbyLab.account_id}`
+                              ? `/${nearbyLab.account_id}/offered-test-by-lab-corporate/${this.props.match.params.guest_id}/${this.props.match.params.uuid}`
+                              : `/${nearbyLab.account_id}/offered-test-by-lab-corporate`
                           }
                         >
                           <div
@@ -2412,8 +2412,8 @@ class NearbyLabs extends Component {
                             <Link
                               to={
                                 this.props.match.params.uuid
-                                  ? `/nearby-lab-detail/${nearbyLab.account_id}/${this.props.match.params.uuid}`
-                                  : `/nearby-lab-detail/${nearbyLab.account_id}`
+                                  ? `/${nearbyLab.account_id}/offered-test-by-lab-corporate/${this.props.match.params.guest_id}/${this.props.match.params.uuid}`
+                                  : `/${nearbyLab.account_id}/offered-test-by-lab-corporate`
                               }
                               className="text-dark"
                             >
@@ -2514,8 +2514,8 @@ class NearbyLabs extends Component {
                           <Link
                             to={
                               this.props.match.params.uuid
-                                ? `/nearby-lab-detail/${nearbyLab.account_id}/${this.props.match.params.uuid}`
-                                : `/nearby-lab-detail/${nearbyLab.account_id}`
+                                ? `/${nearbyLab.account_id}/offered-test-by-lab-corporate/${this.props.match.params.guest_id}/${this.props.match.params.uuid}`
+                                : `/${nearbyLab.account_id}/offered-test-by-lab-corporate`
                             }
                           >
                             <div className="my-0 mt-3">
@@ -2536,18 +2536,18 @@ class NearbyLabs extends Component {
                     <Card
                       onClick={() =>
                         history.push(
-                          this.props.match.params.guest_id
-                            ? `/nearby-lab-detail/${nearbyLab.account_id}/${this.props.match.params.guest_id}`
-                            : `/nearby-lab-detail/${nearbyLab.account_id}`
+                          this.props.match.params.uuid
+                            ? `/${nearbyLab.account_id}/offered-test-by-lab-corporate/${this.props.match.params.guest_id}/${this.props.match.params.uuid}`
+                            : `/${nearbyLab.account_id}/offered-test-by-lab-corporate`
                         )
                       } style={{ height: "95%" }}
                     >
                       <CardBody>
                         <Link
                           to={
-                            this.props.match.params.guest_id
-                              ? `/nearby-lab-detail/${nearbyLab.account_id}/${this.props.match.params.guest_id}`
-                              : `/nearby-lab-detail/${nearbyLab.account_id}`
+                            this.props.match.params.uuid
+                              ? `/${nearbyLab.account_id}/offered-test-by-lab-corporate/${this.props.match.params.guest_id}/${this.props.match.params.uuid}`
+                              : `/${nearbyLab.account_id}/offered-test-by-lab-corporate`
                           }
                         >
                           {/* <div className="product-img position-relative">
@@ -2591,10 +2591,10 @@ class NearbyLabs extends Component {
                           <h5 className="mb-3 text-truncate">
                             <Link
                               to={
-                                this.props.match.params.guest_id
-                                  ? `/nearby-lab-detail/${nearbyLab.account_id}/${this.props.match.params.guest_id}`
-                                  : `/nearby-lab-detail/${nearbyLab.account_id}}`
-                              }
+                                this.props.match.params.uuid
+                                  ? `/${nearbyLab.account_id}/offered-test-by-lab-corporate/${this.props.match.params.guest_id}/${this.props.match.params.uuid}`
+                                  : `/${nearbyLab.account_id}/offered-test-by-lab-corporate`
+                                }
                               className="text-dark"
                             >
                               {nearbyLab.name}{" "}
@@ -2678,9 +2678,9 @@ class NearbyLabs extends Component {
                           </Row>
                           <Link
                             to={
-                              this.props.match.params.guest_id
-                                ? `/nearby-lab-detail/${nearbyLab.account_id}/${this.props.match.params.guest_id}`
-                                : `/nearby-lab-detail/${nearbyLab.account_id}}`
+                              this.props.match.params.uuid
+                                ? `/${nearbyLab.account_id}/offered-test-by-lab-corporate/${this.props.match.params.guest_id}/${this.props.match.params.uuid}`
+                                : `/${nearbyLab.account_id}/offered-test-by-lab-corporate`
                             }
                           >
                             <div className="my-0 mt-3">
@@ -2702,18 +2702,18 @@ class NearbyLabs extends Component {
                     <Card
                       onClick={() =>
                         history.push(
-                          this.props.match.params.guest_id
-                            ? `/nearby-lab-detail/${nearbyLab.account_id}/${this.props.match.params.guest_id}/${this.props.match.params.uuid}`
-                            : `/nearby-lab-detail/${nearbyLab.account_id}`
-                        )
+                          this.props.match.params.uuid
+                              ? `/${nearbyLab.account_id}/offered-test-by-lab-corporate/${this.props.match.params.guest_id}/${this.props.match.params.uuid}`
+                              : `/${nearbyLab.account_id}/offered-test-by-lab-corporate`
+                      )
                       } style={{ height: "95%" }}
                     >
                       <CardBody>
                         <Link
                           to={
-                            this.props.match.params.guest_id
-                              ? `/nearby-lab-detail/${nearbyLab.account_id}/${this.props.match.params.guest_id}/${this.props.match.params.uuid}`
-                              : `/nearby-lab-detail/${nearbyLab.account_id}`
+                            this.props.match.params.uuid
+                                ? `/${nearbyLab.account_id}/offered-test-by-lab-corporate/${this.props.match.params.guest_id}/${this.props.match.params.uuid}`
+                                : `/${nearbyLab.account_id}/offered-test-by-lab-corporate`
                           }
                         >
                           {/* <div className="product-img position-relative">
@@ -2756,9 +2756,9 @@ class NearbyLabs extends Component {
                           <h5 className="mb-3 text-truncate">
                             <Link
                               to={
-                                this.props.match.params.guest_id
-                                  ? `/nearby-lab-detail/${nearbyLab.account_id}/${this.props.match.params.guest_id}/${this.props.match.params.uuid}`
-                                  : `/nearby-lab-detail/${nearbyLab.account_id}`
+                                this.props.match.params.uuid
+                                  ? `/${nearbyLab.account_id}/offered-test-by-lab-corporate/${this.props.match.params.guest_id}/${this.props.match.params.uuid}`
+                                  : `/${nearbyLab.account_id}/offered-test-by-lab-corporate`
                               }
                               className="text-dark"
                             >
@@ -2842,9 +2842,9 @@ class NearbyLabs extends Component {
                           </Row>
                           <Link
                             to={
-                              this.props.match.params.guest_id
-                                ? `/nearby-lab-detail/${nearbyLab.account_id}/${this.props.match.params.guest_id}/${this.props.match.params.uuid}`
-                                : `/nearby-lab-detail/${nearbyLab.account_id}`
+                              this.props.match.params.uuid
+                                ? `/${nearbyLab.account_id}/offered-test-by-lab-corporate/${this.props.match.params.guest_id}/${this.props.match.params.uuid}`
+                                : `/${nearbyLab.account_id}/offered-test-by-lab-corporate`
                             }
                           >
                             <div className="my-0 mt-3">

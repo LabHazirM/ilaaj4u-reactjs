@@ -4,6 +4,7 @@ import Select from "react-select";
 import { connect } from "react-redux";
 import MetaTags from "react-meta-tags";
 import axios from "axios";
+import { Collapse } from "reactstrap";
 import { useParams } from 'react-router-dom'
 import { withRouter, Link } from "react-router-dom";
 import Tooltip from "@material-ui/core/Tooltip";
@@ -230,7 +231,36 @@ class OfferedTestsList extends Component {
 
     return (
       <React.Fragment>
-       
+         <div className="topnav">
+            <div className="container-fluid left-space">
+              <nav
+                className="navbar navbar-light navbar-expand-lg topnav-menu"
+                id="navigation"
+              >
+                      <Collapse
+                        isOpen={this.state.isMenuOpened}
+                        className="navbar-collapse"
+                        id="topnav-menu-content"
+                      >
+                        <ul className="navbar-nav">
+
+                            <li className="nav-item">
+                              <Link to={
+                                this.props.match.params.guest_id
+                                  ? `/test-appointments/${this.props.match.params.guest_id}`
+                                  : `/test-appointments`
+                              } className="dropdown-item">
+                                {/* {this.props.t("My Appointments")} */}
+                                <span className="pt-4 font-size-12">My Appointments</span>
+
+                              </Link>
+                            </li>
+                        </ul>
+                      </Collapse>
+
+              </nav>
+            </div>
+          </div>
         <div className="page-content">
           <MetaTags>
             <title>Corporate Offered Tests List | Lab Hazir</title>

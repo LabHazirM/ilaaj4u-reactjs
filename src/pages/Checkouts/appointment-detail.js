@@ -112,8 +112,10 @@ class InvoiceDetail extends Component {
                             {this.props.invoiceDetail[0].estimated_sample_collection_at !== null ? (
                               <>
                                 <span className="text-danger">Sampling Date Time by Lab:</span>{" "}
-                                {new Date(this.props.invoiceDetail[0].estimated_sample_collection_at).toLocaleString("en-US")}
-                              </>
+                                {this.props.invoiceDetail[0].estimated_sample_collection_at
+                                ? moment(this.props.invoiceDetail[0].estimated_sample_collection_at).format("DD MMM YYYY, h:mm A")
+                                : "--"}
+                                                              </>
                             ) : null}
                           </address>
                         </Col>
@@ -138,9 +140,12 @@ class InvoiceDetail extends Component {
                             {this.props.invoiceDetail[0].payment_method ==
                               "Card" ? (
                               <>
-                                {new Date(
+                                {/* {new Date(
                                   this.props.invoiceDetail[0].paid_at
-                                ).toLocaleString("en-US")}
+                                ).toLocaleString("en-US")} */}
+                                {this.props.invoiceDetail[0].paid_at
+                                ? moment(this.props.invoiceDetail[0].paid_at).format("DD MMM YYYY, h:mm A")
+                                : "--"}
                               </>
                             ) : null}
                           </address>
@@ -150,9 +155,12 @@ class InvoiceDetail extends Component {
                           <address>
                             <strong>Order Detail:</strong>
                             <br /><span className="text-danger">Invoice Generated Date Time: </span>
-                            {new Date(
+                            {this.props.invoiceDetail[0].invoice_generated_at
+                                ? moment(this.props.invoiceDetail[0].invoice_generated_at).format("DD MMM YYYY, h:mm A")
+                                : "--"}
+                            {/* {new Date(
                               this.props.invoiceDetail[0].invoice_generated_at
-                            ).toLocaleString("en-US")}
+                            ).toLocaleString("en-US")} */}
                             <br />
                             <br />
                           </address>

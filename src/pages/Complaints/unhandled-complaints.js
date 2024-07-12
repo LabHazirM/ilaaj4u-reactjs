@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import MetaTags from "react-meta-tags";
 import { withRouter, Link } from "react-router-dom";
-import filterFactory, { textFilter } from 'react-bootstrap-table2-filter';
+import filterFactory, { textFilter,selectFilter } from 'react-bootstrap-table2-filter';
 import { Tooltip } from "@material-ui/core";
 import {
   Card,
@@ -94,6 +94,7 @@ class UnhandledComplaints extends Component {
           sort: true,
           filter: textFilter(),
         },
+        
         {
           dataField: "name",
           text: "Complainant Name",
@@ -149,26 +150,39 @@ class UnhandledComplaints extends Component {
             </>
           ),
           filter: textFilter(),
-        },        
+        },  
+        {
+          dataField: "city",
+          text: "City",
+          sort: true,
+          filter: textFilter(),
+        },     
         {
           dataField: "is_it_urgent",
           text: "Urgent",
           sort: true,
-          filter: textFilter(),
           formatter: (cellContent, row) => {
             const isUrgent = row.is_it_urgent;
-    
+        
             // Conditionally render red or green round box
-             return isUrgent ? (
-    <span className="w-100 pr-4 pl-4 badge rounded-pill badge-soft-danger font-size-12 badge-soft-danger" style={{ animation: 'blinking 1s infinite' }}>
-      Urgent
-    </span>
-  ) : (
-    <span className="w-100 pr-4 pl-4 badge rounded-pill badge-soft-success font-size-12 badge-soft-success">
-      Normal
-    </span>
-  );
+            return isUrgent ? (
+              <span className="w-100 pr-4 pl-4 badge rounded-pill badge-soft-danger font-size-12 badge-soft-danger" style={{ animation: 'blinking 1s infinite' }}>
+                Urgent
+              </span>
+            ) : (
+              <span className="w-100 pr-4 pl-4 badge rounded-pill badge-soft-success font-size-12 badge-soft-success">
+                Normal
+              </span>
+            );
           },
+          filter: selectFilter({
+            options: {
+              '': 'All',
+              'true': 'Urgent',
+              'false': 'Normal',
+            },
+            defaultValue: '',
+          }),
         },
         // {
         //   dataField: "message",
@@ -200,6 +214,7 @@ class UnhandledComplaints extends Component {
         //   ),
         //   filter: textFilter(),
         // },
+        
         {
           dataField: "registered_at",
           text: "Pending Since",
@@ -254,6 +269,7 @@ class UnhandledComplaints extends Component {
     // this.onClickAuditedEvent = this.onClickAuditedEvent.bind(this);
     this.toggleMessageModal.bind(this);
     this.togglePatientModal = this.togglePatientModal.bind(this);
+    
   }
   handleResolveClick = (complaintId) => {
     // Dispatch an action to update the status in Redux
@@ -331,7 +347,6 @@ class UnhandledComplaints extends Component {
 
   //   this.setState({ auditModal: false });
   // };
-
   componentDidMount() {
     const { onGetUnhandledComplaints } = this.props;
     onGetUnhandledComplaints(this.state.user_id);
@@ -565,7 +580,7 @@ class UnhandledComplaints extends Component {
                                         toggle={this.togglePatientModal}
                                         tag="h4"
                                       >
-                                        <span>Patient details: </span>
+                                        <span>Details: </span>
                                       </ModalHeader>
                                       <ModalBody>
                                         <Formik>

@@ -5,12 +5,9 @@ import MetaTags from "react-meta-tags";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import Select from "react-select";
-
 import CarouselPage from "../AuthenticationInner/CarouselPage";
 import { Redirect, Link } from "react-router-dom";
 import axios from 'axios';
-
-
 // action
 import {
   getTerritoriesList,
@@ -18,10 +15,8 @@ import {
   addPatientInformation,
   addPatientInformationFailed,
 } from "../../store/actions";
-
 // Redux
 import { connect } from "react-redux";
-
 class PatientInformation extends Component {
   constructor(props) {
     super(props);
@@ -35,6 +30,7 @@ class PatientInformation extends Component {
       employee_id_cardError: "",
       email: "",
       city_id: "",
+      address: "",
       guest_id: "",
       user_id: localStorage.getItem("authUser")
         ? JSON.parse(localStorage.getItem("authUser")).user_id
@@ -106,7 +102,6 @@ class PatientInformation extends Component {
       console.error("Error fetching employee_code:", error);
     }
   };
-
   validateEmployeeCode = enteredEmployeeIdCard => {
     const { employeeData } = this.state;
 
@@ -128,7 +123,6 @@ class PatientInformation extends Component {
     }
   };
   render() {
-
     // list of city from territories
     const cityList = [];
     for (let i = 0; i < this.props.territoriesList.length; i++) {
@@ -137,7 +131,6 @@ class PatientInformation extends Component {
         value: this.props.territoriesList[i].id,
       });
     }
-
     const corporatesList = [];
     for (let i = 0; i < this.props.corporatesList.length; i++) {
       corporatesList.push({
@@ -205,7 +198,7 @@ class PatientInformation extends Component {
                               employee_id_card: (this.state && this.state.employee_id_card) || "",
                               email: (this.state && this.state.email) || "",
                               city_id: (this.state && this.state.city_id) || "",
-
+                              address: (this.state && this.state.address) || "",
                             }}
                             validationSchema={Yup.object().shape({
                               employee_id_card: Yup.string().when("is_assosiatewith_anycorporate", {
@@ -273,15 +266,39 @@ class PatientInformation extends Component {
                                 else if (
                                   this.props.patient &&
                                   this.state.user_id &&
+                                  this.state.is_assosiatewith_anycorporate === "No" && 
+                                  !this.state.employee_id_card &&
                                   this.state.user_type === "CSR"
                                 ) {
                                   console.log(this.props.match.params.uuid);
                                   this.props.history.push(
                                     this.props.match.params.uuid
-                                      ? `/labs/${this.props.match.params.uuid}/${this.props.match.params.id}`
-                                      : `/labs/${this.props.match.params.id}`
+                                      ? `/corporate-csr/${this.props.match.params.uuid}/${this.props.match.params.id}`
+                                      : `/corporate-csr/${this.props.match.params.id}`
                                   );
                                 }
+                                else if (
+                                  this.props.patient &&
+                                  this.state.user_id &&
+                                  this.state.is_assosiatewith_anycorporate === "Yes" && 
+                                  this.state.employee_id_card &&
+                                  this.state.user_type === "CSR"
+                                ){
+                                  console.log(
+                                    "Patient Profile:",
+                                    this.state.is_assosiatewith_anycorporate,
+                                    this.props.patient,
+                                    this.state.employee_id_card,
+                                    this.state.user_type
+                                  );
+                                  const uuid = this.props.match.params.id;
+                                  const accountId = this.state.corporate_id;
+                                  const url = uuid
+                                    ? `/corporate-patients-book-appointments/${uuid}/${accountId}`
+                                    : `/corporate-patients-book-appointments/${accountId}`;
+                                  this.props.history.push(url);
+                                }
+                                
                               }, 5000);
 
                             }}
@@ -369,6 +386,32 @@ class PatientInformation extends Component {
                                   />
                                 </div>
                                 {/* city field */}
+                                <div className="mb-3">
+                                  <Label for="name" className="form-label">
+                                    Address
+                                  </Label>
+                                  <Field
+                                    id="address"
+                                    name="address"
+                                    type="text"
+                                    placeholder="Please enter your address"
+                                    onChange={e =>
+                                      this.setState({ address: e.target.value })
+                                    }
+                                    value={this.state.address}
+                                    className={
+                                      "form-control" +
+                                      (errors.address && touched.address
+                                        ? " is-invalid"
+                                        : "")
+                                    }
+                                  />
+                                  <ErrorMessage
+                                    name="address"
+                                    component="div"
+                                    className="invalid-feedback"
+                                  />
+                                </div>
                                 <div className="mb-3">
 
 
@@ -526,7 +569,6 @@ class PatientInformation extends Component {
     );
   }
 }
-
 PatientInformation.propTypes = {
   history: PropTypes.any,
   match: PropTypes.object,
@@ -548,16 +590,12 @@ PatientInformation.propTypes = {
     })
   ),
 };
-
-
 const mapStateToProps = state => {
   const { territoriesList } = state.PatientInformation;
   const { corporatesList } = state.PatientInformation;
   const { patient, addPatientError, loading } = state.PatientInformation;
   return { patient, addPatientError, loading, territoriesList, corporatesList };
-
 };
-
 export default connect(mapStateToProps, {
   getTerritoriesList,
   getCorporatesList,

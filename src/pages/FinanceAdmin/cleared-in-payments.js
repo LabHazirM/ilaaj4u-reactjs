@@ -113,6 +113,12 @@ class PendingB2BClients extends Component {
     if (selectedValue === 'Payment In Cleared') {
     this.props.history.push('/cleared-in-payments');
     }
+    if (selectedValue === 'Payment In Pending') {
+      this.props.history.push('/pending-in-payments');
+      }
+    if (selectedValue === 'Payment Out Pending') {
+        this.props.history.push('/pending-out-payments');
+        }
 }
     /* Insert,Update Delete data */
 
@@ -464,6 +470,9 @@ class PendingB2BClients extends Component {
                                       >
                                         <option value="Payment In Cleared">MIF Cleared</option>
                                         <option value="Payment Out Cleared">MOF Cleared</option>
+                                        <option value="Payment In Pending">MIF Pending Clearance</option>
+                                        <option value="Payment Out Pending">MOF Pending Clearance</option>
+                                        
                                       </select>
                                     </div></div>
                                 </Col>

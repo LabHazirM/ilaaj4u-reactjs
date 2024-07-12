@@ -990,6 +990,13 @@ class SidebarContent extends Component {
                     <span>{this.props.t("Finance Officer")}</span>
                   </Link>
                 </li>
+
+                <li>
+                  <Link to="/marketers-list">
+                    <i className="mdi mdi-bullhorn" />
+                    <span>{this.props.t("Marketers List")}</span>
+                  </Link>
+                </li>
               </ul>
             </div>
           </SimpleBar>

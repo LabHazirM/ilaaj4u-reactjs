@@ -10,11 +10,10 @@ import {
   UPDATE_DISCOUNT_ALL_LABHAZIR_FAIL,
 } from "./actionTypes";
 
-export const getDiscountLabHazirs = () => ({
+export const getDiscountLabHazirs = id => ({
   type: GET_DISCOUNT_LABHAZIRS,
-  payload: {},
+  payload: id,
 });
-
 export const getDiscountLabHazirsSuccess = discountLabHazirs => ({
   type: GET_DISCOUNT_LABHAZIRS_SUCCESS,
   payload: discountLabHazirs,

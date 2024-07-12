@@ -48,10 +48,10 @@ class ActivityLogMarketer extends Component {
   }
 
   componentDidMount() {
-    const { activitylogmarketer, onGetActivityLogMarketer } = this.props;
-    console.log(onGetActivityLogMarketer(this.state.user_id));
-    this.setState({ activitylogmarketer });
-  }
+    const { match, onGetActivityLogMarketer } = this.props;
+    const id = match.params.id; // Extracting ID from URL
+    onGetActivityLogMarketer(id);
+}
   onPaginationPageChange = page => {
     if (
       this.node &&
@@ -70,11 +70,12 @@ class ActivityLogMarketer extends Component {
     const { activitylogmarketer } = this.props;
     const { onGetActivityLogMarketer } = this.props;
 
-    const pageOptions = {
-      sizePerPage: 10,
-      totalSize: activitylogmarketer.length, // replace later with size(activitylogmarketer),
-      custom: true,
-    };
+   const pageOptions = {
+  sizePerPage: 10,
+  totalSize: activitylogmarketer ? activitylogmarketer.length : 0,
+  custom: true,
+};
+
 
     const defaultSorted = [
       {
@@ -135,7 +136,7 @@ class ActivityLogMarketer extends Component {
 }
 
 ActivityLogMarketer.propTypes = {
-  match: PropTypes.object,
+  match: PropTypes.object, 
   activitylogmarketer: PropTypes.array,
   className: PropTypes.any,
   onGetActivityLogMarketer: PropTypes.func,

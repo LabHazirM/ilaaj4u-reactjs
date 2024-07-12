@@ -87,7 +87,7 @@ class Contact extends Component {
     for (let i = 0; i < this.props.territoriesList.length; i++) {
       cityList.push({
         label: this.props.territoriesList[i].city,
-        value: this.props.territoriesList[i].office,
+        value: this.props.territoriesList[i].city,
       });
     }
     function togglePopup(){
@@ -318,6 +318,7 @@ class Contact extends Component {
                                   <option value="Patient">Patient</option>
                                   <option value="B2B">B2B</option>
                                   <option value="Donor">Donor</option>
+                                  <option value="Corporate">Corporate</option>
                                 </Field>
                               </div>
                             </Col>

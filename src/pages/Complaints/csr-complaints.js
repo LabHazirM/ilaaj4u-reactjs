@@ -23,7 +23,7 @@ import paginationFactory, {
   PaginationProvider,
   PaginationListStandalone,
 } from "react-bootstrap-table2-paginator";
-import filterFactory, { textFilter } from 'react-bootstrap-table2-filter';
+import filterFactory, { textFilter,selectFilter } from 'react-bootstrap-table2-filter';
 import Tooltip from "@material-ui/core/Tooltip";
 import ToolkitProvider, { Search } from "react-bootstrap-table2-toolkit";
 import BootstrapTable from "react-bootstrap-table-next";
@@ -120,19 +120,27 @@ class csrComplaints extends Component {
         },
         {
           dataField: "is_home_sampling_availed",
-          text: "Home Sampling",
+          text: "Home sampling",
           sort: true,
-          formatter: (cellContent, csrComplaint) => (
+          formatter: (cellContent, labsList) => (
             <>
-              {csrComplaint.is_home_sampling_availed == true || csrComplaint.is_state_sampling_availed == true ? (
+              {labsList.is_home_sampling_availed == true || labsList.is_state_sampling_availed == true ? (
                 <span>Yes</span>
               ) : (
                 <span>No</span>
               )}
             </>
           ),
-          filter: textFilter(),
+          filter: selectFilter({
+            options: {
+              '': 'All',
+              'true': 'Yes',
+              'false': 'No',
+            },
+            defaultValue: 'All',
+          }),
         },
+        
         {
           dataField: "status",
           text: "Status",
@@ -485,7 +493,7 @@ class csrComplaints extends Component {
                                                     <input
                                                       type="text"
                                                       value={
-                                                        this.state.city
+                                                        this.state.patient_city
                                                       }
                                                       className="form-control"
                                                       readOnly={true}

@@ -52,7 +52,7 @@ import paymentStatussSaga from "./payment-statuss/saga";
 import msgsSaga from "./chat-box/saga";
 import advertisementsSaga from "./advertisements/saga";
 import advertisementLivesSaga from "./advertisement-live/saga";
-
+///////////
 import advertisementPriceListsSaga from "./advertisement-price-lists/saga";
 import labAdvertisementsSaga from "./lab-advertisements/saga";
 import labAdvertisementRequestsSaga from "./lab-advertisement-requests/saga";
@@ -69,6 +69,7 @@ import auditorTerritoryListSaga from "./auditor-territory-list/saga";
 import discountLabSaga from "./discount-lab/saga";
 import feedbacksSaga from "./feedbacks/saga";
 import labsRatingSaga from "./labs-rating/saga";
+import labsTestingSaga from "./labs-testing/saga";
 import testAppointmentsSaga from "./test-appointments/saga";
 import patientTestAppointmentsSaga from "./patient-test-appointments/saga";
 import B2bReferredPatientsSaga from "./b2b-referred-patients/saga";
@@ -95,6 +96,7 @@ import PatientsSaga from "./patients-list/saga";
 import testDescriptionsSaga from "./test-descriptions/saga";
 import AccountStatementsSaga from "./account-statements/saga";
 import DonorAccountStatementsSaga from "./donor-account-statements/saga";
+import DonorsAccountStatementsSaga from "./donors-account-statements/saga";
 import B2bAccountStatementsSaga from "./b2b-account-statements/saga";
 import BankAccountStatementsSaga from "./bank-account-statements/saga";
 
@@ -109,6 +111,7 @@ import AuditorAdminSaga from "./auditor-admin/saga";
 export default function* rootSaga() {
   yield all([
     //public
+    fork(DonorsAccountStatementsSaga),
     fork(dashboardSaga),
     fork(LayoutSaga),
     fork(AccountSaga),
@@ -179,6 +182,7 @@ export default function* rootSaga() {
     fork(discountLabSaga),
     fork(feedbacksSaga),
     fork(labsRatingSaga),
+    fork(labsTestingSaga),
     fork(complaintsSaga),
     fork(csrcomplaintsSaga),
     fork(csrappointmentsSaga),

@@ -130,6 +130,19 @@ class InProcessAudits extends Component {
           filter: textFilter(),
         },
         {
+          dataField: "generated_at",
+          text: "Pending Since",
+          sort: true,
+          formatter: (cellContent, audit) => (
+            <>
+              <span>
+
+              {new Date().getDate() - new Date(audit.assigned_at).getDate()} days
+              </span>
+            </>
+          ),filter: textFilter(),
+        },
+        {
           dataField: "data",
           text: "id",
           isDummyField: true,

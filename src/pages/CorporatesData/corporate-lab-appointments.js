@@ -167,11 +167,6 @@ class AccountStatements extends Component {
     };
     const uniqueLabNames = [...new Set(b2baccountStatements.map((statement) => statement.lab_name))];
 
-    // const filteredData = b2baccountStatements.filter(
-    //   (statement) =>
-    //     !this.state.selectedCorporate || statement.lab_name === this.state.selectedCorporate
-    // );
-
     const filteredData = b2baccountStatements.filter(
       (statement) =>
         (!this.state.selectedCorporate || statement.lab_name === this.state.selectedCorporate) &&

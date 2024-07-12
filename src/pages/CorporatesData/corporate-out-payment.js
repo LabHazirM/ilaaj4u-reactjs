@@ -173,11 +173,11 @@ class OutPaymentsForm extends Component {
       window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
     }, 2000);
 
-    // setTimeout(() => {
-    //   this.props.history.push("/corporate-payment-form-status");
-    //   // window.location.reload()
+    setTimeout(() => {
+      this.props.history.push("/corporate-payment-form-status");
+      // window.location.reload()
 
-    // }, 2000)
+    }, 2000)
   };
 
   componentDidMount() {
@@ -872,12 +872,12 @@ class OutPaymentsForm extends Component {
                             <input
                               name="payment_at"
                               type="datetime-local"
-                              min={new Date(
-                                new Date().toString().split("GMT")[0] +
-                                " UTC"
-                              )
-                                .toISOString()
-                                .slice(0, -8)}
+                              // min={new Date(
+                              //   new Date().toString().split("GMT")[0] +
+                              //   " UTC"
+                              // )
+                              //   .toISOString()
+                              //   .slice(0, -8)}
                               className="form-control"
                               onChange={e =>
                                 this.setState({

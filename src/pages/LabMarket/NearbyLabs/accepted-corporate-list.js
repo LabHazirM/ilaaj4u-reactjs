@@ -147,7 +147,7 @@ class OfferedTestsList extends Component {
                 // disabled={offeredTest.length == 0}
                 >
                   {/* <i className="mdi mdi-sticker-check-outline me-1" /> */}
-                  Cencel Request
+                  Cancel Request
                 </Button>
               ) : null}
               

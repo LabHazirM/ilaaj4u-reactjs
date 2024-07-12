@@ -492,7 +492,7 @@ class LabProfile extends Component {
                         </Field>
                       </div> */}
                       {/* District field */}
-                      {/* <div className="mb-3">
+                      <div className="mb-3">
                         <Label for="district" className="form-label">
                           District
                         </Label>
@@ -540,9 +540,9 @@ class LabProfile extends Component {
                           component="div"
                           className="invalid-feedback"
                         />
-                      </div> */}
+                      </div>
                       {/* City field */}
-                      {/* <div className="mb-3">
+                      <div className="mb-3">
                         <Label for="city" className="form-label">
                           City
                         </Label>
@@ -587,7 +587,7 @@ class LabProfile extends Component {
                           component="div"
                           className="invalid-feedback"
                         />
-                      </div> */}
+                      </div> 
                       <div className="text-center mt-4">
                         <Button type="submit" color="danger">
                           Update Profile

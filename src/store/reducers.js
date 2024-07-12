@@ -28,6 +28,7 @@ import DonorSettings from "./auth/donorsettings/reducer";
 import PatientProfile from "./auth/patientprofile/reducer";
 import CorporateProfile from "./auth/corporateprofile/reducer";
 
+
 //LabMarket
 import LabMarket from "./labmarket/reducer";
 //test market
@@ -94,6 +95,7 @@ import sharedPercentagePendingFeeTests from "./shared-percentage-pending-fee/red
 //Discount Labhazir
 import discountLabHazirs from "./discount-labhazir/reducer";
 import labsList from "./labs-list/reducer";
+///////////////
 import discountLabs from "./discount-lab/reducer";
 
 // Territories List
@@ -120,6 +122,7 @@ import referrelFeeLabs from "./referrel-fee-to-lab/reducer";
 //feedbacks
 import feedbacks from "./feedbacks/reducer";
 import labsRating from "./labs-rating/reducer";
+import labsTesting from "./labs-testing/reducer";
 
 
 //test appointment
@@ -165,6 +168,7 @@ import advinvoice from "./adv-invoice/reducer";
 // account statements
 import accountStatements from "./account-statements/reducer";
 import donoraccountStatements from "./donor-account-statements/reducer";
+import donorsaccountStatements from "./donors-account-statements/reducer";
 import b2baccountStatements from "./b2b-account-statements/reducer";
 import bankaccountStatements from "./bank-account-statements/reducer";
 
@@ -176,6 +180,7 @@ import msgs from "./chat-box/reducer";
 // admins
 import registrationAdmin from "./registration-admin/reducer";
 import financeAdmin from "./finance-admin/reducer";
+
 import csrAdmin from "./csr-admin/reducer";
 import auditorAdmin from "./auditor-admin/reducer";
 import inPayments from "./inpayments/reducer";
@@ -193,6 +198,7 @@ import cemployeeData from "./corporatedata/reducer";
 const rootReducer = combineReducers({
   // public
   Dashboard,
+  donorsaccountStatements,
   referrelFeeLabs,
   Layout,
   createBank,
@@ -215,6 +221,7 @@ const rootReducer = combineReducers({
   ConfirmPassword,
   ChangePassword,
   labsRating,
+  labsTesting,
   LabProfile,
   B2bProfile,
   b2baccountStatements,
