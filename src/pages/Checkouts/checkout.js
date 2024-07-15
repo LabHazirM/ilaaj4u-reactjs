@@ -681,6 +681,12 @@ class Checkout extends Component {
       customer_phone: patient_phone,
       customer_address: patient_address,
       customer_city: patient_city,
+      mdd1: "WC",
+      mdd2: "Yes",
+      mdd4: "Medical Test",
+      mdd5: "Yes",
+      mdd7: "Has to be a number",
+      mdd20: "No",
     };
 
     console.log('Payment Data:', paymentData); // Log the payment data
