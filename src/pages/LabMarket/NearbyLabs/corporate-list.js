@@ -319,8 +319,8 @@ class TestsList extends Component {
                               )}</div> */}
                               <div>
                                   <span className="text-danger font-size-12">
-                  <strong>
-                    Note: Here only the list of Corporations that match your Territorie will be shown.
+                  <strong>e
+                  Note: Only corporations that match the territory of your lab will be displayed. The lab has the option to accept working with these corporations, considering the test prices and payment terms.
                   </strong>
                   </span>
                   </div>

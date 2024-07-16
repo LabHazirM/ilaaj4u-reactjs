@@ -146,6 +146,18 @@ class OfferedTestsList extends Component {
             </>
           ), filter: textFilter(),
         },
+        {
+          dataField: "Status",
+          text: "Status",
+          sort: true,
+          formatter: (cellContent, offeredTest) => (
+            <>
+              <span style={{ color: offeredTest.Status == "Renew" ? 'red' : 'inherit'}}>
+                {offeredTest.Status}
+              </span>
+            </>
+          ), filter: textFilter(),
+        },
         // {
         //   dataField: "menu",
         //   isDummyField: true,

@@ -36,7 +36,11 @@ import Breadcrumbs from "../../components/Common/Breadcrumb";
 import {
   addNewCemployeeData,
 } from "store/corporatedata/actions";
+import {
+  // getUnits,
+  getEmployeeCorporate,
 
+} from "store/corporatedata/actions";
 class DonorPayment extends Component {
   constructor(props) {
     super(props);
@@ -49,6 +53,7 @@ class DonorPayment extends Component {
       name: "",
       employee_code: "",
       type: "Employee",
+      parent_employee_id: "",
       isDisabled: true,
       isRequiredFilled: true,
       cemployeeData: "",
@@ -56,6 +61,14 @@ class DonorPayment extends Component {
       selectedGroup: null,
     };
     this.handleSelectGroup = this.handleSelectGroup.bind(this);
+  }
+  componentDidMount() {
+
+    const { cemployeeDatas, onGetEmployeeCorporate, } = this.props;
+    onGetEmployeeCorporate(this.state.user_id);
+    this.setState({ cemployeeDatas });
+    console.log("state", cemployeeDatas)
+
   }
 
   handleSelectGroup = selectedGroup => {
@@ -68,6 +81,7 @@ class DonorPayment extends Component {
         name: this.state.name,
         employee_code: this.state.employee_code,
         type: this.state.type,
+        parent_employee_id: this.state.parent_employee_id,
       },
     });
 
@@ -92,6 +106,7 @@ class DonorPayment extends Component {
         employee_code: "",
         type: "",
         name: "",
+        parent_employee_id: "",
       });
     }, 5000);
     setTimeout(() => {
@@ -118,6 +133,19 @@ class DonorPayment extends Component {
   }
 
   render() {
+    const cemployeeData = this.state.cemployeeData;
+
+    const { cemployeeDatas } = this.props;
+
+    const employeeList = [];
+    for (let i = 0; i < cemployeeDatas.length; i++) {
+      if (cemployeeDatas[i].status == "Active") {
+        employeeList.push({
+          label: cemployeeDatas[i].name,
+          value: cemployeeDatas[i].id,
+        });
+      }
+    }
     return (
       <React.Fragment>
         <div className="page-content">
@@ -166,6 +194,115 @@ class DonorPayment extends Component {
                           <p className="card-title-desc">
                             Fill the Employee Information
                           </p>
+                          <FormGroup className="mb-4" row>
+                            <Label htmlFor="employee_code"
+                              md="2"
+                              className="col-form-label">
+                              Type
+                            </Label>
+                            <Col md="10">
+
+                              <Field
+                                name="payment_method"
+                                as="select"
+                                className="form-control"
+                                multiple={false}
+                                value={
+                                  this.state.type
+                                }
+                                onChange={e =>
+                                  this.setState({
+                                    type: e.target.value,
+                                  })
+                                }
+                              >
+                                <option value="Employee">
+                                  Employee
+                                </option>
+                                <option value="Family">
+                                  Family and Friends
+                                </option>
+                              </Field></Col>
+                          </FormGroup>
+                          {this.state.type == "Family" ? (
+                            cemployeeData.parent_employee_id ? (
+                              <FormGroup className="mb-3" row>
+                                <Label htmlFor="employee_code"
+                              md="2"
+                              className="col-form-label">
+                                  Employee Names
+                                </Label>
+                                <Col md="10">
+
+                                <Field
+                                  name="parent_employee_id"
+                                  as="select"
+                                  defaultValue={
+                                    cemployeeData.parent_employee_id
+                                  }
+                                  className="form-control"
+                                  readOnly={true}
+                                  multiple={false}
+                                >
+                                  <option
+                                    key={
+                                      cemployeeData.parent_employee_id
+                                    }
+                                    value={
+                                      cemployeeData.parent_employee_id
+                                    }
+                                  >
+                                    {
+                                      cemployeeData.name
+                                    }
+                                  </option>
+                                </Field></Col>
+                              </FormGroup>
+                            ) : (
+                              <FormGroup className="mb-3" row>
+                                <Label htmlFor="employee_code"
+                              md="2"
+                              className="col-form-label">Employee Names</Label>
+                                <Col md="10">
+
+                                <Select
+                                  name="parent_employee_id"
+                                  component="Select"
+                                  onChange={selectedGroup =>
+                                    this.setState({
+                                      parent_employee_id:
+                                        selectedGroup.value,
+                                    })
+                                  }
+                                  className={
+                                    "defautSelectParent" +
+                                    (!this.state.parent_employee_id
+                                      ? " is-invalid"
+                                      : "")
+                                  }
+                                  styles={{
+                                    control: (
+                                      base,
+                                      state
+                                    ) => ({
+                                      ...base,
+                                      borderColor: !this
+                                        .state.parent_employee_id
+                                        ? "#f46a6a"
+                                        : "#ced4da",
+                                    }),
+                                  }}
+                                  options={employeeList}
+                                  placeholder="Select Donor..."
+                                />
+
+                                <div className="invalid-feedback">
+                                  Please select Parent Employee.
+                                </div></Col>
+                              </FormGroup>
+                            )
+
+                          ) : null}
                           <FormGroup className="mb-4" row>
                             <Label
                               htmlFor="name"
@@ -223,36 +360,7 @@ class DonorPayment extends Component {
                               />
                             </Col>
                           </FormGroup>
-                          <FormGroup className="mb-4" row>
-                            <Label htmlFor="employee_code"
-                              md="2"
-                              className="col-form-label">
-                              Type
-                            </Label>
-                            <Col md="10">
-
-                              <Field
-                                name="payment_method"
-                                as="select"
-                                className="form-control"
-                                multiple={false}
-                                value={
-                                  this.state.type
-                                }
-                                onChange={e =>
-                                  this.setState({
-                                    type: e.target.value,
-                                  })
-                                }
-                              >
-                                <option value="Employee">
-                                  Employee
-                                </option>
-                                <option value="Family">
-                                  Family and Friends
-                                </option>
-                              </Field></Col>
-                          </FormGroup>
+                        
                         </div>
                       </CardBody>
                     </Card>
@@ -293,6 +401,8 @@ DonorPayment.propTypes = {
   // onGetDonorPaymentItems: PropTypes.func,
   onAddcemployeeData: PropTypes.func,
   cemployeeData: PropTypes.array,
+  onGetEmployeeCorporate: PropTypes.func,
+
 };
 
 const mapStateToProps = ({ cemployeeData }) => ({
@@ -305,6 +415,8 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
 
   onAddcemployeeData: (cemployeeData, id) =>
     dispatch(addNewCemployeeData(cemployeeData, id)),
+  onGetEmployeeCorporate: id => dispatch(getEmployeeCorporate(id)),
+
 });
 
 export default connect(

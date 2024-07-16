@@ -124,11 +124,6 @@ class OfferedTestsList extends Component {
             </>
           ),
         },
-        // {
-        //   dataField: "end_date",
-        //   text: "End Date",
-        //   sort: true,
-        // },
         {
           dataField: "end_date",
           text: "End Date",
@@ -170,7 +165,7 @@ class OfferedTestsList extends Component {
           text: "Action",
           formatter: (cellContent, offeredTest) => (
             <div className="d-flex gap-3" style={{ textAlign: "center", justifyContent: "center" }}>
-              {offeredTest.test_status == "Expire" ? (
+              {offeredTest.test_status == "Expired" ? (
                 <Tooltip title="Update">
                   <Link className="text-success" to="#">
                     <i

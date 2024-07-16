@@ -1903,7 +1903,7 @@ export const getDonorAccountStatements = id =>
     formData.append("name", cemployeeData.name);
     formData.append("employee_code", cemployeeData.employee_code);
     formData.append("type", cemployeeData.type);
-
+    formData.append("parent_employee_id", cemployeeData.parent_employee_id);
     return axios.post(`${url.ADD_NEW_CEMPLOYEE_DATA}/${id}`, formData, {
       headers: getHeader(authHeader()),
     });

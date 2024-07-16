@@ -8,6 +8,8 @@ import { Collapse } from "reactstrap";
 import { useParams } from 'react-router-dom'
 import { withRouter, Link } from "react-router-dom";
 import Tooltip from "@material-ui/core/Tooltip";
+import moment from 'moment';
+
 // import BootstrapSwitchButton from 'bootstrap-switch-button-react'
 import {
   Card,
@@ -63,24 +65,31 @@ class OfferedTestsList extends Component {
       newEntries: [], // Store new entries here
       offeredTestListColumns: [
         {
-          text: "id",
+          text: "Offered Test ID",
           dataField: "id",
           sort: true,
-          hidden: true,
+          hidden: false,
           formatter: (cellContent, offeredTest) => <>{offeredTest.id}</>,
         },
-        {
-          text: "Test ID",
-          dataField: "corporate_id",
-          sort: true,
-          formatter: (cellContent, offeredTest) => <>{offeredTest.corporate_id}</>,
-        },
+        // {
+        //   text: "Test ID",
+        //   dataField: "corporate_id",
+        //   sort: true,
+        //   formatter: (cellContent, offeredTest) => <>{offeredTest.corporate_id}</>,
+        // },
         {
           dataField: "test_name",
           text: "Test Name",
           sort: true,
           formatter: (cellContent, offeredTest) => (
-            <span style={{ color: this.state.newEntries.includes(offeredTest.id) && existingEntriesCount > 0 ? 'red' : 'inherit' }}>
+            <span style={{ color: this.state.newEntries.includes(offeredTest.id) && existingEntriesCount > 0 ? 'red' : 'inherit',
+              width: '140px', // Set your desired width here
+              fontSize: '14px',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'prewrap',
+              textAlign: 'left', // Align text to the left
+              display: 'block',
+            }}>
               {offeredTest.test_name}
             </span>
           ),
@@ -89,6 +98,38 @@ class OfferedTestsList extends Component {
           dataField: "type",
           text: "Type",
           sort: true,
+        },
+        {
+          dataField: "start_date",
+          text: "Start Date",
+          sort: true,
+          formatter: (cellContent, offeredTest) => (
+            <>
+              <span>
+                {offeredTest.start_date ? (
+                  moment(offeredTest.start_date).format("DD MMM YYYY, h:mm A")
+                ) : (
+                  "--"
+                )}
+              </span>
+            </>
+          ),
+        },
+        {
+          dataField: "end_date",
+          text: "End Date",
+          sort: true,
+          formatter: (cellContent, offeredTest) => (
+            <>
+              <span>
+                {offeredTest.end_date ? (
+                  moment(offeredTest.end_date).format("DD MMM YYYY, h:mm A")
+                ) : (
+                  "--"
+                )}
+              </span>
+            </>
+          ),
         },
         {
           dataField: "test_status",
@@ -102,7 +143,7 @@ class OfferedTestsList extends Component {
           formatter: (cellContent, offeredTest) => (
             <>
               {(
-                <span>{offeredTest.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</span>
+                <span className="float-end">{offeredTest.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</span>
               )}
             </>
           ),
