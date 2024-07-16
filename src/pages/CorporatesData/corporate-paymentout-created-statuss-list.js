@@ -252,7 +252,7 @@ class PaymentStatussList extends Component {
     render() {
         const columns= [
           {
-            text: "Payment ID",
+            text: "Payment Form ID",
             dataField: "id",
             sort: true,
             hidden: false,

@@ -541,7 +541,7 @@ class CorporateProfile extends Component {
                           className="form-select"
                         >
                           <option value="Payment by Patient to Lab">Payment by Patient to Lab</option>
-                          <option value="Payment by Coorporate to LH">Payment by Coorporate to LH</option>
+                          <option value="Payment by Coorporate to LH">Payment by Corporate to Lab</option>
                         </Field>
                       </div>
 

@@ -127,7 +127,7 @@ class OfferedTestsList extends Component {
           sort: true,
           formatter: (cellContent, offeredTest) => (
             <>
-              <span className="font-size-14 text-truncate float-start">
+              <span className="font-size-14 text-truncate">
                 {offeredTest.lab_city}
               </span>
             </>
@@ -140,7 +140,7 @@ class OfferedTestsList extends Component {
           formatter: (cellContent, offeredTest) => (
             <>
              <Tooltip title={offeredTest.lab_address}>
-              <span className="font-size-14 float-start" style={{ whiteSpace: 'nowrap', width: '200px', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+              <span className="font-size-14 " style={{ whiteSpace: 'nowrap', textAlign: 'left', width: '200px', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                 {offeredTest.lab_address}
               </span></Tooltip>
             </>
@@ -328,7 +328,7 @@ class OfferedTestsList extends Component {
             <Row>
               <div> <span className="text-danger font-size-12">
                                     <strong> 
-                                    Note: Here, the labs will be shown that will accept the price of this corporate for all required tests.
+                                    Note: The labs listed here has accepted the corporate pricing for all required tests.
                                     </strong>
                                   </span>
                                   </div>

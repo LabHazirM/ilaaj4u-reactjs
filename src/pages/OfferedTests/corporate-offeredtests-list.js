@@ -84,7 +84,15 @@ class OfferedTestsList extends Component {
           sort: true,
           formatter: (cellContent, offeredTest) => (
             <>
-              <span>
+              <span style={{
+                width: '140px', // Set your desired width here
+                fontSize: '14px',
+              
+                textOverflow: 'ellipsis',
+                whiteSpace: 'prewrap',
+                textAlign: 'left', // Align text to the left
+                display: 'block',
+              }}>
                 {offeredTest.test_name}
               </span>
             </>
@@ -149,7 +157,7 @@ class OfferedTestsList extends Component {
           formatter: (cellContent, offeredTest) => (
             <>
               {(
-                <span>{offeredTest.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</span>
+                <span className="float-end">{offeredTest.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</span>
               )}
             </>
           ),

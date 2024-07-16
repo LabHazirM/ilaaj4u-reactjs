@@ -170,10 +170,16 @@ class AccountStatements extends Component {
       <React.Fragment>
         <div className="page-content">
           <MetaTags>
-            <title>Lab Corporate Statements | Lab Hazir</title>
+            <title>Appointments Statements | Lab Hazir</title>
           </MetaTags>
           <Container fluid>
-            <Breadcrumbs title="Statements" breadcrumbItem="Lab Corporate Statements" />
+            <Breadcrumbs title="Corporate" breadcrumbItem="Appointments Statements" />
+            <div> <span className="text-danger font-size-12">
+                                    <strong> 
+                                    Note: Settled Appointments indicate that payment has been made to both the respective lab where the corporate employee tests were performed and to Lab Hazir.                                    
+                                    </strong>
+                                  </span>
+                                  </div>
             <Row>
               <Col lg="12" style={{marginLeft: "87%"}}>
                 <Button onClick={this.exportToExcel} className="mb-3">Export to Excel</Button>
@@ -188,11 +194,11 @@ class AccountStatements extends Component {
                         <Table>
                           <thead className="table-light">
                             <tr>
-                              <th scope="col">Lab Name</th>
-                              <th scope="col">Lab Type</th>
-                              <th scope="col">Order ID</th>
                               <th scope="col">Employee ID</th>
                               <th scope="col">Employee Name</th>
+                              <th scope="col">Order ID</th>
+                              <th scope="col">Lab Name</th>
+                              <th scope="col">Lab Type</th>
                               <th scope="col">Appointment Status</th>
                               <th scope="col">Payment Method/ Status</th>
                               <th scope="col">Invoice Value</th>
@@ -238,11 +244,11 @@ class AccountStatements extends Component {
                         <Table>
                           <thead className="table-light">
                             <tr>
-                              <th scope="col">Lab Name</th>
-                              <th scope="col">Lab Type</th>
-                              <th scope="col">Order ID</th>
                               <th scope="col">Employee ID</th>
                               <th scope="col">Employee Name</th>
+                              <th scope="col">Order ID</th>
+                              <th scope="col">Lab Name</th>
+                              <th scope="col">Lab Type</th>
                               <th scope="col">Appointment Status</th>
                               <th scope="col">Payment Method/ Status</th>
                               <th scope="col">Invoice Value</th>
@@ -263,6 +269,21 @@ class AccountStatements extends Component {
                               .map((b2baccountStatement, i) => (
                                 <>
                                   <tr key={i}>
+                                  <td>
+                                      <h5 className="font-size-14 text-truncate">
+                                        <span>{b2baccountStatement.employee_id}</span>
+                                      </h5>
+                                    </td>
+                                    <td>
+                                      <h5 className="font-size-14 text-truncate">
+                                        <span>{b2baccountStatement.employee_name}</span>
+                                      </h5>
+                                    </td>
+                                    <td>
+                                      <h5 className="font-size-14 text-truncate">
+                                        <span> {b2baccountStatement.order_id}</span>
+                                      </h5>
+                                    </td>
                                     <td>
                                       <h5 className="font-size-14 text-truncate float-start">
                                         {/* <span>{b2baccountStatement.lab_name}</span> */}
@@ -280,21 +301,8 @@ class AccountStatements extends Component {
                                       </h5>
                                     </td>
                                    
-                                    <td>
-                                      <h5 className="font-size-14 text-truncate">
-                                        <span> {b2baccountStatement.order_id}</span>
-                                      </h5>
-                                    </td>
-                                    <td>
-                                      <h5 className="font-size-14 text-truncate">
-                                        <span>{b2baccountStatement.employee_id}</span>
-                                      </h5>
-                                    </td>
-                                    <td>
-                                      <h5 className="font-size-14 text-truncate">
-                                        <span>{b2baccountStatement.employee_name}</span>
-                                      </h5>
-                                    </td>
+                                  
+                                    
                                     <td>
                                       <h5 className="font-size-14 text-truncate">
                                         <span>{b2baccountStatement.appointment_status}</span>
