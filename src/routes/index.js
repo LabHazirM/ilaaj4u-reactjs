@@ -353,10 +353,7 @@ const publicRoutes = [
     path: "/quote-list/:guest_id?/:uuid?",
     component: QuoteList,
   },
-  {
-    path: "/corporate-offered-tests/:id",
-    component: CorporateOfferedTestsListForLab,
-  },
+
   
   {
     path: "/chart",
@@ -485,6 +482,10 @@ const labAuthProtectedRoutes = [
     component: AcceptedCorporatesList,
   },
   { path: "/lab-adv-chat-box/:id", component: advLabChatBox },
+  {
+    path: "/corporate-offered-tests/:id",
+    component: CorporateOfferedTestsListForLab,
+  },
 ];
 
 const b2bclientAuthProtectedRoutes = [
