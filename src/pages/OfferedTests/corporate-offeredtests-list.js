@@ -73,6 +73,22 @@ class OfferedTestsList extends Component {
           formatter: (cellContent, offeredTest) => <>{offeredTest.id}</>,
         },
         {
+          dataField: "added_by",
+          text: "Added On",
+          sort: true,
+          formatter: (cellContent, offeredTest) => (
+            <>
+              <span>
+                {offeredTest.added_by ? (
+                  moment(offeredTest.added_by).format("DD MMM YYYY, h:mm A")
+                ) : (
+                  "--"
+                )}
+              </span>
+            </>
+          ),
+        },
+        {
           text: "Test ID",
           dataField: "test_id",
           sort: true,
@@ -140,6 +156,34 @@ class OfferedTestsList extends Component {
             </>
           ),
         },
+        {
+    dataField: "date_difference",
+    text: "Duration",
+    sort: false, // Sorting might not be straightforward with calculated fields
+    formatter: (cellContent, offeredTest) => {
+      const startDate = moment(offeredTest.start_date);
+      const endDate = moment(offeredTest.end_date);
+      const duration = endDate.diff(startDate);
+
+      // If either date is missing, show "--"
+      if (!startDate.isValid() || !endDate.isValid()) {
+        return "--";
+      }
+
+      // Calculate the difference in days, hours, and minutes
+      const days = moment.duration(duration).days();
+      const hours = moment.duration(duration).hours();
+      const minutes = moment.duration(duration).minutes();
+
+      // Format the duration
+      let formattedDuration = "";
+      if (days > 0) formattedDuration += `${days}d `;
+      if (hours > 0) formattedDuration += `${hours}h `;
+      formattedDuration += `${minutes}m`;
+
+      return <span>{formattedDuration}</span>;
+    },
+  },
         {
           dataField: "test_status",
           text: "Status",

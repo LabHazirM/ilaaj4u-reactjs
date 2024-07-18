@@ -68,15 +68,31 @@ class OfferedTestsList extends Component {
           text: "Offered Test ID",
           dataField: "id",
           sort: true,
-          hidden: false,
+          hidden: true,
           formatter: (cellContent, offeredTest) => <>{offeredTest.id}</>,
         },
-        // {
-        //   text: "Test ID",
-        //   dataField: "corporate_id",
-        //   sort: true,
-        //   formatter: (cellContent, offeredTest) => <>{offeredTest.corporate_id}</>,
-        // },
+        {
+          dataField: "added_by",
+          text: "Added On",
+          sort: true,
+          formatter: (cellContent, offeredTest) => (
+            <>
+              <span>
+                {offeredTest.added_by ? (
+                  moment(offeredTest.added_by).format("DD MMM YYYY, h:mm A")
+                ) : (
+                  "--"
+                )}
+              </span>
+            </>
+          ),
+        },
+        {
+          text: "Test ID",
+          dataField: "test_id",
+          sort: true,
+          formatter: (cellContent, offeredTest) => <>{offeredTest.test_id}</>,
+        },
         {
           dataField: "test_name",
           text: "Test Name",
@@ -90,14 +106,43 @@ class OfferedTestsList extends Component {
               textAlign: 'left', // Align text to the left
               display: 'block',
             }}>
-              {offeredTest.test_name}
+                                             {offeredTest.test_name}
+
             </span>
+
           ),
         },
         {
           dataField: "type",
           text: "Type",
           sort: true,
+          formatter: (cellContent, offeredTest) => (
+            <span>
+              {/* {offeredTest.test_name} */}
+              {offeredTest.type != "Test" && (
+                              <div>
+                                <Link
+                                to="#"
+                                onClick={e => this.openPatientModal(e, offeredTest)}
+                                // onMouseEnter={e =>  this.openPatientModal(e, offeredTest)}
+                                // onPointerLeave={this.handleMouseExit()}
+                              >
+                                <span>
+                                {offeredTest.type}
+                                </span>
+                              </Link>
+                              </div>
+                            )}
+               {offeredTest.type == "Test" && (
+                              <div>
+                                <span>
+                                {offeredTest.type}
+                                </span>
+                              </div>
+                            )}
+            </span>
+
+          ),
         },
         {
           dataField: "start_date",
@@ -132,6 +177,34 @@ class OfferedTestsList extends Component {
           ),
         },
         {
+          dataField: "date_difference",
+          text: "Duration",
+          sort: false, // Sorting might not be straightforward with calculated fields
+          formatter: (cellContent, offeredTest) => {
+            const startDate = moment(offeredTest.start_date);
+            const endDate = moment(offeredTest.end_date);
+            const duration = endDate.diff(startDate);
+      
+            // If either date is missing, show "--"
+            if (!startDate.isValid() || !endDate.isValid()) {
+              return "--";
+            }
+      
+            // Calculate the difference in days, hours, and minutes
+            const days = moment.duration(duration).days();
+            const hours = moment.duration(duration).hours();
+            const minutes = moment.duration(duration).minutes();
+      
+            // Format the duration
+            let formattedDuration = "";
+            if (days > 0) formattedDuration += `${days}d `;
+            // if (hours > 0) formattedDuration += `${hours}h `;
+            // formattedDuration += `${minutes}m`;
+      
+            return <span>{formattedDuration}</span>;
+          },
+        },
+        {
           dataField: "test_status",
           text: "Activity Status",
           sort: true,
@@ -147,6 +220,19 @@ class OfferedTestsList extends Component {
               )}
             </>
           ),
+        },
+        {
+          dataField: "sum_appointments",
+          text: "Total Appointments",
+          sort: true,
+          formatter: (cellContent, offeredTest) => (
+            <>
+              {(
+                <span className="float-end">{offeredTest.sum_appointments.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</span>
+              )}
+            </>
+          ),
+
         },
       ],
     };
@@ -197,13 +283,16 @@ class OfferedTestsList extends Component {
       test_details: arg.test_details,
     });
   };
-  // handleMouseExit = () => {
-  //   this.setState({
-  //     PatientModal: false,
-  //     isHovered: false,
-    
-  //   });
-  // };
+
+  togglePatientModal = () => {
+    this.setState(prevState => ({
+      PatientModal: !prevState.PatientModal,
+    }));
+    this.state.btnText === "Copy"
+      ? this.setState({ btnText: "Copied" })
+      : this.setState({ btnText: "Copy" });
+  };
+  
 
   // eslint-disable-next-line no-unused-vars
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -272,7 +361,6 @@ class OfferedTestsList extends Component {
 
     return (
       <React.Fragment>
-         
         <div className="page-content">
           <MetaTags>
             <title>Corporate Offered Tests List | Lab Hazir</title>
@@ -280,13 +368,41 @@ class OfferedTestsList extends Component {
           <Container fluid>
             {/* Render Breadcrumbs */}
             <Breadcrumbs title="Corporate Offered Tests" breadcrumbItem="Tests List" />
+            <Row className="mb-2">
+              <Col lg="6">
+              <div>
+              {offeredTests.map((corporate, index) => {
+                // Check if corporate_name is defined and not null
+                if (corporate.corporate_name !== undefined && corporate.corporate_name !== null) {
+                  // Return a div for each corporate_name
+                  return (
+                    <div key={index} style={{ textAlign: 'center' }}>
+                    <span style={{ fontWeight: 'bold' }}>Corporations Name:  </span>
+                      <span className="text-danger">{corporate.corporate_name}</span>
+                    </div>
+                  );
+                }
+              })}
+              </div>
+              </Col>
+              <Col lg="6">
+              <div>
+              {offeredTests.map((corporate, index) => {
+                // Check if employee_code is defined and not null
+                if (corporate.employee_code !== undefined && corporate.employee_code !== null) {
+                  // Return a div for each employee_code
+                  return (
+                    <div key={index} style={{ textAlign: 'left' }}>
+                    <span style={{ fontWeight: 'bold' }}>Number of Total Employees:  </span>
+                    <span style={{ color: 'red' }}>{corporate.employee_code}</span>
+                </div>
+                  );
+                }
+              })}
+              </div>
+              </Col>
+            </Row>
             <Row>
-            {/* <div> <span className="text-danger font-size-12">
-                                    <strong> 
-                                    Note: If referral fee of any offered test is not entered by Labhazir, all such tests will not be online.
-                                    </strong>
-                                  </span>
-                                  </div> */}
               <Col lg="12">
                 <Card>
                   <CardBody>
@@ -318,6 +434,47 @@ class OfferedTestsList extends Component {
                                 </Col>
                                 
                               </Row>
+                              <Modal
+                                      isOpen={this.state.PatientModal}
+                                      className={this.props.className}
+                                      // onPointerLeave={this.handleMouseExit}
+                                    >
+                                      <ModalHeader
+                                        toggle={this.togglePatientModal}
+                                        tag="h4"
+                                      >
+                                        <span></span>
+                                      </ModalHeader>
+                                      <ModalBody>
+                                        <Formik>
+                                          <Form>
+                                            <Row>
+                                              <Col className="col-12">
+                                                <div className="mb-3 row">
+                                                  <div className="col-md-3">
+                                                    <Label className="form-label">
+                                                      Included Tests
+                                                    </Label>
+                                                  </div>
+                                                  <div className="col-md-9">
+                                                  <textarea
+                                  name="test_details"
+                                  id="test_details"
+                                  rows="10"
+                                  cols="10"
+                                  value={this.state.test_details}
+                                  className="form-control"
+                                  readOnly={true}
+                                />
+                                                  </div>
+                                                </div>
+
+                                              </Col>
+                                            </Row>
+                                          </Form>
+                                        </Formik>
+                                      </ModalBody>
+                                    </Modal>
                              
                               <Row className="mb-4">
                                 <Col xl="12">

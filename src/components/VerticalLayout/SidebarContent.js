@@ -1068,12 +1068,12 @@ class SidebarContent extends Component {
                   <ul className="sub-menu" aria-expanded="false">
                     <li>
                       <Link to={"/corporates-List"}>
-                        {this.props.t("Corporates List")}
+                        {this.props.t("Corporates List-Pending")}
                       </Link>
                     </li>
                     <li>
                       <Link to={"/accepted-corporates-List"}>
-                        {this.props.t("Accepted Corporates List")}
+                        {this.props.t("Corporates List-Accepted")}
                       </Link>
                     </li>
                     <li>
@@ -1217,11 +1217,11 @@ class SidebarContent extends Component {
                     <i className="mdi mdi-clipboard-list font-size-18" />
                     <span>{this.props.t("Payment Form")}</span>
                   </Link>
-                </li>
+                </li>                                                                                                           
                 <li>
                   <Link to="/corporate-payment-form-status">
                     <i className="mdi mdi-clipboard-list font-size-18" />
-                    <span>{this.props.t("Payment Status")}</span>
+                    <span>{this.props.t("Statements")}</span>
                   </Link>
                 </li>
 

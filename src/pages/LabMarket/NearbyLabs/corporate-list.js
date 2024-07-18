@@ -106,6 +106,18 @@ class TestsList extends Component {
           ),
         },
         {
+          dataField: "corporate_status",
+          text: "Status",
+          sort: true,
+          formatter: (cellContent, offeredTest) => (
+            <>
+              <span>
+                {offeredTest.corporate_status}
+              </span>
+            </>
+          ),
+        },
+        {
           dataField: "menu",
           isDummyField: true,
           editable: false,
@@ -319,7 +331,7 @@ class TestsList extends Component {
                               )}</div> */}
                               <div>
                                   <span className="text-danger font-size-12">
-                  <strong>e
+                  <strong>
                   Note: Only corporations that match the territory of your lab will be displayed. The lab has the option to accept working with these corporations, considering the test prices and payment terms.
                   </strong>
                   </span>
