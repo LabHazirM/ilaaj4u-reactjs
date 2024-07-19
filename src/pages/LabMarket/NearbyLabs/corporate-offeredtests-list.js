@@ -358,6 +358,14 @@ class OfferedTestsList extends Component {
     //     order: "desc", // desc or asc
     //   },
     // ];
+    const uniqueCorporateNames = Array.from(new Set(
+      offeredTests.map(corporate => corporate.corporate_name).filter(name => name)
+    ));
+  
+    // Extract unique employee codes
+    const uniqueEmployeeCodes = Array.from(new Set(
+      offeredTests.map(corporate => corporate.employee_code).filter(code => code)
+    ));
 
     return (
       <React.Fragment>
@@ -369,38 +377,38 @@ class OfferedTestsList extends Component {
             {/* Render Breadcrumbs */}
             <Breadcrumbs title="Corporate Offered Tests" breadcrumbItem="Tests List" />
             <Row className="mb-2">
-              <Col lg="6">
-              <div>
-              {offeredTests.map((corporate, index) => {
-                // Check if corporate_name is defined and not null
-                if (corporate.corporate_name !== undefined && corporate.corporate_name !== null) {
-                  // Return a div for each corporate_name
-                  return (
-                    <div key={index} style={{ textAlign: 'center' }}>
-                    <span style={{ fontWeight: 'bold' }}>Corporations Name:  </span>
-                      <span className="text-danger">{corporate.corporate_name}</span>
-                    </div>
-                  );
-                }
-              })}
-              </div>
-              </Col>
-              <Col lg="6">
-              <div>
-              {offeredTests.map((corporate, index) => {
-                // Check if employee_code is defined and not null
-                if (corporate.employee_code !== undefined && corporate.employee_code !== null) {
-                  // Return a div for each employee_code
-                  return (
-                    <div key={index} style={{ textAlign: 'left' }}>
-                    <span style={{ fontWeight: 'bold' }}>Number of Total Employees:  </span>
-                    <span style={{ color: 'red' }}>{corporate.employee_code}</span>
+            <Col lg="6">
+        <div>
+          {uniqueCorporateNames.length > 0 ? (
+            <div style={{ textAlign: 'center' }}>
+              {uniqueCorporateNames.map((name, index) => (
+                <div key={index}>
+                  <span style={{ fontWeight: 'bold' }}>Corporations Name:  </span>
+                  <span className="text-danger">{name}</span>
                 </div>
-                  );
-                }
-              })}
-              </div>
-              </Col>
+              ))}
+            </div>
+          ) : (
+            <div style={{ textAlign: 'center' }}>No Corporate Names Available</div>
+          )}
+        </div>
+      </Col>
+      <Col lg="6">
+        <div>
+          {uniqueEmployeeCodes.length > 0 ? (
+            <div style={{ textAlign: 'left' }}>
+              {uniqueEmployeeCodes.map((code, index) => (
+                <div key={index}>
+                  <span style={{ fontWeight: 'bold' }}>Number of Total Employees:  </span>
+                  <span style={{ color: 'red' }}>{code}</span>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div style={{ textAlign: 'left' }}>No Employee Codes Available</div>
+          )}
+        </div>
+      </Col>
             </Row>
             <Row>
               <Col lg="12">
