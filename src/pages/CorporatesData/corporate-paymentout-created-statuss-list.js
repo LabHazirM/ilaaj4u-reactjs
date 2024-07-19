@@ -448,15 +448,23 @@ class PaymentStatussList extends Component {
             dataField: "menu",
             isDummyField: true,
             editable: false,
-            text: "Comments",
+            text: "Comments/ Voucher",
             formatter: (cellContent, paymentCreatedStatus) => (
-                    <Link
-                      className="fas fa-comment font-size-18"
-                      to={`/corporate-activity-log/${paymentCreatedStatus.id}`}
-                      ></Link>
+              <div>
+                <Link
+                  className="fas fa-comment font-size-18"
+                  to={`/corporate-activity-log/${paymentCreatedStatus.id}`}
+                  style={{ marginRight: '10px' }} // Add space between icons
+                />
+                <Link
+                  className="fas fa-copy font-size-18"
+                  to={`/corporate-voucher/${paymentCreatedStatus.id}`}
+                />
+              </div>
             ),
             headerStyle: { backgroundColor: '#DCDCDC' },
-          },
+          }
+          
            
           
         ];

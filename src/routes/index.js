@@ -66,6 +66,7 @@ import CorporateLabsList from "../pages/CorporatesData/corporate-labs-list";
 import CorporatePaymentForm from "../pages/CorporatesData/corporate-out-payment";
 import PaymentFormStatus from "../pages/CorporatesData/corporate-paymentout-created-statuss-list";
 import corporatecommit from "../pages/CorporatesData/commit-corporate";
+import corporatevoucher from "../pages/CorporatesData/corporate-paymentout-created-statuss-detail"
 import AccountStatementsCorporate from "pages/CorporatesData/corporate-lab-appointments";
 import corporateList from "pages/FinanceAdmin/corporate-list";
 // Lab Components
@@ -1008,6 +1009,10 @@ const corporateAuthProtectedRoutes = [
   {
     path: "/corporate-activity-log/:id",
     component: corporatecommit,
+  },
+  {
+    path: "/corporate-voucher/:id",
+    component: corporatevoucher,
   },
   {
     path: "/cor-invoice-detail/:id",

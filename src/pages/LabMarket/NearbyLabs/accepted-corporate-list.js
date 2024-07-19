@@ -113,11 +113,12 @@ class OfferedTestsList extends Component {
           formatter: (cellContent, offeredTest) => (
             <>
               <span>
-                {offeredTest.shared_percentage}
+                {offeredTest.shared_percentage ? `${(offeredTest.shared_percentage * 100).toFixed(0)}%` : '0%'}
               </span>
             </>
           ),
         },
+        
         {
           dataField: "status",
           text: "Status",

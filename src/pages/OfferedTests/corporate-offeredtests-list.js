@@ -158,7 +158,7 @@ class OfferedTestsList extends Component {
         },
         {
     dataField: "date_difference",
-    text: "Duration",
+    text: "Duration/ Days",
     sort: false, // Sorting might not be straightforward with calculated fields
     formatter: (cellContent, offeredTest) => {
       const startDate = moment(offeredTest.start_date);
@@ -177,9 +177,9 @@ class OfferedTestsList extends Component {
 
       // Format the duration
       let formattedDuration = "";
-      if (days > 0) formattedDuration += `${days}d `;
-      if (hours > 0) formattedDuration += `${hours}h `;
-      formattedDuration += `${minutes}m`;
+      if (days > 0) formattedDuration += `${days}`;
+      // if (hours > 0) formattedDuration += `${hours}h `;
+      // formattedDuration += `${minutes}m`;
 
       return <span>{formattedDuration}</span>;
     },

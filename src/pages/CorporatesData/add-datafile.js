@@ -47,6 +47,7 @@ class DonorPayment extends Component {
         ? JSON.parse(localStorage.getItem("authUser")).user_id
         : "",
       excel_file: "",
+      corporate_id: "",
       isDisabled: true,
       isRequiredFilled: true,
       cemployeeData: "",
@@ -64,6 +65,7 @@ class DonorPayment extends Component {
     this.setState({
       cemployeeData: {
         excel_file: this.state.excel_file,
+        corporate_id: this.state.user_id,
       },
     });
 
@@ -165,9 +167,9 @@ class DonorPayment extends Component {
                             <li>
                               There should be a file of 4 columns, in while corporate_id, name, employee_code (13 digits National ID Card Number), type
                             </li>
-                            <li>
-                              This is your corporate_id <strong>{this.state.user_id}</strong>, Please use it everytime. 
-                            </li>
+                            {/* <li>
+                              This is your corporate_id <strong>{this.state.user_id}</strong>, Please use it for every Employee. 
+                            </li> */}
                             <li>
                               Please use <strong>Unique</strong> employee_code (13 digits National ID Card Number)
                             </li>
