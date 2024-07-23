@@ -59,7 +59,7 @@ class LabsLists extends Component {
             <>
               {/* <strong>{labsList.id}</strong> */}
               <Link
-                to={`/finance-invoice-detail/${labsList.test_appointment_id}`}
+                to={`/finance-invoice-detail/${labsList.id}`}
               >
                 {labsList.id}
               </Link>
@@ -156,7 +156,7 @@ class LabsLists extends Component {
           ),filter: textFilter(), // Add a text filter for this column
         },
         {
-          dataField: "account_no",
+          dataField: "account_id",
           text: "Account Statement",
           sort: true,
           formatter: (cellContent, labsList) => (

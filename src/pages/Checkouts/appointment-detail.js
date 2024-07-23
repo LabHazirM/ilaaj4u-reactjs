@@ -9,13 +9,13 @@ import Breadcrumbs from "../../components/Common/Breadcrumb";
 import logo from "../../assets/images/logo-dark.png";
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
-
+import moment from 'moment';
 
 import PropTypes from "prop-types";
 import { getInvoiceDetail } from "store/invoices/actions";
 import { connect } from "react-redux";
 import QRCode from "qrcode.react";
-
+import moment from 'moment';
 class InvoiceDetail extends Component {
   constructor(props) {
     super(props);

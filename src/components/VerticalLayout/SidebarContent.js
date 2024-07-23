@@ -399,9 +399,9 @@ class SidebarContent extends Component {
                 {/* </ul>
                 </li>  */}
                 <li>
-                  <Link to={"/cleared-in-payments"}>
+                  <Link to="/cleared-in-payments">
                     <i className="mdi mdi-office-building" />
-                    {this.props.t("MIF/ MOF")}
+                    <span>{this.props.t("MIF/ MOF")}</span>
                   </Link>
                 </li>
                 <li>
@@ -448,24 +448,25 @@ class SidebarContent extends Component {
                     <span>{this.props.t("Labs List")}</span>
                   </Link>
                 </li>
-                <li>
+             
                 <li>
                   <Link to="/corporate-details">
                     <i className="bx bx-home-circle" />
                     <span>{this.props.t("Corporate List")}</span>
                   </Link>
                 </li>
-                <li>
+                {/* <li>
                   <Link to="/accepted-corporates-List">
                     <i className="bx bx-home-circle" />
                     <span>{this.props.t("Corporate statuses List")}</span>
                   </Link>
-                </li>
+                </li> */}
+                <li>
                   <Link to="/donor-details">
                     <i className="bx bx-home-circle" />
                     <span>{this.props.t("Donors List")}</span>
                   </Link>
-                </li>
+                </li>          
                 <li>
                   <Link to="/donors-appointments-list">
                     <i className="bx bx-home-circle" />
@@ -1146,9 +1147,9 @@ class SidebarContent extends Component {
                 </li>
                 {/* lab Advertisements*/}
                 <li>
-                  <Link to={"/lab-advertisement"}>
+                  <Link to="/lab-advertisement">
                     <i className="mdi mdi-book-open"></i>
-                    {this.props.t("Advertisements")}
+                    <span>{this.props.t("Advertisements")}</span>
                   </Link>
                 </li>
               </ul>

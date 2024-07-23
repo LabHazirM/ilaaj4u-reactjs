@@ -81,7 +81,7 @@ class PatientInformation extends Component {
   fetchEmployeeCodes = async () => {
     try {
       const response = await axios.get(
-        `https://labhazirapi.com/api/corporate/employees-list`
+        `http://127.0.0.1:8000/api/corporate/employees-list`
       );
       const employeeData = response.data.data;
 
@@ -113,7 +113,7 @@ class PatientInformation extends Component {
       this.setState({
         employee_id_cardError:
           "This ID Card Number does not exist with any Corporation. Please enter your correct ID Card Number.",
-        corporate_id: null, // Reset corporate_id when there is no match
+        corporate_id: null,
       });
     } else {
       this.setState({
@@ -153,7 +153,7 @@ class PatientInformation extends Component {
             <Row className="g-0">
               <CarouselPage />
 
-              <Col xl={6}>
+              <Col md={6} lg={6} xl={6}>
                 <div className="auth-full-page-content p-md-5 p-4">
                   <div className="w-100">
                     <div className="d-flex flex-column h-100">

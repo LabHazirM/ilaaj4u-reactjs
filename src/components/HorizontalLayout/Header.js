@@ -68,7 +68,7 @@ class Header extends Component {
     const longitudeFromUrl = params.get('lon');
 
     if (latitudeFromUrl && longitudeFromUrl) {
-      const finalUrl = `http://localhost:3000/nearby-labs/&lat=${latitudeFromUrl}&lon=${longitudeFromUrl}`;
+      const finalUrl = `https://www.labhazir.com/nearby-labs/&lat=${latitudeFromUrl}&lon=${longitudeFromUrl}`;
       this.setState({ finalUrl });
       console.log('Final URL:', this.state.finalUrl);
     }
@@ -483,8 +483,8 @@ class Header extends Component {
                                     <i className="mdi mdi-information"></i>{" "}
                                     You have received this money in case of refund.
                                   </span><br></br>
-                                  <span className="text-danger">
-                                    Which you can use only for testing.
+                                  <span className="text-danger w-25">
+                                  This amount cannot be withdrawn and can only be used for booking tests in the future.
                                   </span>
                                 </div>
 
@@ -528,6 +528,7 @@ class Header extends Component {
                     <span className="pt-4 font-size-12">
                       {this.state.patient_name.split(" ")[0]}
                     </span>
+                    
                   </Link>{" "}
                   <Link
                     to={
@@ -619,8 +620,8 @@ class Header extends Component {
                                     <i className="mdi mdi-information"></i>{" "}
                                     You have received this money in case of refund.
                                   </span><br></br>
-                                  <span className="text-danger">
-                                    Which you can use only for testing.
+                                  <span className="text-danger w-25">
+                                  This amount cannot be withdrawn and can only be used for booking tests in the future.
                                   </span>
                                 </div>
 

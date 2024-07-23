@@ -63,6 +63,7 @@ class OfferedTestsList extends Component {
       offeredTest: "",
       type: "",
       selectedcorporate: null,
+      selectedType: null,
       modal: false,
       deleteModal: false,
       user_id: localStorage.getItem("authUser")
@@ -70,7 +71,7 @@ class OfferedTestsList extends Component {
         : "",
       offeredTestListColumns: [
         {
-          text: "Id",
+          text: "ID",
           dataField: "id",
           sort: true,
           formatter: (cellContent, offeredTest) => (
@@ -78,8 +79,9 @@ class OfferedTestsList extends Component {
         },
         {
           dataField: "name",
-          text: "Employee Name",
+          text: "Name",
           sort: true,
+          style:{textAlign: "left"},
           formatter: (cellContent, offeredTest) => (
             <>
               <span>
@@ -90,7 +92,7 @@ class OfferedTestsList extends Component {
         },
         {
           dataField: "employee_code",
-          text: "Employee ID",
+          text: "ID Card No.",
           sort: true,
           formatter: (cellContent, offeredTest) => (
             <>
@@ -121,6 +123,47 @@ class OfferedTestsList extends Component {
             defaultValue: 'All',
           }),
         },
+        {
+          dataField: "relation",
+          text: "Relation with Employee",
+          sort: true,
+          formatter: (cellContent, offeredTest) => (
+            <>
+              <span>
+                {offeredTest.relation}
+              </span>
+            </>
+          ), filter: textFilter(),
+        },
+        
+        {
+          dataField: "parent_employee_id",
+          text: "Parent Employee",
+          style:{textAlign: "left"},
+          sort: true,
+          formatter: (cellContent, offeredTest) => (
+            <>
+              <span>
+                {offeredTest.parent_employee_id || "-"}
+              </span>
+            </>
+          ),
+          filter: textFilter(),
+        },
+        {
+          dataField: "limit",
+          text: "Amount Limit",
+          style:{textAlign: "right"},
+          sort: true,
+          formatter: (cellContent, offeredTest) => (
+            <>
+              <span>
+                {offeredTest.limit}
+              </span>
+            </>
+          ), filter: textFilter(),
+        },
+        
         {
           dataField: "status",
           text: "Activity Status",
@@ -192,7 +235,6 @@ class OfferedTestsList extends Component {
     }));
   }
 
-  // Select
   handleSelectGroup = selectedGroup => {
     this.setState({ offeredTest: selectedGroup.value });
   };
@@ -202,13 +244,7 @@ class OfferedTestsList extends Component {
       test_details: arg.test_details,
     });
   };
-  // handleMouseExit = () => {
-  //   this.setState({
-  //     PatientModal: false,
-  //     isHovered: false,
 
-  //   });
-  // };
   togglePatientModal = () => {
     this.setState(prevState => ({
       PatientModal: !prevState.PatientModal,
@@ -271,31 +307,6 @@ class OfferedTestsList extends Component {
 
     this.toggle();
   };
-  // handleSaveButtonClick = () => {
-  //   // Your other logic...
-
-  //   const { offeredTest } = this.state;
-
-  //   const updateCemployee = {
-  //     id: offeredTest.id,
-  //     name: this.state.name,
-  //     employee_code: this.state.employee_code,
-  //   };
-
-  //   // Dispatch the action
-  //   this.props.onUpdateCemployee(updateCemployee);
-
-  //   // Optionally, you can handle the asynchronous behavior here
-  //   // For example, use a promise or callback function
-  //   setTimeout(() => {
-  //     this.props.onGetEmployeeCorporate(
-  //       this.state.user_id
-  //     );
-  //   }, 1000);
-
-  //   // Close the modal or perform other actions as needed
-  //   this.toggle();
-  // };
   handleDeletePathologist = () => {
     const { onDeletecedata, onGetEmployeeCorporate } = this.props;
     const { cemployeeDatas } = this.state;
@@ -328,11 +339,10 @@ class OfferedTestsList extends Component {
     ));
 
     const filteredStatements = cemployeeDatas.filter((statement) => {
-      const { selectedcorporate } = this.state;
-      const EmployeeFilter =
-        !selectedcorporate || statement.status
-        === selectedcorporate;
-      return EmployeeFilter;
+      const { selectedcorporate, selectedType } = this.state;
+      const EmployeeFilter = !selectedcorporate || statement.status === selectedcorporate;
+      const TypeFilter = !selectedType || statement.type === selectedType;
+      return EmployeeFilter && TypeFilter;
     });
     const offeredTest = this.state.offeredTest;
 
@@ -364,15 +374,10 @@ class OfferedTestsList extends Component {
             {/* Render Breadcrumbs */}
             <Breadcrumbs title="Employees Tests" breadcrumbItem="Employees List" />
             <Row>
-              {/* <div> <span className="text-danger font-size-12">
-                                    <strong> 
-                                    Note: If referral fee of any offered test is not entered by Labhazir, all such tests will not be online.
-                                    </strong>
-                                  </span>
-                                  </div> */}
               <Col lg="12">
                 <Card>
                   <CardBody>
+                    <Row>
                     <Col lg="3">
                       <div className="mb-3">
                         <label className="form-label">All Employees</label>
@@ -386,6 +391,22 @@ class OfferedTestsList extends Component {
                         </select>
                       </div>
                     </Col>
+                    <Col lg="3">
+  <div className="mb-3">
+    <label className="form-label">Type</label>
+    <select
+      value={this.state.selectedType}
+      onChange={(e) => this.setState({ selectedType: e.target.value })}
+      className="form-control"
+    >
+      <option value="">Select type</option>
+      <option value="Employee">Employee</option>
+      <option value="Family">Family and Friends</option>
+    </select>
+  </div>
+</Col>
+</Row>
+
                     <PaginationProvider
                       pagination={paginationFactory(pageOptions)}
                       keyField="id"
@@ -401,19 +422,6 @@ class OfferedTestsList extends Component {
                         >
                           {toolkitprops => (
                             <React.Fragment>
-                              {/* <Row className="mb-2">
-                                <Col sm="8" lg="8">
-                                  <div className="search-box ms-2 mb-2 d-inline-block">
-                                    <div className="position-relative">
-                                      <SearchBar
-                                        {...toolkitprops.searchProps}
-                                      />
-                                      <i className="bx bx-search-alt search-icon" />
-                                    </div>
-                                  </div>
-                                </Col>
-
-                              </Row> */}
 
                               <Row className="mb-4">
                                 <Col xl="12">

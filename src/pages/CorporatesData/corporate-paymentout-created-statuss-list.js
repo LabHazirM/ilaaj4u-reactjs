@@ -58,6 +58,7 @@ class PaymentStatussList extends Component {
             paymentCreatedStatus: "",
             modal: false,
             payment_status: "",
+            selectedcorporate: null,
             deleteModal: false,
             user_id: localStorage.getItem("authUser")
                 ? JSON.parse(localStorage.getItem("authUser")).user_id
@@ -250,6 +251,8 @@ class PaymentStatussList extends Component {
       this.toggle();
     };
     render() {
+     
+
         const columns= [
           {
             text: "Payment Form ID",
@@ -419,21 +422,7 @@ class PaymentStatussList extends Component {
                 >
                   Update
                 </button>
-                {/* <button
-                  type="submit"
-                  className="btn btn-danger save-user"
-                  onClick={() => this.onClickDelete(paymentCreatedStatus)}
-    
-                >
-                  Delete
-                </button> */}
-                {/* <Link className="text-danger" to="#">
-                  <i
-                    className="mdi mdi-delete font-size-18"
-                    id="deletetooltip"
-                    onClick={() => this.onClickDelete(paymentCreatedStatus)}
-                  ></i>
-                </Link> */}
+               
               </div>
               ) : (
                 "---"
@@ -472,8 +461,21 @@ class PaymentStatussList extends Component {
         const isDonation = this.state.paymentCreatedStatus.payment_for === "Donor";
 
         console.log("what payment type", isDonation)
-
         const { paymentStatuss } = this.props;
+        const uniqueCorporateNames = [...new Set(paymentStatuss.map((statement) => statement.lab_name))];
+    
+        // Generate labOptions for the <select> dropdown
+        const corporateEmployeeOptions = uniqueCorporateNames.map((EmployeeStatus, index) => (
+          <option key={index} value={EmployeeStatus}>
+            {EmployeeStatus}
+          </option>
+        ));
+    
+        const filteredStatements = paymentStatuss.filter((statement) => {
+          const { selectedcorporate } = this.state;
+          const EmployeeFilter = !selectedcorporate || statement.lab_name === selectedcorporate;
+          return EmployeeFilter;
+        });
 
         const { isEdit, deleteModal } = this.state;
 
@@ -501,15 +503,7 @@ class PaymentStatussList extends Component {
 
         const { bankAccounts } = this.props;
         const bankaccountList = [];
-        // for (let i = 0; i < bankAccounts.length; i++) {
-        //     let flag = 0;
-        //     if (!flag) {
-        //         bankaccountList.push({
-        //             label: `${bankAccounts[i].bank_name} - ${bankAccounts[i].account_no}`,
-        //             value: `${bankAccounts[i].id}`,
-        //         });
-        //     }
-        // }
+       
         for (let i = 0; i < bankAccounts.length; i++) {
             if (isDonation) {
               if (bankAccounts[i].account_type === "DONATION") {
@@ -550,6 +544,21 @@ class PaymentStatussList extends Component {
                             <Col lg="12">
                                 <Card>
                                     <CardBody>
+                                    <Row>
+                    <Col lg="3">
+                      <div className="mb-3">
+                        <label className="form-label">Filter by Lab Name:</label>
+                        <select
+                          value={this.state.selectedcorporate}
+                          onChange={(e) => this.setState({ selectedcorporate: e.target.value })}
+                          className="form-control"
+                        >
+                          <option value="">Select Lab</option>
+                          {corporateEmployeeOptions}
+                        </select>
+                      </div>
+                    </Col>
+</Row>
                                         <PaginationProvider
                                             pagination={paginationFactory(pageOptions)}
                                             keyField="id"
@@ -567,24 +576,7 @@ class PaymentStatussList extends Component {
                                                         <React.Fragment>
                                                             <Row className="mb-2">
                                                                 <Col sm="4">
-                                                                    {/* <div className="ms-2 mb-4">
-                                                                        <div>
-                                                                            <Label for="main_lab_appointments" className="form-label">
-                                                                                <strong>Payment Statuses</strong>
-                                                                            </Label>
-                                                                            <select
-                                                                                className="form-control select2"
-                                                                                title="main_lab_appointments"
-                                                                                name="main_lab_appointments"
-                                                                                onChange={this.handleSelectChange}
-                                                                            >
-                                                                                <option value="Created">Created</option>
-                                                                                <option value="Pending Clearence">Pending Clearence</option>
-                                                                                <option value="Cleared">Cleared</option>
-                                                                                <option value="Bounced">Bounced</option>
-                                                                            </select>
-                                                                        </div>
-                                                                    </div> */}
+                                                                    
                                                                 </Col>
 
                                                             </Row>
@@ -602,6 +594,7 @@ class PaymentStatussList extends Component {
                                                                             responsive
                                                                             ref={this.node}
                                                                             filter={filterFactory()}
+                                                                            data={filteredStatements}
                                                                         />
     <Modal
                                       isOpen={this.state.modal}
@@ -675,72 +668,7 @@ class PaymentStatussList extends Component {
                                           }}
                                           validationSchema={Yup.object().shape({
                                             hiddentEditFlag: Yup.boolean(),
-                                            // name: Yup.string()
-                                            //   .trim()
-                                            //   .matches(
-                                            //     /^[a-zA-Z][a-zA-Z ]+$/,
-                                            //     "Please enter only alphabets and spaces"
-                                            //   )
-                                            //   .required("Please enter name"),
-                                            // comments: Yup.string()
-                                            //   .required("Please enter comments")
-                                            //   .comments(
-                                            //     "Please enter valid comments"
-                                            //   ),
-                                            // amount: Yup.string()
-                                            //   .required("Please enter amount")
-                                            //   .matches(
-                                            //     /^((\+92)|(0092))-{0,1}\d{3}-{0,1}\d{7}$|^\d{11}$|^\d{4}-\d{7}$/,
-                                            //     "Please enter a valid Pakistani amount number e.g. 03123456789"
-                                            //   ),
-                                            // cheque_no: Yup.string()
-                                            //   .required("Please enter amount")
-                                            //   .matches(
-                                            //     /^((\+92)|(0092))-{0,1}\d{3}-{0,1}\d{7}$|^\d{10}$|^\d{3}-\d{7}|^\d{11}$|^\d{3}-\d{8}$/,
-                                            //     "Please enter a valid Pakistani cheque_no number e.g. 0512345678"
-                                            //   ),
-                                            // qualification: Yup.string()
-                                            //   .trim()
-                                            //   .required(
-                                            //     "Please enter your qualification"
-                                            //   ),
-                                            // speciality: Yup.string()
-                                            //   .trim()
-                                            //   .required(
-                                            //     "Please enter your speciality"
-                                            //   ),
-                                            // pmdc_reg_no: Yup.string()
-                                            //   .trim()
-                                            //   .required(
-                                            //     "Please enter your pmdc reg no."
-                                            //   ),
-                                            // // designation: Yup.string()
-                                            // //   .trim()
-                                            // //   .required(
-                                            // //     "Please enter your designation"
-                                            // //   ),
-                                            // payment_for:
-                                            //   Yup.string()
-                                            //     .trim()
-                                            //     .required(
-                                            //       "Please select one option from dropdown"
-                                            //     ),
-                                            // is_available_on_whatsapp:
-                                            //   Yup.string()
-                                            //     .trim()
-                                            //     .required(
-                                            //       "Please select one option from dropdown"
-                                            //     ),
-                                            // cheque_image: Yup.string().when(
-                                            //   "hiddenEditFlag",
-                                            //   {
-                                            //     is: hiddenEditFlag =>
-                                            //       hiddenEditFlag == false, //just an e.g. you can return a function
-                                            //     then: Yup.string().required(
-                                            //       "Please upload cheque_image"
-                                            //     ),
-                                            //   }
-                                            // ),
+                                           
                                           })}
                                           onSubmit={values => {
                                             if (isEdit) {
@@ -841,91 +769,6 @@ class PaymentStatussList extends Component {
                                                   />
 
 
-                                                  {/* <div className="mb-3">
-                                                    <Label className="form-label">
-                                                      Payment To
-                                                      <span className="text-danger">
-                                                        *
-                                                      </span>
-                                                    </Label>
-                                                    <Field
-                                                      name="payment_for"
-                                                      as="select"
-                                                      // className="form-control"
-                                                      multiple={false}
-                                                      readOnly={true}
-                                                      className={
-                                                        "form-control" +
-                                                        (errors.payment_for &&
-                                                          touched.payment_for
-                                                          ? " is-invalid"
-                                                          : "")
-                                                      }
-                                                      value={
-                                                        this.state.paymentCreatedStatus
-                                                          .payment_for
-                                                      }
-                                                      onChange={e => {
-                                                        this.setState({
-                                                          paymentCreatedStatus: {
-                                                            id: paymentCreatedStatus.id,
-                                                            lab_id:
-                                                              paymentCreatedStatus.lab_id,
-                                                            invoice_id:
-                                                              paymentCreatedStatus.invoice_id,
-                                                            payment_for:
-                                                              e.target
-                                                                .value,
-
-                                                            payment_method:
-                                                              paymentCreatedStatus.payment_method,
-                                                            amount:
-                                                              paymentCreatedStatus.amount,
-                                                            payment_at:
-                                                              paymentCreatedStatus.payment_at,
-                                                            cheque_no: paymentCreatedStatus.cheque_no,
-                                                            cheque_image:
-                                                              paymentCreatedStatus.cheque_image,
-                                                            is_cleared:
-                                                              paymentCreatedStatus.is_cleared,
-                                                            cleared_at: paymentCreatedStatus.cleared_at,
-                                                            payment_status: paymentCreatedStatus.payment_status,
-                                                            comments:
-                                                              paymentCreatedStatus.comments,
-
-                                                          },
-                                                        });
-                                                      }}
-                                                    >
-                                                      {/* <option value="">
-                                                        ----- Please select
-                                                        Type-----
-                                                      </option>
-                                                      <option value="Lab">
-                                                        Lab
-                                                      </option>
-                                                      <option value="B2BClient">
-                                                        B2BClient
-                                                      </option> */}
-                                                    {/* </Field>
-
-                                                    <ErrorMessage
-                                                      name="payment_for"
-                                                      component="div"
-                                                      className="invalid-feedback"
-                                                    /> */}
-
-                                                    {/* <span className="text-primary font-size-12 text-bold">
-                                                      <strong>
-                                                        Note: Your contact
-                                                        information will be
-                                                        shared publicly for
-                                                        consultation of the
-                                                        patients with you if you
-                                                        select YES.
-                                                      </strong>
-                                                    </span> */}
-                                                  {/* </div>  */}
 
                                                   <div className="mb-3">
                         <Label for="type" className="form-label">
@@ -1126,12 +969,7 @@ class PaymentStatussList extends Component {
                                                         .toISOString()
                                                         .slice(0, -8)}
                                                       className="form-control"
-                                                    // onChange={e =>
-                                                    //   this.setState({
-                                                    //     payment_at:
-                                                    //       e.target.value,
-                                                    //   })
-                                                    // }
+                                                   
                                                     />
                                                   </div>
 
@@ -1142,13 +980,7 @@ class PaymentStatussList extends Component {
                                                     <Field
                                                       name="cheque_no"
                                                       type="text"
-                                                      // className={
-                                                      //   "form-control" +
-                                                      //   (errors.cheque_no &&
-                                                      //   touched.cheque_no
-                                                      //     ? " is-invalid"
-                                                      //     : "")
-                                                      // }
+                                                    
                                                       className="form-control"
                                                       value={
                                                         this.state.paymentCreatedStatus

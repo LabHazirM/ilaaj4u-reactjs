@@ -79,11 +79,11 @@ class DonorInformation extends Component {
           <MetaTags>
             <title>Donor Information | Lab Hazir</title>
          </MetaTags>
-          <Container fluid className="p-0">
+         <Container fluid className="p-0">
             <Row className="g-0">
               <CarouselPage />
 
-              <Col xl={6}>
+              <Col md={6} lg={6} xl={6}>
                 <div className="auth-full-page-content p-md-5 p-4">
                   <div className="w-100">
                     <div className="d-flex flex-column h-100">
