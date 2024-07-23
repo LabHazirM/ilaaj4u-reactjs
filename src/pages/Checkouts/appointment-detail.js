@@ -15,7 +15,6 @@ import PropTypes from "prop-types";
 import { getInvoiceDetail } from "store/invoices/actions";
 import { connect } from "react-redux";
 import QRCode from "qrcode.react";
-import moment from 'moment';
 class InvoiceDetail extends Component {
   constructor(props) {
     super(props);
