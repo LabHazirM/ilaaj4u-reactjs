@@ -693,7 +693,7 @@ class Checkout extends Component {
     console.log('Payment Data:', paymentData); // Log the payment data
 
     // try {
-    //     const response = await axios.post('http://127.0.0.1:8000/api/patient/hblcartpayments', paymentData);
+    //     const response = await axios.post('https://labhazirapi.com/api/patient/hblcartpayments', paymentData);
     //     console.log('Response:', response); // Log the response for debugging
 
     //     if (response.data.message === 'Success') {
@@ -707,7 +707,7 @@ class Checkout extends Component {
     //     console.error('Error making payment:', error);
     // }
     try {
-      const response = await axios.post('http://127.0.0.1:8000/api/patient/hblcartpayments', paymentData);
+      const response = await axios.post('https://labhazirapi.com/api/patient/hblcartpayments', paymentData);
       console.log('Response:', response); // Log the response for debugging
 
       if (response.data.message === 'Success') {

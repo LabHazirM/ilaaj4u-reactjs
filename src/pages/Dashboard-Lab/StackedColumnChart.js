@@ -55,7 +55,7 @@ class StackedColumnChart extends Component {
   }
 
   fetchData = () => {
-    fetch('http://127.0.0.1:8000/api/patient/ForChartCalculation', {
+    fetch('https://labhazirapi.com/api/patient/ForChartCalculation', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
