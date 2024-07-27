@@ -188,12 +188,38 @@ class PaymentStatussList extends Component {
 
         this.toggle();
     };
+    // handleSubmitClick = (e, arg) => {
+    //   const paymentCreatedStatus = arg;
+    //   this.setState({
+    //     paymentCreatedStatus: {
+    //       id: paymentCreatedStatus.id,
+    //       // cheque_image: process.env.REACT_APP_BACKENDURL + paymentCreatedStatus.cheque_image,
+    //       // payment_for: paymentCreatedStatus.payment_for,
+    //       // test_appointment_id: paymentCreatedStatus.test_appointment_id,
+    //       // tax: paymentCreatedStatus.tax,
+    //       // lab_id: paymentCreatedStatus.lab_id,
+    //       // amount: paymentCreatedStatus.amount,
+    //       // payment_at: paymentCreatedStatus.payment_at,
+    //       // payment_method: paymentCreatedStatus.payment_method,
+    //       // cheque_no: paymentCreatedStatus.cheque_no,
+    //       payment_status: "Paid",
+    //       // comments: paymentCreatedStatus.comments,
+    //     },
+    //     // cheque_image: "",
+    //   });
+  
+    // };
     handleSubmitClick = (e, arg) => {
+      e.preventDefault(); // Prevent default form behavior
+  
+      const { onUpdatePaymentOutCCreatedStatuss, onGetCCreatedOutStatuss } = this.props;
       const paymentCreatedStatus = arg;
-      this.setState({
-        paymentCreatedStatus: {
+  
+      // Create the payload for the API call
+      const payload = {
           id: paymentCreatedStatus.id,
-          cheque_image: process.env.REACT_APP_BACKENDURL + paymentCreatedStatus.cheque_image,
+          payment_status: "Paid",
+          cheque_image: "", // Make sure this is the correct URL
           payment_for: paymentCreatedStatus.payment_for,
           test_appointment_id: paymentCreatedStatus.test_appointment_id,
           tax: paymentCreatedStatus.tax,
@@ -202,15 +228,43 @@ class PaymentStatussList extends Component {
           payment_at: paymentCreatedStatus.payment_at,
           payment_method: paymentCreatedStatus.payment_method,
           cheque_no: paymentCreatedStatus.cheque_no,
-          payment_status: "Submit",
           comments: paymentCreatedStatus.comments,
-        },
-        cheque_image: "",
-        isEdit: true,
-      });
+      };
   
-      this.toggle();
-    };
+      // Dispatch the action with the updated status
+      onUpdatePaymentOutCCreatedStatuss(payload);
+  
+      // Refresh the payment status list
+      setTimeout(() => {
+          onGetCCreatedOutStatuss(this.state.user_id);
+      }, 1000);
+  };
+  
+    // handleSubmitClick = (e, arg) => {
+    //   const paymentCreatedStatus = arg;
+    //   // Dispatch an action to update the status in Redux
+    //   const { onUpdatePaymentOutCCreatedStatuss, onGetCCreatedOutStatuss} = this.props;
+      
+    //   onUpdatePaymentOutCCreatedStatuss({ 
+    //     id: paymentCreatedStatus.id, 
+    //     payment_status: "Paid",
+    //     cheque_image: process.env.REACT_APP_BACKENDURL + paymentCreatedStatus.cheque_image,
+    //     payment_for: paymentCreatedStatus.payment_for,
+    //     test_appointment_id: paymentCreatedStatus.test_appointment_id,
+    //     tax: paymentCreatedStatus.tax,
+    //     lab_id: paymentCreatedStatus.lab_id,
+    //     amount: paymentCreatedStatus.amount,
+    //     payment_at: paymentCreatedStatus.payment_at,
+    //     payment_method: paymentCreatedStatus.payment_method,
+    //     cheque_no: paymentCreatedStatus.cheque_no,
+    //     comments: paymentCreatedStatus.comments,
+
+    //   });
+  
+    //   setTimeout(() => {
+    //     onGetCCreatedOutStatuss(this.state.user_id);
+    //   }, 1000);
+    // };
     handleSelectChange = (event) => {
         const selectedValue = event.target.value;
         // Perform navigation based on the selected value
@@ -404,24 +458,15 @@ class PaymentStatussList extends Component {
             text: "Action",
             formatter: (cellContent, paymentCreatedStatus) => (
               <>
-              {paymentCreatedStatus.payment_status !== "Submit" ? ( 
+              {paymentCreatedStatus.payment_status == "Submit" ? ( 
                 <div className="d-flex gap-1">
-                <button
-                  type="submit"
-                  className="btn btn-success save-user"
-                  onClick={e => this.handleCreateClick(e, paymentCreatedStatus)}
-    
-                >
-                  Edit
-                </button>
-    
                 <button
                   type="submit"
                   className="btn btn-success save-user"
                   onClick={e => this.handleSubmitClick(e, paymentCreatedStatus)}
     
                 >
-                  Update
+                  Received
                 </button>
                
               </div>
@@ -546,7 +591,7 @@ class PaymentStatussList extends Component {
                                 <Card>
                                     <CardBody>
                                     <Row>
-                    <Col lg="3">
+                    {/* <Col lg="3">
                       <div className="mb-3">
                         <label className="form-label">Filter by Lab Name:</label>
                         <select
@@ -558,7 +603,7 @@ class PaymentStatussList extends Component {
                           {corporateEmployeeOptions}
                         </select>
                       </div>
-                    </Col>
+                    </Col> */}
 </Row>
                                         <PaginationProvider
                                             pagination={paginationFactory(pageOptions)}

@@ -156,8 +156,17 @@ class OfferedTestsList extends Component {
                 {offeredTest.Status}
               </span>
             </>
-          ), filter: textFilter(),
+          ), filter: selectFilter({
+            options: {
+              '': 'All',
+              'Accept': 'Accept',
+              'Renew': 'Renew',
+              'Complete': 'Complete',
+            },
+            defaultValue: 'All',
+          }),
         },
+
         // {
         //   dataField: "menu",
         //   isDummyField: true,

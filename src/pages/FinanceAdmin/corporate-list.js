@@ -57,15 +57,25 @@ class LabsLists extends Component {
           sort: true,
           formatter: (cellContent, labsList) => (
             <>
-              {/* <strong>{labsList.id}</strong> */}
-              <Link
-                to={`/finance-invoice-detail/${labsList.id}`}
-              >
-                {labsList.id}
-              </Link>
+              <span  className="float-start">{labsList.id}</span >
             </>
           ),filter: textFilter(), // Add a text filter for this column
         },
+        // {
+        //   dataField: "id",
+        //   text: "Corporate ID",
+        //   sort: true,
+        //   formatter: (cellContent, labsList) => (
+        //     <>
+        //       {/* <strong>{labsList.id}</strong> */}
+        //       <Link
+        //         to={`/finance-invoice-detail/${labsList.id}`}
+        //       >
+        //         {labsList.id}
+        //       </Link>
+        //     </>
+        //   ),filter: textFilter(), // Add a text filter for this column
+        // },
         {
           dataField: "city",
           text: "City",

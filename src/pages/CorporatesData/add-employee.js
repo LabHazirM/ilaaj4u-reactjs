@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import Select from "react-select";
 import MetaTags from "react-meta-tags";
 import PropTypes from "prop-types";
-import { any } from "prop-types";
 import { Field, Formik } from "formik";
 import { connect } from "react-redux";
 import { Link, withRouter } from "react-router-dom";
@@ -22,7 +21,7 @@ import {
 import classnames from "classnames";
 import { isEmpty, map, size } from "lodash";
 
-//Import Breadcrumb
+// Import Breadcrumb
 import Breadcrumbs from "../../components/Common/Breadcrumb";
 
 import {
@@ -43,13 +42,15 @@ class DonorPayment extends Component {
       employee_code: "",
       type: "Employee",
       parent_employee_id: "",
-      relation: "", // Added state for relation
-      limit :"",
+      relation: "",
+      limit: "",
+      date: "",
       isDisabled: true,
       isRequiredFilled: true,
       cemployeeData: "",
       checkedoutData: "",
       selectedGroup: null,
+      errors: {},
     };
     this.handleSelectGroup = this.handleSelectGroup.bind(this);
   }
@@ -62,23 +63,42 @@ class DonorPayment extends Component {
   }
 
   handleSelectGroup = (selectedGroup) => {
-    this.setState({ 
+    this.setState({
       parent_employee_id: selectedGroup.label, // Store the name instead of the ID
+      errors: { ...this.state.errors, parent_employee_id: "" }, // Clear error
     });
   };
 
   handleProceedClick = () => {
+    const errors = {};
+
+    if (!this.state.name) errors.name = "Name is required";
+    if (!this.state.employee_code) errors.employee_code = "ID Card No is required";
+    if (!this.state.limit) errors.limit = "Amount Limit is required";
+    if (!this.state.date) errors.date = "Limit Expiry Date is required";
+
+    if (this.state.type === "Family") {
+      if (!this.state.parent_employee_id) errors.parent_employee_id = "Parent Employee Name is required";
+      if (!this.state.relation) errors.relation = "Relation with Employee is required";
+    }
+
+    if (Object.keys(errors).length > 0) {
+      this.setState({ errors });
+      return;
+    }
+
     const relation = this.state.type === "Family" ? this.state.relation : "Himself";
-  
+
     this.setState(
       {
         cemployeeData: {
           name: this.state.name,
           employee_code: this.state.employee_code,
           type: this.state.type,
-          parent_employee_id: this.state.parent_employee_id, // Now contains the name
+          parent_employee_id: this.state.parent_employee_id,
           relation,
           limit: this.state.limit,
+          date: this.state.date,
         },
       },
       () => {
@@ -86,7 +106,6 @@ class DonorPayment extends Component {
         setTimeout(() => {
           onAddcemployeeData(this.state.cemployeeData, this.state.user_id);
         }, 1000);
-        // Success message logic
         setTimeout(() => {
           if (this.state.cemployeeData) {
             this.setState({
@@ -94,7 +113,6 @@ class DonorPayment extends Component {
             });
           }
         }, 1000);
-        // Reset state
         setTimeout(() => {
           this.setState({
             complaintSuccess: "",
@@ -104,9 +122,9 @@ class DonorPayment extends Component {
             parent_employee_id: "",
             relation: "",
             limit: "",
+            date: "",
           });
         }, 5000);
-        // Redirect logic
         setTimeout(() => {
           if (this.state.cemployeeData) {
             this.props.history.push("/employee-list");
@@ -116,7 +134,6 @@ class DonorPayment extends Component {
     );
   };
 
-  // eslint-disable-next-line no-unused-vars
   componentDidUpdate(prevProps, prevState, snapshot) {
     const { cemployeeDatas } = this.props;
     if (
@@ -129,21 +146,18 @@ class DonorPayment extends Component {
   }
 
   render() {
-    const cemployeeData = this.state.cemployeeData;
-
-    const { cemployeeDatas } = this.props;
+    const { cemployeeDatas, errors } = this.state;
 
     const employeeList = [];
     for (let i = 0; i < cemployeeDatas.length; i++) {
-      if (cemployeeDatas[i].status === "Active" && cemployeeDatas[i].type ==="Employee") {
+      if (cemployeeDatas[i].status === "Active" && cemployeeDatas[i].type === "Employee") {
         employeeList.push({
-          label: cemployeeDatas[i].name,
+          label: `${cemployeeDatas[i].id} - ${cemployeeDatas[i].name}`,
           value: cemployeeDatas[i].id,
         });
       }
     }
 
-    // Relation options
     const relationOptions = [
       { label: "Mother", value: "Mother" },
       { label: "Father", value: "Father" },
@@ -161,7 +175,6 @@ class DonorPayment extends Component {
             <title>Employee | Lab Hazir - Dashboard</title>
           </MetaTags>
           <Container fluid>
-            {/* Render Breadcrumb */}
             <Breadcrumbs title="Add" breadcrumbItem="Employee Data" />
             <Col
               sm="2"
@@ -169,13 +182,9 @@ class DonorPayment extends Component {
               style={{ marginLeft: "80%", marginBottom: "10px" }}
             >
               <div>
-                <Link
-                  to={"/employee-file"}
-                  className="w-70 font-10 btn btn-secondary"
-                >
-                  {" "}
+                <Link to={"/employee-file"} className="w-70 font-10 btn btn-secondary">
                   <i className="mdi mdi-upload me-1" />
-                  Upload File{" "}
+                  Upload File
                 </Link>
               </div>
             </Col>
@@ -205,11 +214,7 @@ class DonorPayment extends Component {
                             Fill the Employee Information
                           </p>
                           <FormGroup className="mb-4" row>
-                            <Label
-                              htmlFor="type"
-                              md="2"
-                              className="col-form-label"
-                            >
+                            <Label htmlFor="type" md="2" className="col-form-label">
                               Type
                             </Label>
                             <Col md="10">
@@ -232,47 +237,41 @@ class DonorPayment extends Component {
                               </Field>
                             </Col>
                           </FormGroup>
-                          {this.state.type === "Family" ? (
+                          {this.state.type === "Family" && (
                             <>
                               <FormGroup className="mb-3" row>
-                                <Label
-                                  htmlFor="name"
-                                  md="2"
-                                  className="col-form-label"
-                                >
+                                <Label htmlFor="parent_employee_id" md="2" className="col-form-label">
                                   Parent Employee Name
                                 </Label>
                                 <Col md="10">
-                                <Select
-  name="parent_employee_id"
-  component="Select"
-  onChange={this.handleSelectGroup}
-  className={
-    "defautSelectParent" +
-    (!this.state.parent_employee_id ? " is-invalid" : "")
-  }
-  styles={{
-    control: (base, state) => ({
-      ...base,
-      borderColor: !this.state.parent_employee_id
-        ? "#f46a6a"
-        : "#ced4da",
-    }),
-  }}
-  options={employeeList}
-  placeholder="Select Employee..."
-/>
-                                  <div className="invalid-feedback">
-                                    Please select Parent Employee.
-                                  </div>
+                                  <Select
+                                    name="parent_employee_id"
+                                    component="Select"
+                                    onChange={this.handleSelectGroup}
+                                    className={
+                                      "defautSelectParent" +
+                                      (!this.state.parent_employee_id ? " is-invalid" : "")
+                                    }
+                                    styles={{
+                                      control: (base, state) => ({
+                                        ...base,
+                                        borderColor: !this.state.parent_employee_id
+                                          ? "#f46a6a"
+                                          : "#ced4da",
+                                      }),
+                                    }}
+                                    options={employeeList}
+                                    placeholder="Select Employee..."
+                                  />
+                                  {errors.parent_employee_id && (
+                                    <div className="invalid-feedback">
+                                      {errors.parent_employee_id}
+                                    </div>
+                                  )}
                                 </Col>
                               </FormGroup>
                               <FormGroup className="mb-4" row>
-                                <Label
-                                  htmlFor="relation"
-                                  md="2"
-                                  className="col-form-label"
-                                >
+                                <Label htmlFor="relation" md="2" className="col-form-label">
                                   Relation with Employee
                                 </Label>
                                 <Col md="10">
@@ -287,71 +286,79 @@ class DonorPayment extends Component {
                                     options={relationOptions}
                                     placeholder="Select Relation..."
                                   />
+                                  {errors.relation && (
+                                    <div className="invalid-feedback">
+                                      {errors.relation}
+                                    </div>
+                                  )}
                                 </Col>
                               </FormGroup>
                             </>
-                          ) : null}
+                          )}
                           <FormGroup className="mb-4" row>
-                            <Label
-                              htmlFor="name"
-                              md="2"
-                              className="col-form-label"
-                            >
+                            <Label htmlFor="name" md="2" className="col-form-label">
                               Name
-                              <span
-                                style={{ color: "#f46a6a" }}
-                                className="font-size-18"
-                              >
+                              <span style={{ color: "#f46a6a" }} className="font-size-18">
                                 *
                               </span>
                             </Label>
                             <Col md="10">
                               <Input
                                 type="text"
-                                className="form-control"
+                                className={`form-control ${errors.name ? "is-invalid" : ""}`}
                                 name="name"
                                 placeholder="Enter Name"
                                 onChange={(e) =>
                                   this.setState({
                                     name: e.target.value,
+                                    errors: { ...this.state.errors, name: "" }, // Clear error
                                   })
                                 }
                               />
+                              {errors.name && (
+                                <div className="invalid-feedback">{errors.name}</div>
+                              )}
                             </Col>
                           </FormGroup>
                           <FormGroup className="mb-4" row>
-  <Label htmlFor="employee_code" md="2" className="col-form-label">
-    ID Card No
-    <span style={{ color: "#f46a6a" }} className="font-size-18">
-      *
-    </span>
-  </Label>
-  <Col md="10">
-    <Input
-      id="employee_code"
-      name="employee_code"
-      type="text"
-      placeholder="Please Enter ID."
-      onChange={(e) => {
-        const value = e.target.value;
-        if (value.length <= 13 && /^[0-9]*$/.test(value)) {
-          // Allow only digits and ensure length is not more than 13
-          this.setState({
-            employee_code: value,
-          });
-        }
-      }}
-      value={this.state.employee_code}
-    />
-  </Col>
-</FormGroup>
+                            <Label htmlFor="employee_code" md="2" className="col-form-label">
+                              ID Card No
+                              <span style={{ color: "#f46a6a" }} className="font-size-18">
+                                *
+                              </span>
+                            </Label>
+                            <Col md="10">
+                              <Input
+                                id="employee_code"
+                                name="employee_code"
+                                type="text"
+                                className={`form-control ${errors.employee_code ? "is-invalid" : ""}`}
+                                placeholder="Please Enter ID."
+                                onChange={(e) => {
+                                  const value = e.target.value;
+                                  if (value.length <= 13 && /^[0-9]*$/.test(value)) {
+                                    this.setState({
+                                      employee_code: value,
+                                      errors: { ...this.state.errors, employee_code: "" }, // Clear error
+                                    });
+                                  }
+                                }}
+                                value={this.state.employee_code}
+                              />
+                              {errors.employee_code && (
+                                <div className="invalid-feedback">
+                                  {errors.employee_code}
+                                </div>
+                              )}
+                            </Col>
+                          </FormGroup>
                           <FormGroup className="mb-4" row>
                             <Label
                               htmlFor="limit"
                               md="2"
                               className="col-form-label"
                             >
-                              Amount Limit
+                              Quota Amount
                               <span
                                 style={{ color: "#f46a6a" }}
                                 className="font-size-18"
@@ -364,14 +371,55 @@ class DonorPayment extends Component {
                                 id="limit"
                                 name="limit"
                                 type="text"
+                                className={`form-control ${errors.limit ? "is-invalid" : ""}`}
                                 placeholder="Please Enter limit."
-                                onChange={(e) =>
-                                  this.setState({
-                                    limit: e.target.value,
-                                  })
-                                }
+                                onChange={(e) => {
+                                  const value = e.target.value;
+                                  if (value.length <= 13 && /^[0-9]*$/.test(value)) {
+                                    this.setState({
+                                      limit: value,
+                                      errors: { ...this.state.errors, limit: "" }, // Clear error
+                                    });
+                                  }
+                                }}
                                 value={this.state.limit}
                               />
+                              {errors.limit && (
+                                <div className="invalid-feedback">{errors.limit}</div>
+                              )}
+                            </Col>
+                          </FormGroup>
+                          <FormGroup className="mb-4" row>
+                            <Label htmlFor="date" md="2" className="col-form-label">
+                              Limit Expiry Date
+                              <span style={{ color: "#f46a6a" }} className="font-size-18">
+                                *
+                              </span>
+                            </Label>
+                            <Col md="10">
+                              <Input
+                                id="date"
+                                name="date"
+                                min={new Date(
+                                  new Date().toString().split("GMT")[0] +
+                                  " UTC"
+                                )
+                                  .toISOString()
+                                  .slice(0, -8)}
+                                type="datetime-local"
+                                className={`form-control ${errors.date ? "is-invalid" : ""}`}
+                                placeholder="Please Enter Date."
+                                onChange={(e) =>
+                                  this.setState({
+                                    date: e.target.value,
+                                    errors: { ...this.state.errors, date: "" }, // Clear error
+                                  })
+                                }
+                                value={this.state.date}
+                              />
+                              {errors.date && (
+                                <div className="invalid-feedback">{errors.date}</div>
+                              )}
                             </Col>
                           </FormGroup>
                         </div>
@@ -384,10 +432,9 @@ class DonorPayment extends Component {
                           <button
                             component={Link}
                             onClick={this.handleProceedClick}
-                            // to="/donor-appointment"
                             className="btn btn-success mb-4"
                           >
-                            <i className="mdi mdi-truck-fast me-1" /> Create{" "}
+                            <i className="mdi mdi-truck-fast me-1" /> Create
                           </button>
                         </div>
                       </Col>
@@ -406,7 +453,7 @@ class DonorPayment extends Component {
 
 DonorPayment.propTypes = {
   match: PropTypes.object,
-  history: any,
+  history: PropTypes.any,
   cemployeeDatas: PropTypes.array,
   onAddcemployeeData: PropTypes.func,
   cemployeeData: PropTypes.array,

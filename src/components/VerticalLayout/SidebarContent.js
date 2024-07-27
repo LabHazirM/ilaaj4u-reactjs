@@ -405,6 +405,12 @@ class SidebarContent extends Component {
                   </Link>
                 </li>
                 <li>
+                  <Link to="/corporate-payment-confirmation">
+                    <i className="mdi mdi-cash font-size-18" />
+                    <span>{this.props.t("Corporate Payment Confirmation")}</span>
+                  </Link>
+                </li>
+                <li>
                   <Link to="/create-bank">
                     <i className="bx bx-home-circle" />
                     <span>{this.props.t("Bank")}</span>
@@ -1082,7 +1088,12 @@ class SidebarContent extends Component {
                         {this.props.t("Statements")}
                       </Link>
                     </li>
-
+                    <li>
+                      <Link to="/payment-confirmation">
+                      <i className="mdi mdi-cash font-size-18" />
+                      <span>{this.props.t("Corporate Payment Confirmation")}</span>
+                      </Link>
+                    </li>
                   </ul>
                 </li>
                 {/* <li>

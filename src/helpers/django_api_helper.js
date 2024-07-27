@@ -1905,6 +1905,7 @@ export const getDonorAccountStatements = id =>
     formData.append("employee_code", cemployeeData.employee_code);
     formData.append("type", cemployeeData.type);
     formData.append("limit", cemployeeData.limit);
+    formData.append("date", cemployeeData.date);
     formData.append("relation", cemployeeData.relation);
     formData.append("parent_employee_id", cemployeeData.parent_employee_id);
 
@@ -1936,6 +1937,8 @@ export const getDonorAccountStatements = id =>
     formData.append("name", cemployeeData.name);
     formData.append("employee_code", cemployeeData.employee_code);
     formData.append("status", cemployeeData.status);
+    formData.append("limit", cemployeeData.limit);
+    formData.append("date", cemployeeData.date);
   
     return axios.put(
       `${url.UPDATE_CEMPLOYEE}/${cemployeeData.id}`,

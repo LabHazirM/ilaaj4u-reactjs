@@ -130,7 +130,7 @@ class OfferedTestsList extends Component {
           formatter: (cellContent, offeredTest) => (
             <>
               <span>
-                {offeredTest.relation}
+                {offeredTest.relation || "--"}
               </span>
             </>
           ), filter: textFilter(),
@@ -144,7 +144,7 @@ class OfferedTestsList extends Component {
           formatter: (cellContent, offeredTest) => (
             <>
               <span>
-                {offeredTest.parent_employee_id || "-"}
+                {offeredTest.parent_employee_id || "--"}
               </span>
             </>
           ),
@@ -152,7 +152,7 @@ class OfferedTestsList extends Component {
         },
         {
           dataField: "limit",
-          text: "Amount Limit",
+          text: "Quota",
           style:{textAlign: "right"},
           sort: true,
           formatter: (cellContent, offeredTest) => (
@@ -163,6 +163,73 @@ class OfferedTestsList extends Component {
             </>
           ), filter: textFilter(),
         },
+        {
+          dataField: "remening_quota",
+          text: "Remaining Quota",
+          style:{textAlign: "right"},
+          sort: true,
+          formatter: (cellContent, offeredTest) => (
+            <>
+              <span>
+                {offeredTest.remening_quota}
+              </span>
+            </>
+          ), filter: textFilter(),
+        },
+        {
+          dataField: "start_date",
+          text: "Starting Date",
+          sort: true,
+          formatter: (cellContent, paymentCreatedStatus) => {
+              // Check if start_date is null or undefined
+              if (!paymentCreatedStatus.start_date) {
+                  return (
+                      <p className="text-muted mb-0">-</p>
+                  );
+              }
+      
+              // Proceed with formatting if start_date is valid
+              const date = new Date(paymentCreatedStatus.start_date);
+              const day = date.getDate();
+              const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+              const month = monthNames[date.getMonth()];
+              const year = date.getFullYear().toString().slice(-2); // Get the last 2 digits of the year
+      
+              return (
+                  <p className="text-muted mb-0">
+                      {`${day}-${month}-${year}`}
+                  </p>
+              );
+          },
+          filter: textFilter(),
+      },
+      {
+        dataField: "date",
+        text: "Expiry Date",
+        sort: true,
+        formatter: (cellContent, paymentCreatedStatus) => {
+            // Check if start_date is null or undefined
+            if (!paymentCreatedStatus.date) {
+                return (
+                    <p className="text-muted mb-0">-</p>
+                );
+            }
+    
+            // Proceed with formatting if start_date is valid
+            const date = new Date(paymentCreatedStatus.date);
+            const day = date.getDate();
+            const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            const month = monthNames[date.getMonth()];
+            const year = date.getFullYear().toString().slice(-2); // Get the last 2 digits of the year
+    
+            return (
+                <p className="text-muted mb-0">
+                    {`${day}-${month}-${year}`}
+                </p>
+            );
+        },
+        filter: textFilter(),
+    },
         
         {
           dataField: "status",
@@ -300,6 +367,8 @@ class OfferedTestsList extends Component {
         id: arg.id,
         name: arg.name,
         employee_code: arg.employee_code,
+        limit: arg.limit,
+        date: arg.date,
         status: arg.status,
       },
       isEdit: true,
@@ -374,6 +443,18 @@ class OfferedTestsList extends Component {
             {/* Render Breadcrumbs */}
             <Breadcrumbs title="Employees Tests" breadcrumbItem="Employees List" />
             <Row>
+            <div> <span className="text-danger font-size-12">
+                  <strong>
+                    Note: Employees are registered with an inactive status, which changes to active upon login.
+
+                  </strong>
+                  <br></br>
+                  <strong>
+                    Note: When an employee is first registered, their status is inactive; it changes to active upon their first login.
+
+                  </strong>
+                  </span>
+                </div>
               <Col lg="12">
                 <Card>
                   <CardBody>
@@ -507,6 +588,16 @@ class OfferedTestsList extends Component {
                                                 this.state.offeredTest
                                                   .employee_code) ||
                                               "",
+                                              limit:
+                                              (this.state.offeredTest &&
+                                                this.state.offeredTest
+                                                  .limit) ||
+                                              "",
+                                              date:
+                                              (this.state.offeredTest &&
+                                                this.state.offeredTest
+                                                  .date) ||
+                                              "",
                                             status:
                                               (this.state.offeredTest &&
                                                 this.state.offeredTest
@@ -529,6 +620,8 @@ class OfferedTestsList extends Component {
                                               employee_code:
                                                 values.employee_code,
                                               status: values.status,
+                                              limit: values.limit,
+                                              date: values.date,
                                             };
 
                                             // update PaymentStatus
@@ -577,6 +670,10 @@ class OfferedTestsList extends Component {
                                                               offeredTest.employee_code,
                                                             status:
                                                               offeredTest.status,
+                                                              limit:
+                                                              offeredTest.limit,
+                                                              date:
+                                                              offeredTest.date,
                                                             name:
                                                               e.target.value,
                                                           },
@@ -601,6 +698,31 @@ class OfferedTestsList extends Component {
                                                     />
                                                     <ErrorMessage name="employee_code" component="div" className="invalid-feedback" />
                                                   </div>
+
+                                                  <div className="mb-3">
+                                                    <Label className="col-form-label">Amount Limit</Label>
+                                                    <Field
+                                                      type="text"
+                                                      name="limit"
+                                                      className={"form-control" + (errors.limit && touched.limit ? " is-invalid" : "")}
+                                                    />
+                                                    <ErrorMessage name="limit" component="div" className="invalid-feedback" />
+                                                  </div>
+                                                  <div className="mb-3">
+                                                    <Label className="col-form-label">Expiry Date</Label>
+                                                    <Field
+                                                      type="datetime-local"
+                                                      name="date"
+                                                      min={new Date(
+                                                        new Date().toString().split("GMT")[0] +
+                                                        " UTC"
+                                                      )
+                                                        .toISOString()
+                                                        .slice(0, -8)}
+                                                      className={"form-control" + (errors.date && touched.date ? " is-invalid" : "")}
+                                                    />
+                                                    <ErrorMessage name="date" component="div" className="invalid-feedback" />
+                                                  </div>
                                                   <div className="mb-3">
                                                     <Label
                                                       for="status"
@@ -621,6 +743,10 @@ class OfferedTestsList extends Component {
                                                               offeredTest.name,
                                                             status:
                                                               e.target.value,
+                                                              date:
+                                                              offeredTest.date,
+                                                              limit:
+                                                              offeredTest.limit,
                                                           },
                                                         });
                                                       }}
