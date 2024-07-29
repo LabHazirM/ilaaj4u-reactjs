@@ -405,7 +405,11 @@ class OfferedTestsList extends Component {
           ))}
         </div>
       ) : (
-        <div>No Employee Codes Available</div>
+        <div>
+                        <span style={{ fontWeight: 'bold' }}>Number of Total Employees: </span>
+                        <span style={{ color: 'red' }}>0</span>
+
+          </div>
       )}
     </div>
   </Col>

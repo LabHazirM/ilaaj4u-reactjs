@@ -1090,7 +1090,7 @@ class SidebarContent extends Component {
                     </li>
                     <li>
                       <Link to="/payment-confirmation">
-                      <i className="mdi mdi-cash font-size-18" />
+                      {/* <i className="mdi mdi-cash font-size-18" /> */}
                       <span>{this.props.t("Corporate Payment Confirmation")}</span>
                       </Link>
                     </li>
