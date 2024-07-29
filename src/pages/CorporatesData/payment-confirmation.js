@@ -488,12 +488,12 @@ class PaymentStatussList extends Component {
               <div>
                 <Link
                   className="fas fa-comment font-size-18"
-                  to={`/corporate-activity-log/${paymentCreatedStatus.id}`}
+                  to={`/corporate-activity-log-lab/${paymentCreatedStatus.id}`}
                   style={{ marginRight: '10px' }} // Add space between icons
                 />
                 <Link
                   className="fas fa-copy font-size-18"
-                  to={`/corporate-voucher/${paymentCreatedStatus.id}`}
+                  to={`/corporate-voucher-lab/${paymentCreatedStatus.id}`}
                 />
               </div>
             ),

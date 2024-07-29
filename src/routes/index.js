@@ -494,11 +494,11 @@ const labAuthProtectedRoutes = [
     component: PaymentConfirmation,
   },
   {
-    path: "/corporate-activity-log/:id",
+    path: "/corporate-activity-log-lab/:id",
     component: corporatecommit,
   },
   {
-    path: "/corporate-voucher/:id",
+    path: "/corporate-voucher-lab/:id",
     component: corporatevoucher,
   },
 ];
