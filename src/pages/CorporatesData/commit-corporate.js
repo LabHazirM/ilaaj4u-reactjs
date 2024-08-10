@@ -177,8 +177,30 @@ class MsgsList extends Component {
                               </b>{" "}
                               from <b>{activitylogfinance.old_value}</b> to{" "}
                               <b>{activitylogfinance.new_value}</b> 
-                              {/* on{" "}
-                              {moment(activitylogfinance.created_at).format("DD MMM YYYY, h:mm A")}{" "} */}
+                      
+                              {" "}
+                              at{" "}
+                              {moment(activitylogfinance.created_at).format("DD MMM YYYY, h:mm A")}
+
+                              .
+                            </div>
+                          )}
+                          {activitylogfinance.actions === "Submit" && (
+                            <div>
+                              <b>{`${activitylogfinance.name}`}</b> Changed Status of{" "}
+                              <b>{activitylogfinance.type}</b> with ID{" "}
+                              <b>{activitylogfinance.corporate_payment_id }</b>{" "}
+                              for <b>{activitylogfinance.payment_for}</b>{" "}
+                              {activitylogfinance.payment_for}{" "}
+                                {activitylogfinance.payment_for === "Lab" ? (
+                                    <>({activitylogfinance.lab_name})</>
+                                ) : null}
+
+                              <b>
+                              </b>{" "}
+                              from <b>{activitylogfinance.old_value}</b> to{" "}
+                              <b>{activitylogfinance.new_value}</b> 
+                      
                               {" "}
                               at{" "}
                               {moment(activitylogfinance.created_at).format("DD MMM YYYY, h:mm A")}

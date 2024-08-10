@@ -84,7 +84,7 @@ class Dashboard extends Component {
       <React.Fragment>
         <div className="page-content">
           <MetaTags>
-            <title>Dashboard | Finance Admin</title>
+            <title>Dashboard | Corporate</title>
           </MetaTags>
           <Container fluid>
             {/* Render Breadcrumb */}

@@ -247,17 +247,15 @@ class AccountStatements extends Component {
 
                                   </td>
                                   <td>
-                                    {b2baccountStatement.payable == 0 ? (
-                                      <p className="float-end">
-                                      ---
-                                      </p>
-
-                                    ) : (
-                                      <p className="float-end">
-                                        {b2baccountStatement.payable.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-                                      </p>
-                                    )}
-
+                                  {b2baccountStatement.payable === 0 ? (
+                                    <p className="float-end">---</p>
+                                  ) : (
+                                    <p className="float-end">
+                                      {Number(b2baccountStatement.payable.toFixed(0))
+                                        .toString()
+                                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                                    </p>
+                                  )}
                                   </td>
 
                                   <td>
@@ -328,7 +326,7 @@ class AccountStatements extends Component {
         </td>
         <td className="border-10">
           <p className="float-end">
-            {filteredTotal.totalPayable.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+            {(filteredTotal.totalPayable.toFixed(0)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
           </p>
         </td>
         <td className="border-10"></td>

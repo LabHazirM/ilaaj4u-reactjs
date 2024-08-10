@@ -134,7 +134,7 @@ class PendingComplaints extends Component {
               {pendingComplaint.complainee === "Lab" ? (
                 <Link to="#" 
                   onMouseEnter={e => this.openMessageModal(e, pendingComplaint)}
-                  onPointerLeave={this.handleMouseExit}
+                  onPointerLeave={this.handleMouseExit()}
                 >
                   <strong className="text-danger float-start">{pendingComplaint.complainee}</strong><br></br>
                   <span className="float-start">{pendingComplaint.lab_name}</span>
@@ -327,6 +327,7 @@ class PendingComplaints extends Component {
   };
 
   openMessageModal = (e, arg) => {
+    console.log("message model is call in case when complanee is lab", arg)
     this.setState({ messageModal: true, 
       lab_city: arg.lab_city,
       lab_phone: arg.lab_phone,

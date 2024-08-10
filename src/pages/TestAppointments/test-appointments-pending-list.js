@@ -716,7 +716,7 @@ class TestAppointmentsPendingList extends Component {
                                         toggle={this.toggle}
                                         tag="h4"
                                       >
-                                        <span></span>
+                                        <span>Appointment Confirmation</span>
                                       </ModalHeader>
                                       <ModalBody>
                                         <Formik

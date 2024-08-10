@@ -200,6 +200,17 @@ class ReferredPatientsList extends Component {
           ),filter: textFilter(),
         },
         {
+          dataField: "donortesting",
+          text: "Status",
+          sort: true,
+          formatter: (cellContent, patientTestAppointment) => (
+            <>
+              <strong>{patientTestAppointment.donortesting}</strong>
+            </>
+          ),filter: textFilter(),
+        },
+
+        {
           dataField: "dues",
           text: "Invoice Amount",
           sort: true,
@@ -276,13 +287,9 @@ class ReferredPatientsList extends Component {
   openLabModal = (e, arg) => {
     this.setState({
       LabModal: true,
-      // appointment_requested_at: arg.appointment_requested_at,
-      // patient_unique_id: arg.patient_unique_id,
-      // patient_gender: arg.patient_gender,
-      // patient_address: arg.patient_address,
       lab_city: arg.lab_city,
-      // patient_phone: arg.patient_phone,
-      // booked_at: arg.booked_at,
+      lab_type: arg.lab_type,
+      lab_address: arg.lab_address,
     });
   };
 
@@ -424,7 +431,7 @@ class ReferredPatientsList extends Component {
                                                 <div className="mb-3 row">
                                                   <div className="col-md-3">
                                                     <Label className="form-label">
-                                                      Lab City
+                                                      City
                                                     </Label>
                                                   </div>
                                                   <div className="col-md-6">
@@ -432,6 +439,40 @@ class ReferredPatientsList extends Component {
                                                       type="text"
                                                       value={
                                                         this.state.lab_city
+                                                      }
+                                                      className="form-control"
+                                                      readOnly={true}
+                                                    />
+                                                  </div>
+                                                </div>
+                                                <div className="mb-3 row">
+                                                  <div className="col-md-3">
+                                                    <Label className="form-label">
+                                                      Lab type
+                                                    </Label>
+                                                  </div>
+                                                  <div className="col-md-6">
+                                                    <input
+                                                      type="text"
+                                                      value={
+                                                        this.state.lab_type
+                                                      }
+                                                      className="form-control"
+                                                      readOnly={true}
+                                                    />
+                                                  </div>
+                                                </div>
+                                                <div className="mb-3 row">
+                                                  <div className="col-md-3">
+                                                    <Label className="form-label">
+                                                      Address
+                                                    </Label>
+                                                  </div>
+                                                  <div className="col-md-6">
+                                                    <input
+                                                      type="text"
+                                                      value={
+                                                        this.state.lab_address
                                                       }
                                                       className="form-control"
                                                       readOnly={true}

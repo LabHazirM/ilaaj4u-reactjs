@@ -66,7 +66,7 @@ class CorporateInformation extends Component {
             <Row className="g-0">
               <CarouselPage />
 
-              <Col xl={6}>
+              <Col md={6} lg={6} xl={6}>
                 <div className="auth-full-page-content p-md-5 p-4">
                   <div className="w-100">
                     <div className="d-flex flex-column h-100">
@@ -556,7 +556,7 @@ class CorporateInformation extends Component {
                                     className="form-select"
                                   >
                                     <option value="Payment by Patient to Lab">Payment by Patient to Lab</option>
-                                    <option value="Payment by Coorporate to LH">Payment by Coorporate to LH</option>
+                                    <option value="Payment by Coorporate to LH">Payment by Corporate to Lab</option>
                                   </Field>
                                 </div>
 

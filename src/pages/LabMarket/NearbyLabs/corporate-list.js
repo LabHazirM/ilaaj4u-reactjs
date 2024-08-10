@@ -47,6 +47,8 @@ class TestsList extends Component {
     super(props);
     this.node = React.createRef();
     this.state = {
+      selectedStatus: null,
+      selectedName: null,
       cemployeeDatas: [],
       labProfiles: [],
       offeredTests: [],
@@ -101,6 +103,18 @@ class TestsList extends Component {
             <>
               <span>
                 {offeredTest.payment_terms}
+              </span>
+            </>
+          ),
+        },
+        {
+          dataField: "corporate_status",
+          text: "Status",
+          sort: true,
+          formatter: (cellContent, offeredTest) => (
+            <>
+              <span>
+                {offeredTest.corporate_status}
               </span>
             </>
           ),
@@ -235,7 +249,8 @@ class TestsList extends Component {
       corporatename: arg3,
       // selectedstatus: arg3, 
 
-    });
+    }
+  );
     this.toggle();
   };
   handleSaveButtonClick = () => {
@@ -253,8 +268,18 @@ class TestsList extends Component {
      
     };
 
-    this.props.onAddNewCorporate(newOfferedTest,this.state.user_id);
+    this.props.onAddNewCorporate(newOfferedTest,this.state.user_id,  setTimeout(() => {
+        this.props.history.push("/accepted-corporates-List");
+    }, 2000));
+
     this.toggle();
+  };
+  handleNameChange = (e) => {
+    this.setState({ selectedName: e.target.value });
+  };
+
+  handleStatusChange = (e) => {
+    this.setState({ selectedStatus: e.target.value });
   };
   render() {
     const { SearchBar } = Search;
@@ -266,6 +291,31 @@ class TestsList extends Component {
     const data = this.state.data;
     const { onGetLabProfile, onAddNewCorporate, onGetLabCorporate } = this.props;
 
+    const uniqueCorporateName = [...new Set(cemployeeDatas.map(data => data.name))];
+
+    // Generate NameOptions for the <select> dropdown
+    const corporateNameOptions = uniqueCorporateName.map((CorporateName, index) => (
+      <option key={index} value={CorporateName}>
+        {CorporateName}
+      </option>
+    ));
+
+    const uniqueCorporateStatus = [...new Set(cemployeeDatas.map(data => data.corporate_status))];
+
+    // Generate StatusOptions for the <select> dropdown
+    const corporateStatusOptions = uniqueCorporateStatus.map((EmployeeStatus, index) => (
+      <option key={index} value={EmployeeStatus}>
+        {EmployeeStatus}
+      </option>
+    ));
+
+    // Combine the filters
+    const filteredData = cemployeeDatas.filter(item => {
+      const { selectedName, selectedStatus } = this.state;
+      const nameFilter = !selectedName || item.name === selectedName;
+      const statusFilter = !selectedStatus || item.corporate_status === selectedStatus;
+      return nameFilter && statusFilter;
+    });
     const pageOptions = {
       sizePerPage: cemployeeDatas.length,
       totalSize: cemployeeDatas.length, // replace later with size(cemployeeDatas),
@@ -320,13 +370,41 @@ class TestsList extends Component {
                               <div>
                                   <span className="text-danger font-size-12">
                   <strong>
-                    Note: Here only the list of Corporations that match your Territorie will be shown.
+                  Note: Only corporations that match the territory of your lab will be displayed. The lab has the option to accept working with these corporations, considering the test prices and payment terms.
                   </strong>
                   </span>
                   </div>
-                                <Col sm="4">
+                
+                  <Col lg="3" className="mt-2">
+                                  <div className="mb-3">
+                                    <label className="form-label">Corporate Name</label>
+                                    <select
+                                      value={this.state.selectedName}
+                                      onChange={this.handleNameChange}
+                                      className="form-control"
+                                    >
+                                      <option value="">All</option>
+                                      {corporateNameOptions}
+                                    </select>
+                                  </div>
+                                </Col>
+                                <Col lg="3" className="mt-2">
+                                  <div className="mb-3">
+                                    <label className="form-label">Corporate Status</label>
+                                    <select
+                                      value={this.state.selectedStatus}
+                                      onChange={this.handleStatusChange}
+                                      className="form-control"
+                                    >
+                                      <option value="">All</option>
+                                      {corporateStatusOptions}
+                                    </select>
+                                  </div>
+                                </Col>
+                                {/* <Col sm="4">
                                   <div className="search-box ms-2 mb-2 mt-2 d-inline-block">
                                     <div className="position-relative">
+            
                                       <SearchBar
                                         {...toolkitprops.searchProps}
                                       />
@@ -334,7 +412,7 @@ class TestsList extends Component {
                                     </div>
                                   </div>
                                   
-                                </Col>
+                                </Col> */}
                               </Row>
                               <Row className="mb-4">
                                 <Col xl="12">
@@ -349,6 +427,7 @@ class TestsList extends Component {
                                       headerWrapperClasses={"table-light"}
                                       responsive
                                       ref={this.node}
+                                      data={filteredData}
                                     />
                                     <Modal
                                       isOpen={this.state.modal}
@@ -514,6 +593,7 @@ class TestsList extends Component {
 }
 
 TestsList.propTypes = {
+  history: PropTypes.any,
   match: PropTypes.object,
   cemployeeDatas: PropTypes.array,
   labProfiles: PropTypes.array,

@@ -215,7 +215,7 @@ class NearbyLabs extends Component {
       longitude = parseFloat(longitudeFromUrl);
       console.log("print lat log in app", latitude, longitude);
 
-      const url = `http://localhost:3000/nearby-labs/&lat=${latitude}&lon=${longitude}`;
+      const url = `https://www.labhazir.com/nearby-labs/&lat=${latitude}&lon=${longitude}`;
       const queryString = url.substring(url.indexOf("&") + 1);
       const finalUrl = "&" + queryString; // Remove the leading question mark ('?')
       this.setState({ finalUrl: finalUrl });

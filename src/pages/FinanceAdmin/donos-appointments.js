@@ -71,7 +71,7 @@ class LabsLists extends Component {
           sort: true,
           formatter: (cellContent, labsList) => (
             <>
-              <strong>{labsList.id}</strong>
+              <strong>{labsList.order_id}</strong>
             </>
           ),filter: textFilter(),
         },
@@ -89,7 +89,6 @@ class LabsLists extends Component {
                    {labsList.patient_name}
                   </Link>
             </span>
-              {/* <strong>{labsList.patient_name}</strong> */}
             </>
           ),filter: textFilter(), 
         },
@@ -115,7 +114,6 @@ class LabsLists extends Component {
                   </Link>
             </span>
             
-              {/* <strong>{labsList.lab_name}</strong> */}
             </>
           ),filter: textFilter(), // Add a text filter for this column
         },
@@ -220,42 +218,6 @@ class LabsLists extends Component {
             defaultValue: 'All',
           }),
         },
-        // {
-        //   dataField: "appointment_requested_at",
-        //   text: "Sampling time by Patient",
-        //   sort: true,
-        //   formatter: (cellContent, labsList) => (
-        //     <>
-        //       <span>
-        //         {/* {new Date(
-        //           labsList.appointment_requested_at
-        //         ).toLocaleString("en-US")} */}
-        //         {moment(labsList.appointment_requested_at).format("DD MMM YYYY, h:mm A")}
-        //       </span>
-        //     </>
-        //   ), filter: textFilter(),
-        // },
-        // {
-        //   dataField: "estimated_sample_collection_at",
-        //   text: "Sampling time by Lab",
-        //   sort: true,
-        //   formatter: (cellContent, labsList) => (
-        //     <>
-        //       {labsList.status == "Pending" ? (
-        //         <span>Not available yet</span>
-        //       ) : (
-        //         <span>
-        //           {/* {new Date(
-        //             labsList.estimated_sample_collection_at
-        //           ).toLocaleString("en-US")} */}
-        //            {labsList.estimated_sample_collection_at
-        //           ? moment(labsList.estimated_sample_collection_at).format("DD MMM YYYY, h:mm A")
-        //           : "--"}
-        //         </span>
-        //       )}
-        //     </>
-        //   ), filter: textFilter(),
-        // },
         {
           dataField: "dues",
           text: "Invoice Value",
@@ -285,12 +247,6 @@ class LabsLists extends Component {
       ],
     };
   }
-
-  // componentDidMount() {
-  //   const { labsList, onGetDonorsA } = this.props;
-  //   console.log(onGetDonorsA());
-  //   this.setState({ labsList });
-  // }
   componentDidMount() {
     const currentMonthStart = moment().startOf("month");
     const currentMonthEnd = moment().endOf("month");
@@ -424,7 +380,7 @@ class LabsLists extends Component {
 
     const pageOptions = {
       sizePerPage: 1000,
-      totalSize: labsList.length, // replace later with size(labsList),
+      totalSize: labsList.length, 
       custom: true,
     };
 

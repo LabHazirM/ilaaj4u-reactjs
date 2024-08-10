@@ -3,6 +3,7 @@ import { call, put, takeEvery } from "redux-saga/effects";
 // Crypto Redux States
 import {
   GET_CSR_LIST,
+  GET_MARKETERS_LIST,
   GET_TERRITORIES_LIST,
   GET_AUDITOR_LIST,
   GET_FINANCE_OFFICER_LIST,
@@ -14,6 +15,9 @@ import {
 import {
   getCSRListSuccess,
   getCSRListFail,
+
+  getMarketersListSuccess,
+  getMarketersListFail,
   getAuditorListSuccess,
   getAuditorListFail,
   getFinanceOfficerListSuccess,
@@ -31,6 +35,7 @@ import {
 //Include Both Helper File with needed methods
 import {
   getCSRList,
+  getMARKETERSList,
   getAuditorList,
   getFinanceOfficerList,
   addStaff,
@@ -45,6 +50,15 @@ function* fetchCSRList() {
     yield put(getCSRListSuccess(response));
   } catch (error) {
     yield put(getCSRListFail(error));
+  }
+}
+
+function* fetchmaRKETERSList() {
+  try {
+    const response = yield call(getMARKETERSList);
+    yield put(getMarketersListSuccess(response));
+  } catch (error) {
+    yield put(getMarketersListFail(error));
   }
 }
 
@@ -120,6 +134,7 @@ function* onDeleteStaff({ payload: staff }) {
 
 function* staffSaga() {
   yield takeEvery(GET_CSR_LIST, fetchCSRList);
+  yield takeEvery(GET_MARKETERS_LIST, fetchmaRKETERSList);
   yield takeEvery(GET_AUDITOR_LIST, fetchAuditorList);
   yield takeEvery(GET_FINANCE_OFFICER_LIST, fetchFinanceOfficerList);
   yield takeEvery(ADD_STAFF, onAddStaff);

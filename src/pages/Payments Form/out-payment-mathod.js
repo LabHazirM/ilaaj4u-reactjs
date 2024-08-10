@@ -54,6 +54,7 @@ import {
 import { isEmpty, size } from "lodash";
 import ConfirmModal from "components/Common/ConfirmModal";
 import "assets/scss/table.scss";
+import bankaccounts from "store/bankaccounts/reducer";
 
 class OutPaymentsForm extends Component {
   constructor(props) {
@@ -473,26 +474,21 @@ class OutPaymentsForm extends Component {
     //   }
     // }
     const { bankAccounts } = this.props;
-    const bankaccountList = [];
+    // const bankaccountList = [];
 
-    for (let i = 0; i < bankAccounts.length; i++) {
+    const bankaccountList = bankAccounts
+    .filter(bankaccount => {
       if (isDonation) {
-        if (bankAccounts[i].account_type === "DONATION") {
-          bankaccountList.push({
-            label: `${bankAccounts[i].bank_name} - ${bankAccounts[i].account_no} - ${bankAccounts[i].account_type}`,
-            value: `${bankAccounts[i].id}`,
-          });
-        }
+        return bankaccount.current_balance > Math.abs(this.state.amount) && bankaccount.account_type === "DONATION";
       } else {
-        if (bankAccounts[i].account_type != "DONATION") {
-          bankaccountList.push({
-            label: `${bankAccounts[i].bank_name} - ${bankAccounts[i].account_no} - ${bankAccounts[i].account_type}`,
-            value: `${bankAccounts[i].id}`,
-          });
-        }
+        return bankaccount.current_balance > Math.abs(this.state.amount) && bankaccount.account_type !== "DONATION";
       }
-
-    }
+    })
+    .map(bankaccount => ({
+      label: `(Bank Name: ${bankaccount.bank_name}) - (Account No: ${bankaccount.account_no}) - (Account Type: ${bankaccount.account_type}) - (Current Balance: ${bankaccount.current_balance})`,
+      value: bankaccount.id,
+    }));
+  
 
     const { banks } = this.props;
     const bankList = [];
@@ -602,7 +598,7 @@ class OutPaymentsForm extends Component {
                                 defaultValue={this.state.transection_type}
                                 className="form-select"
                               >
-                                <option value="Other">Other</option>
+                                <option value="Other">Routine</option>
                                 <option value="Donation">Donation</option>
                               </select>
 

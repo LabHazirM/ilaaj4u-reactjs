@@ -48,7 +48,6 @@ import {
 } from "store/outpayments/actions";
 // import { getCorporateProfile } from "store/auth/staffprofile/actions";
 
-
 import { isEmpty, size } from "lodash";
 import ConfirmModal from "components/Common/ConfirmModal";
 import "assets/scss/table.scss";
@@ -127,7 +126,7 @@ class OutPaymentsForm extends Component {
         cheque_no: this.state.cheque_no,
         cheque_image: this.state.cheque_image,
         // is_cleared: this.state.is_cleared,
-        payment_status: "Paid",
+        payment_status: "Submit",
         comments: this.state.comments,
       },
     });
@@ -173,11 +172,11 @@ class OutPaymentsForm extends Component {
       window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
     }, 2000);
 
-    // setTimeout(() => {
-    //   this.props.history.push("/corporate-payment-form-status");
-    //   // window.location.reload()
+    setTimeout(() => {
+      this.props.history.push("/corporate-payment-form-status");
+      // window.location.reload()
 
-    // }, 2000)
+    }, 2000)
   };
 
   componentDidMount() {
@@ -455,7 +454,7 @@ class OutPaymentsForm extends Component {
 
     // const CardAppointmentList = [];
     // for (let i = 0; i < listDonation.length; i++) {
-    //   if (listDonation[i].status === "Result Uploaded" && listDonation[i].payment_method === "Card" && listDonation[i].payment_status === "Paid" && listDonation[i].is_settled == false) {
+    //   if (listDonation[i].status === "Result Uploaded" && listDonation[i].payment_method === "Card" && listDonation[i].payment_status === "Submit" && listDonation[i].is_settled == false) {
     //     if (listDonation[i].lab_office === this.props.corporateProfiles.territory_office) {
     //       CardAppointmentList.push({
     //         label: `${listDonation[i].id} - ${listDonation[i].lab_name} - ${listDonation[i].lab_type} - ${listDonation[i].lab_city}`,
@@ -872,12 +871,12 @@ class OutPaymentsForm extends Component {
                             <input
                               name="payment_at"
                               type="datetime-local"
-                              min={new Date(
-                                new Date().toString().split("GMT")[0] +
-                                " UTC"
-                              )
-                                .toISOString()
-                                .slice(0, -8)}
+                              // min={new Date(
+                              //   new Date().toString().split("GMT")[0] +
+                              //   " UTC"
+                              // )
+                              //   .toISOString()
+                              //   .slice(0, -8)}
                               className="form-control"
                               onChange={e =>
                                 this.setState({
@@ -966,7 +965,7 @@ class OutPaymentsForm extends Component {
                               // disabled={this.state.carts.length == 0}
                               >
                                 <i className="mdi mdi-truck-fast me-1" />
-                                Paid
+                                Submit
                               </button>
                             </Col>
                           </Row>

@@ -663,14 +663,12 @@ class TestAppointmentsList extends Component {
     
     // Set patientTestAppointments to state
     this.setState({ patientTestAppointments });
-
-    const { onGetPatientProfile } = this.props;
-
-    // Assuming onGetPatientProfile is synchronous
-    console.log("this is patient profile",onGetPatientProfile(this.state.user_id));
-
-    // Now you can safely access patientProfile from props
-    const { patientProfile } = this.props;
+    const { patientProfile, onGetPatientProfile } = this.props;
+    onGetPatientProfile(this.state.user_id);
+    this.setState({
+      patientProfile
+    });
+    console.log("state", patientProfile);
     
     // Check if patientTestAppointments exists and has the required properties
     if (this.props.patientProfile &&
@@ -890,11 +888,12 @@ class TestAppointmentsList extends Component {
     const { onAddNewPatientFeedback, onGetPatientTestAppointmentsList } =
       this.props;
 
-    const pageOptions = {
-      sizePerPage: 100,
-      totalSize: patientTestAppointments.length, // replace later with size(patientTestAppointments),
-      custom: true,
-    };
+      const pageOptions = {
+        sizePerPage: 100,
+        totalSize: patientTestAppointments ? patientTestAppointments.length : 0,
+        custom: true,
+      };
+      
 
     const defaultSorted = [
       {

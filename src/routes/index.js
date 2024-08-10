@@ -20,6 +20,7 @@ import NearbyProfiles from "pages/LabMarket/NearbyLabs/NearbyProfiles";
 import NearbyPackages from "pages/LabMarket/NearbyLabs/NearbyPackages";
 import NearbyRadiology from "pages/LabMarket/NearbyLabs/NearbyRadiology";
 
+///////
 
 //ContactUs
 import ContactUs from "../pages/Contact/contact-us";
@@ -42,7 +43,7 @@ import ConfirmPwd from "../pages/Authentication/ConfirmPassword";
 import DashboardPatient from "../pages/Dashboard-Patient/index";
 import DashboardLab from "../pages/Dashboard-Lab/index";
 import DashboardB2b from "../pages/Dashboard-B2b/index";
-// import DashboardFinanceOfficer from "pages/Dashboard-FinanceOfficer/StackedColumnChart";
+import stackchart from "pages/Dashboard-Lab/StackedColumnChart";
 import FinanceOfficerProfile from "../pages/Authentication/StaffProfile";
 import DashboardFinance from "../pages/Dashboard-Finance/index"
 import DashboardCorporate from "../pages/Dashboard-Corporate/index"
@@ -64,7 +65,10 @@ import CorporateLabAppointmentsList from "../pages/CorporatesData/corporate-lab-
 import CorporateLabsList from "../pages/CorporatesData/corporate-labs-list";
 import CorporatePaymentForm from "../pages/CorporatesData/corporate-out-payment";
 import PaymentFormStatus from "../pages/CorporatesData/corporate-paymentout-created-statuss-list";
+import PaymentConfirmation from "../pages/CorporatesData/payment-confirmation";
+import LabhazirPaymentConfirmation from "../pages/CorporatesData/labhazir-payment-confirmation";
 import corporatecommit from "../pages/CorporatesData/commit-corporate";
+import corporatevoucher from "../pages/CorporatesData/corporate-paymentout-created-statuss-detail"
 import AccountStatementsCorporate from "pages/CorporatesData/corporate-lab-appointments";
 import corporateList from "pages/FinanceAdmin/corporate-list";
 // Lab Components
@@ -116,10 +120,11 @@ import SampleCAppointmentDetail from "pages/Checkouts/appointment-detail"
 import LabQualityCertificates from "../pages/LabMarket/NearbyLabs/NearbyLabDetails/quality-certificates-list";
 import LabSampleCollectors from "../pages/LabMarket/NearbyLabs/NearbyLabDetails/sample-collectors-list";
 import LabPathologists from "../pages/LabMarket/NearbyLabs/NearbyLabDetails/pathologists-list";
-
+import CorporatePatientBookings from "../pages/LabMarket/NearbyLabs/CorporateLabsCarAppointments";
 // Patient Components
 import TestAppointmentsList from "../pages/PatientTestAppointments/test-appointments-list";
-import CorporateModalRoute from "../pages/PatientTestAppointments/corporate-model"
+import CorporateModalRoute from "../pages/PatientTestAppointments/corporate-model";
+import CorporateInfoModalRoute from "../pages/PatientTestAppointments/corporate-model";
 import TestAppointmentsCSRList from "../pages/Dashboard-Csr/test-appointments-list";
 import TestsOfferedbyLab from "pages/LabMarket/NearbyLabs/TestsOfferedbyLab";
 import TestsOfferedbyLabCorporate from "pages/LabMarket/NearbyLabs/TestsOfferedbyLabCorporation"
@@ -156,12 +161,17 @@ import DonorAppointments from "pages/DonorReferredAppointments/referred-appointm
 import DonorPayments from "pages/DonorPaymentMathods/payment-mathod";
 import DonorSettings from "pages/Authentication/DonorSettings";
 import DonorAccountStatements from "pages/AccountStatements/donor-account-statements";
+////////////
+import DonorsAccountStatements from "pages/AccountStatements/donors-account-statements";
+///////////
 import AccountStatementDonor from "pages/AccountStatements/donor-account-statements";
 import B2bAccountStatements from "pages/AccountStatements/b2b-account-statements";
 import AccountStatementsB2B from "pages/AccountStatements/b2b-account-statements";
 import BankAccountStatements from "pages/AccountStatements/bank-account-statement";
 import Invoiceb2b from "pages/Checkouts/invoice-detail"
+import CreditCardCheckout from "pages/Checkouts/creditcardcheckout";
 import AllLabsList from "pages/FinanceAdmin/lab-labs-list"
+//import AllDonationsList from "pages/Payments Form/testing-appointments";
 import CreateBanks from "pages/CreateBanks/create-bank";
 import BankAccounts from "pages/BankAccounts/bank-account"
 
@@ -215,6 +225,8 @@ import rFeeCorporate from "../pages/RegistrationAdmin/reffrell-corporate-list"
 
 
 // finance admin
+import PendingInPayments from "pages/FinanceAdmin/paymentin-pending-clearences-statuss-list";
+import PendingOutPayments from "pages/FinanceAdmin/paymentout-pending-clearences-statuss-list";
 import ClearedInPayments from "pages/FinanceAdmin/cleared-in-payments";
 import ApprovedInPayments from "pages/FinanceAdmin/approved-in-payments";
 import UnapprovedInPayments from "pages/FinanceAdmin/unapproved-in-payments";
@@ -257,6 +269,10 @@ import csrComplaints from "pages/Complaints/csr-complaints";
 import NotesList from "pages/Complaints/notes-list";
 import NotesLists from "pages/Complaints/notes-list";
 import PatientCsrNotesList from "pages/Complaints/notes-list";
+
+import marketertestdiscountNotesList from "pages/Dashboard-MarketerAdmin/activity-log-marketer";
+
+import marketerlabdiscountNotesList from "pages/Dashboard-MarketerAdmin/activity-log-lab-marketer";
 import NotesComplains from "pages/Complaints/notes-list-complain";
 import NotesComplainsAdmin from "pages/Complaints/notes-list-complain"
 import labnotes from "pages/Complaints/notes-list";
@@ -280,12 +296,14 @@ import AuditorsList from "pages/AuditorAdmin/auditors-list";
 
 import PagesMaintenance from "pages/Utility/pages-maintenance";
 import PagesComingsoon from "pages/Utility/pages-comingsoon";
+import CardPayment from "pages/Utility/card-payment";
 import Pages404 from "pages/Utility/pages-404";
 import Pages500 from "pages/Utility/pages-500";
 
 import StaffRegister from "pages/HrAdmin/staff-register";
 import StaffInfo from "pages/HrAdmin/staff-info";
 import CSRList from "pages/HrAdmin/csr-list";
+import MARKETERSList from "pages/HrAdmin/marketers-list";
 import AuditorList from "pages/HrAdmin/auditor-list";
 import FinanceOfficerList from "pages/HrAdmin/finance-officer-list";
 import DiscountLab from "pages/MarketerAdmin/discounttolab";
@@ -311,6 +329,8 @@ import advmadminChatBox from "pages/LabAdvertisements/adv-lab-chat-box";
 import labCorporateStatement from "pages/FinanceAdmin/lab-corporate-statement";
 // All general public routes will be listed here
 const publicRoutes = [
+  
+  { path: "/creditcardcheckout", component: CreditCardCheckout},
   { path: "/register/:guest_id?/:uuid?", component: Register },
   { path: "/logout", component: Logout },
   { path: "/login/:guest_id?/:uuid?", component: Login },
@@ -325,6 +345,7 @@ const publicRoutes = [
   { path: "/feedback-detail/:lab_account_id", component: FeedbackDetail },
   { path: "/pages-maintenance", component: PagesMaintenance },
   { path: "/pages-comingsoon", component: PagesComingsoon },
+  { path: "/card-payment", component: CardPayment },
   { path: "/pages-404", component: Pages404 },
   { path: "/pages-500", component: Pages500 },
   {
@@ -335,15 +356,12 @@ const publicRoutes = [
     path: "/quote-list/:guest_id?/:uuid?",
     component: QuoteList,
   },
-  {
-    path: "/corporate-offered-tests/:id",
-    component: CorporateOfferedTestsListForLab,
-  },
+
   
-  // {
-  //   path: "/labs/:uuid?",
-  //   component: labs,
-  // },
+  {
+    path: "/chart",
+    component: stackchart,
+  },
   // {
   //   path: "/nearby-tests/:guest_id?/:uuid?",
   //   component: NearbyTests,
@@ -467,6 +485,22 @@ const labAuthProtectedRoutes = [
     component: AcceptedCorporatesList,
   },
   { path: "/lab-adv-chat-box/:id", component: advLabChatBox },
+  {
+    path: "/corporate-offered-tests/:id",
+    component: CorporateOfferedTestsListForLab,
+  },
+  {
+    path: "/payment-confirmation",
+    component: PaymentConfirmation,
+  },
+  {
+    path: "/corporate-activity-log-lab/:id",
+    component: corporatecommit,
+  },
+  {
+    path: "/corporate-voucher-lab/:id",
+    component: corporatevoucher,
+  },
 ];
 
 const b2bclientAuthProtectedRoutes = [
@@ -499,6 +533,7 @@ const b2bclientAuthProtectedRoutes = [
   },
 ];
 const financeOfficerAuthProtectedRoutes = [
+  //{ path: "/testing-appointments", component: AllDonationsList},
   { path: "/dashboard-finance", component: DashboardFinance},
   { path: "/financeofficer-profile", component: FinanceOfficerProfile },
   { path: "/in-payment", component: InPayments },
@@ -557,6 +592,11 @@ const financeAdminAuthProtectedRoutes = [
   // },
   { path: "/account-statement-b2b/:id", component: AccountStatementsB2B },
   { path: "/cleared-in-payments", component: ClearedInPayments },
+  { path: "/pending-in-payments", component: PendingInPayments },
+  {
+    path: "/pending-out-payments",
+    component: PendingOutPayments,
+  },
   { path: "/approved-in-payments", component: ApprovedInPayments },
   { path: "/unapproved-in-payments", component: UnapprovedInPayments },
   { path: "/activity-log-finance-admin", component: activityLogFinanceAdmin },
@@ -569,6 +609,7 @@ const financeAdminAuthProtectedRoutes = [
     path: "/corporate-lab-appointments/:id",
     component: AccountStatementsCorporate,
   },
+  { path: "/All-Donation-Appointments/:id", component: allDonationAppointments },
   {path: "/create-bank", component: CreateBanks},
   {path: "/bank-account", component: BankAccounts},
   {path: "/banks-list", component: BanksList},
@@ -591,6 +632,18 @@ const financeAdminAuthProtectedRoutes = [
     path: "/accepted-corporates-List",
     component: AcceptedCorporatesLists,
   },
+  {
+    path: "/corporate-payment-confirmation",
+    component: LabhazirPaymentConfirmation,
+  },
+  {
+    path: "/corporate-payment-activity-log/:id",
+    component: corporatecommit,
+  },
+  {
+    path: "/corporate-payment-voucher/:id",
+    component: corporatevoucher,
+  },
 
 
 
@@ -606,6 +659,7 @@ const donorAuthProtectedRoutes = [
     component: DonorSettings,
   },
   { path: "/donor-account-statements", component: DonorAccountStatements },
+  { path: "/donors-account-statements", component: DonorsAccountStatements },
 
 ];
 // const b2badminAuthProtectedRoutes = [
@@ -708,6 +762,8 @@ const marketerAdminAuthProtectedRoutes = [
     path: "/activity-log-marketer",
     component: activityLogMarketer,
   },
+  { path: "/marketer-test-discount-notes-list/:id", component: marketertestdiscountNotesList },
+  { path: "/marketer-test-labdiscount-notes-list/:id", component: marketerlabdiscountNotesList },
   {
     path: "/discountlab/:id",component: DiscountLab,
   },
@@ -749,6 +805,10 @@ const csrAuthProtectedRoutes = [
     path: "/appointment-detail/:id",
     component: AppointmentDetail,
   },
+  {
+    path: "/corporate-info-modal/:id/:uuid?",
+    component: CorporateInfoModalRoute,
+  },
 ];
 
 const csrAdminAuthProtectedRoutes = [
@@ -779,6 +839,7 @@ const hrAdminAuthProtectedRoutes = [
   { path: "/csr-list", component: CSRList },
   { path: "/auditor-list", component: AuditorList },
   { path: "/finance-officer-list", component: FinanceOfficerList },
+  { path: "/marketers-list", component: MARKETERSList },
 ];
 
 // All authenticated routes of the patient module will be listed here
@@ -788,10 +849,6 @@ const patientAuthProtectedRoutes = [
   {
     path: "/test-appointments/:uuid?",
     component: TestAppointmentsList,
-  },
-  {
-    path: "/corporate-modal/:uuid?",
-    component: CorporateModalRoute,
   },
   {
     path: "/profile/:guest_id?",
@@ -816,6 +873,10 @@ const patientAuthProtectedRoutes = [
   {
     path: "/patient-appointment-detail/:id",
     component: PatientAppointmentDetail,
+  },
+  {
+    path: "/corporate-modal/:uuid?",
+    component: CorporateModalRoute,
   },
   // { path: "/nearby-labs/:uuid?", component: NearbyLabs },
 
@@ -920,10 +981,10 @@ const patientPublicRoutes = [
     component: LabPathologists,
   },
   { path: "/test-descriptions/:test_id/:uuid?", component: TestDescriptions },  
-  // {
-  //   path: "/test-appointments/:uuid?",
-  //   component: TestAppointmentsList,
-  // },
+  {
+    path: "/corporate-patients-book-appointments/:guest_id?/:id",
+    component: CorporatePatientBookings,
+  },
 ];
 
 const corporateAuthProtectedRoutes = [
@@ -974,6 +1035,10 @@ const corporateAuthProtectedRoutes = [
   {
     path: "/corporate-activity-log/:id",
     component: corporatecommit,
+  },
+  {
+    path: "/corporate-voucher/:id",
+    component: corporatevoucher,
   },
   {
     path: "/cor-invoice-detail/:id",

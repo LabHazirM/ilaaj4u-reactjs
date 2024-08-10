@@ -151,6 +151,12 @@ class DiscountLabHazirList extends Component {
                 ></i>
               </Link>
               </Tooltip>
+              <Tooltip title="Add Comment">
+                <Link
+                  className="fas fa-comment font-size-18"
+                  to={`/marketer-test-discount-notes-list/${discountLabHazir.id}`}
+                ></Link>
+              </Tooltip>
             </div>
           ),
         },
@@ -162,14 +168,9 @@ class DiscountLabHazirList extends Component {
   }
 
   componentDidMount() {
-    const { onGetDiscountLabHazirs } = this.props;
-    setTimeout(() => {
-      console.log(onGetDiscountLabHazirs());
-
-      setTimeout(() => {
-        this.setState({ discountLabHazirs: this.props.discountLabHazirs });
-      }, 1000);
-    }, 1000);
+    const { discountLabHazirs, onGetDiscountLabHazirs } = this.props;
+    onGetDiscountLabHazirs(this.state.user_id);
+    this.setState({ discountLabHazirs });
   }
 
   toggle() {

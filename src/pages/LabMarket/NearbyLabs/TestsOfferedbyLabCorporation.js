@@ -46,6 +46,7 @@ import Breadcrumbs from "components/Common/Breadcrumb";
 import { any } from "prop-types";
 
 import { getCOfferedTestsReferrel } from "store/offered-tests/actions";
+import { getPatientProfile } from "store/labmarket/actions";
 import { addToCart } from "store/actions";
 import { getCarts } from "store/carts/actions";
 
@@ -65,6 +66,7 @@ class TestsOffered extends Component {
       position: "right",
       activeTab: "1",
       offeredTests: [],
+      patientProfile: [],
       carts: [],
       cart: "",
       success: "",
@@ -76,6 +78,7 @@ class TestsOffered extends Component {
       searchQuery: "", // New state property for search query
       totalPage: 5, //replace this with total pages of data
       itemsInCart: [],
+
     };
     this.toggleTab = this.toggleTab.bind(this);
     console.log("yaha ani chahi hai uuid", this.props.match.params.uuid)
@@ -85,6 +88,11 @@ class TestsOffered extends Component {
   }
 
   componentDidMount() {
+    const { onGetPatientProfile } = this.props;
+    // Assuming onGetPatientProfile is synchronous
+    onGetPatientProfile(this.state.user_id);
+    // Now you can safely access patientProfile from props
+    const { patientProfile } = this.props;  console.log("patient info",this.state.payment_method)
     const { carts, onGetCarts } = this.props;
     onGetCarts(this.state.user_id);
     this.setState({
@@ -117,9 +125,27 @@ class TestsOffered extends Component {
     });
   };
 
+  openLabModal = (e, arg) => {
+    this.setState({
+      LabModal: true,
+      lab_city: arg.lab_city,
+      lab_type: arg.lab_type,
+      lab_address: arg.lab_address,
+      lab_phone: arg.lab_phone,
+    });
+  };
+
   togglePatientModal = () => {
     this.setState(prevState => ({
       PatientModal: !prevState.PatientModal,
+    }));
+    this.state.btnText === "Copy"
+      ? this.setState({ btnText: "Copied" })
+      : this.setState({ btnText: "Copy" });
+  };
+  toggleLabModal = () => {
+    this.setState(prevState => ({
+      LabModal: !prevState.LabModal,
     }));
     this.state.btnText === "Copy"
       ? this.setState({ btnText: "Copied" })
@@ -318,9 +344,10 @@ class TestsOffered extends Component {
 
   render() {
     const { onGetCarts } = this.props;
-
+    const { patientProfile } = this.props;
     const { carts } = this.props;
     const { loading } = this.state;
+    const { onGetPatientProfile } = this.props;
     const isLargeScreen = window.innerWidth < 490;
 
     const { page, totalPage } = this.state;
@@ -329,11 +356,40 @@ class TestsOffered extends Component {
     const { searchQuery } = this.state;
     const filteredTests = this.props.offeredTests.filter((test) =>
       test.test_name.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    );    
 
     return (
       <React.Fragment>
-       
+        <div className="topnav">
+            <div className="container-fluid left-space">
+              <nav
+                className="navbar navbar-light navbar-expand-lg topnav-menu"
+                id="navigation"
+              >
+                      <Collapse
+                        isOpen={this.state.isMenuOpened}
+                        className="navbar-collapse"
+                        id="topnav-menu-content"
+                      >
+                        <ul className="navbar-nav">
+
+                            <li className="nav-item">
+                              <Link to={
+                                this.props.match.params.guest_id
+                                  ? `/test-appointments/${this.props.match.params.guest_id}`
+                                  : `/test-appointments`
+                              } className="dropdown-item">
+                                {/* {this.props.t("My Appointments")} */}
+                                <span className="pt-4 font-size-12">My Appointments</span>
+
+                              </Link>
+                            </li>
+                        </ul>
+                      </Collapse>
+
+              </nav>
+            </div>
+          </div>
         <div className="page-content">
           <MetaTags>
             <title>Tests Offered | Lab Hazir</title>
@@ -461,9 +517,132 @@ class TestsOffered extends Component {
                   </Formik>
                 </ModalBody>
               </Modal>
+              <Modal
+                isOpen={this.state.LabModal}
+                className={this.props.className}
+              >
+                <ModalHeader
+                                        toggle={this.toggleLabModal}
+                                        tag="h4"
+                                      >
+                                        <span>Lab Details</span>
+                                      </ModalHeader>
+                                      <ModalBody>
+
+                                        <Formik>
+                                          <Form>
+                                            <Row>
+                                              <Col className="col-12">
+
+                                                {/* <div className="mb-3 row">
+                                                  <div className="col-md-3">
+                                                    <Label className="form-label">
+                                                      Lab Address
+                                                    </Label>
+                                                  </div>
+                                                  <div className="col-md-9">
+                                                    <input
+                                                      type="text"
+                                                      value={
+                                                        this.state
+                                                          .address
+                                                      }
+                                                      className="form-control"
+                                                      readOnly={true}
+                                                    />
+                                                  </div>
+                                                </div> */}
+                                           
+
+                                                <div className="mb-3 row">
+                                                  <div className="col-md-3">
+                                                    <Label className="form-label">
+                                                      City
+                                                    </Label>
+                                                  </div>
+                                                  <div className="col-md-6">
+                                                    <input
+                                                      type="text"
+                                                      value={
+                                                        this.state.lab_city
+                                                      }
+                                                      className="form-control"
+                                                      readOnly={true}
+                                                    />
+                                                  </div>
+                                                </div>
+                                                <div className="mb-3 row">
+                                                  <div className="col-md-3">
+                                                    <Label className="form-label">
+                                                      Lab type
+                                                    </Label>
+                                                  </div>
+                                                  <div className="col-md-6">
+                                                    <input
+                                                      type="text"
+                                                      value={
+                                                        this.state.lab_type
+                                                      }
+                                                      className="form-control"
+                                                      readOnly={true}
+                                                    />
+                                                  </div>
+                                                </div>
+                                                <div className="mb-3 row">
+                                                  <div className="col-md-3">
+                                                    <Label className="form-label">
+                                                      Address
+                                                    </Label>
+                                                  </div>
+                                                  <div className="col-md-6">
+                                                    <input
+                                                      type="text"
+                                                      value={
+                                                        this.state.lab_address
+                                                      }
+                                                      className="form-control"
+                                                      readOnly={true}
+                                                    />
+                                                  </div>
+                                                </div>
+                                                <div className="mb-3 row">
+                                                  <div className="col-md-3">
+                                                    <Label className="form-label">
+                                                      Phone
+                                                    </Label>
+                                                  </div>
+                                                  <div className="col-md-6">
+                                                    <input
+                                                      type="text"
+                                                      value={
+                                                        this.state.lab_phone
+                                                      }
+                                                      className="form-control"
+                                                      readOnly={true}
+                                                    />
+                                                  </div>
+                                                </div>
+                                                <div className="float-end">
+                                                <Link
+                                  to={{
+                                    pathname: `http://maps.google.com/?q=${this.state.lab_address}`,
+                                  }}
+                                  className="btn btn-success ml-1 btn  mt-2"
+                                  target="_blank"
+                                >
+                                  <i className="bx bxs-navigation" /> Locate to
+                                  the Lab
+                                </Link>
+                                                </div>
+                                              </Col>
+                                            </Row>
+                                          </Form>
+                                        </Formik>
+                                      </ModalBody>
+              </Modal>
              
               {filteredTests.length > 0 ? (
-                filteredTests.map((offeredTest, key) => (
+                  filteredTests.map((offeredTest, key) => (
                   <Col xl="4" sm="6" key={"_col_" + key}>
                   <Card style={{ height: "95%" }}>
                     <CardBody>
@@ -472,7 +651,7 @@ class TestsOffered extends Component {
                           {/* {offeredTest.test_name} */}
                           <Tooltip title={offeredTest.test_name}>
                               <span> {offeredTest.test_name} </span>
-                          </Tooltip>
+                          </Tooltip> ({offeredTest.test_type})
                         </h5>
                         {offeredTest.test_type != "Test" && (
                           // <div className="mb-3">
@@ -579,65 +758,54 @@ class TestsOffered extends Component {
                           {" "}
                           {!this.state.user_id ? (
                             <Link
-                            to={
-                              this.props.match.params.uuid
-                                ? `/nearby-lab-detail/${offeredTest.lab_account_id}/${this.props.match.params.guest_id}/${this.props.match.params.uuid}`
-                                : `/nearby-lab-detail/${offeredTest.lab_account_id}/${this.props.match.params.guest_id}`
+                            to="#"
+                            onClick={e =>
+                              this.openLabModal(e, offeredTest)
                             }
-                            
-                            className="text-dark"
                           >
                             <span className="text-primary">
                               {offeredTest.lab_name}{" "}
                               
                             </span>
                           </Link>
+                            
                           ):null}
                           {(this.state.user_id) && (this.state.user_type ==="CSR") && (this.state.user_type !=="b2bclient") && (
                    <Link
-                   to={
-                     this.props.match.params.guest_id
-                       ? `/nearby-lab-detail/${offeredTest.lab_account_id}/${this.props.match.params.guest_id}`
-                       : `/nearby-lab-detail/${offeredTest.lab_account_id}`
+                   to="#"
+                   onClick={e =>
+                     this.openLabModal(e, offeredTest)
                    }
-
-                   className="text-dark"
                  >
                    <span className="text-primary">
                      {offeredTest.lab_name}{" "}
-
+                     
                    </span>
                  </Link>
                   )}
                         {(this.state.user_id) && (this.state.user_type !=="CSR") && (this.state.user_type !=="b2bclient") && (
-                   <Link
-                   to={
-                     this.props.match.params.uuid
-                       ? `/nearby-lab-detail/${offeredTest.lab_account_id}/${this.props.match.params.guest_id}/${this.props.match.params.uuid}`
-                       : `/nearby-lab-detail/${offeredTest.lab_account_id}/${this.props.match.params.guest_id}`
-                   }
-
-                   className="text-dark"
-                 >
-                   <span className="text-primary">
-                     {offeredTest.lab_name}{" "}
-
-                   </span>
-                 </Link>
+                  <Link
+                  to="#"
+                  onClick={e =>
+                    this.openLabModal(e, offeredTest)
+                  }
+                >
+                  <span className="text-primary">
+                    {offeredTest.lab_name}{" "}
+                    
+                  </span>
+                </Link>
                   )}
                   {(this.state.user_id) && (this.state.user_type !=="CSR") && (this.state.user_type ==="b2bclient") && (
                    <Link
-                   to={
-                     this.props.match.params.guest_id
-                       ? `/nearby-lab-detail/${offeredTest.lab_account_id}/${this.props.match.params.guest_id}/${this.props.match.params.uuid}`
-                       : `/nearby-lab-detail/${offeredTest.lab_account_id}/${this.props.match.params.guest_id}`
+                   to="#"
+                   onClick={e =>
+                     this.openLabModal(e, offeredTest)
                    }
-
-                   className="text-dark"
                  >
                    <span className="text-primary">
                      {offeredTest.lab_name}{" "}
-
+                     
                    </span>
                  </Link>
                   )}
@@ -663,26 +831,19 @@ class TestsOffered extends Component {
   </Col>
 </Row>
                         </div>
-                        {/* <Button
-  type="button"
-  color={this.state.itemsInCart.includes(offeredTest) ? 'secondary' : 'primary'}
-  className={`btn mt-3 me-1${this.state.itemsInCart.includes(offeredTest) ? ' disabled' : ''}`}
-  onClick={() => this.handleAddToCart(offeredTest)}
-  disabled={this.state.itemsInCart.includes(offeredTest)} // Disable the button if the item is in the cart
->
-  <i className="bx bx-cart me-2" /> {this.state.itemsInCart.includes(offeredTest) ? 'Already Added' : 'Add to cart'}
-</Button> */}
 <Button
   type="button"
   color={this.props.carts.some(cartItem => cartItem.offered_test_id === offeredTest.id) ? 'secondary' : 'primary'}
   className={`btn mt-3 me-1${this.props.carts.some(cartItem => cartItem.offered_test_id === offeredTest.id) ? ' disabled' : ''}`}
   // onClick={() => this.handleAddToCart(offeredTest)}
-  onClick={() => {
-    // Check if offeredTest.name is equal to any cartItem.name
+    onClick={() => {
     if (this.props.carts.some(cartItem => cartItem.test_name === offeredTest.test_name)) {
       alert("An item with the same name but from a different lab is already in the cart. Please remove the previous one first.");
+    } else if (
+      this.props.patientProfile && this.props.patientProfile.corporate_id !== "undefined" && this.props.patientProfile.is_assosiatewith_anycorporate == true && offeredTest.price > this.props.patientProfile.quota 
+    ) {
+      alert("Unfortunately, there are no funds available in your allocated quota for this test. For more information, please contact your corporation.");
     } else {
-      // If not, proceed with adding to the cart
       this.handleAddToCart(offeredTest);
     }
   }}
@@ -714,25 +875,6 @@ class TestsOffered extends Component {
                 </Row>
               )
               }
-              {/* {isEmpty(nearbyLabs) && (
-                loading ? (
-                  <Row>
-                    <Col lg="12">
-                      <div className="mb-5" style={{ fontSize: '24px' }}>
-                        Please Wait.....
-                      </div>
-                    </Col>
-                  </Row>
-                ) : (
-                  <Row>
-                    <Col lg="12">
-                      <div className="mb-5" style={{ fontSize: '24px', color: 'red' }}>
-                        Sorry, No Labs Found In Your Specific Area.....
-                      </div>
-                    </Col>
-                  </Row>
-                )
-              )} */}
                  
                  <ScrollButton />
             </Row>
@@ -758,13 +900,18 @@ TestsOffered.propTypes = {
   t: PropTypes.any,
   carts: PropTypes.any,
   onGetCarts: PropTypes.func,
+  onGetPatientProfile: PropTypes.func,
+  patientProfile: PropTypes.array,
+
 };
 
-const mapStateToProps = ({ offeredTests, carts }) => ({
+const mapStateToProps = ({ offeredTests, carts, LabMarket }) => ({
   offeredTests: offeredTests.offeredTests,
   carts: carts.carts,
   success: carts.success,
   error: carts.error,
+  patientProfile: LabMarket.patientProfile,
+
 
 });
 
@@ -773,6 +920,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     dispatch(getCOfferedTestsReferrel(ownProps.match.params.lab_account_id)),
   onAddToCart: (cart, id) => dispatch(addToCart(cart, id)),
   onGetCarts: id => dispatch(getCarts(id)),
+  onGetPatientProfile: id => dispatch(getPatientProfile(id)),
 
 });
 

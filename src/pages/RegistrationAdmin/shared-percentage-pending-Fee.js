@@ -113,7 +113,7 @@ class SharedPercentageLabHazirList extends Component {
             formatter: (cellContent, sharedPercentageApprovedFeeTests) => (
               <>
               <div className="text-end">
-                   {sharedPercentageApprovedFeeTests.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                   {/* {sharedPercentageApprovedFeeTests.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} */}
               </div>
               </>
             ),filter: textFilter(),

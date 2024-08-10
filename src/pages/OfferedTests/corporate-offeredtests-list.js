@@ -73,6 +73,22 @@ class OfferedTestsList extends Component {
           formatter: (cellContent, offeredTest) => <>{offeredTest.id}</>,
         },
         {
+          dataField: "added_by",
+          text: "Added On",
+          sort: true,
+          formatter: (cellContent, offeredTest) => (
+            <>
+              <span>
+                {offeredTest.added_by ? (
+                  moment(offeredTest.added_by).format("DD MMM YYYY, h:mm A")
+                ) : (
+                  "--"
+                )}
+              </span>
+            </>
+          ),
+        },
+        {
           text: "Test ID",
           dataField: "test_id",
           sort: true,
@@ -81,10 +97,19 @@ class OfferedTestsList extends Component {
         {
           dataField: "test_name",
           text: "Test Name",
-          sort: true,
+          sort: true,          
+          style: { textAlign: 'left' },
           formatter: (cellContent, offeredTest) => (
             <>
-              <span>
+              <span style={{
+                width: '140px', // Set your desired width here
+                fontSize: '14px',
+              
+                textOverflow: 'ellipsis',
+                whiteSpace: 'prewrap',
+                textAlign: 'left', // Align text to the left
+                display: 'block',
+              }}>
                 {offeredTest.test_name}
               </span>
             </>
@@ -116,11 +141,6 @@ class OfferedTestsList extends Component {
             </>
           ),
         },
-        // {
-        //   dataField: "end_date",
-        //   text: "End Date",
-        //   sort: true,
-        // },
         {
           dataField: "end_date",
           text: "End Date",
@@ -138,6 +158,34 @@ class OfferedTestsList extends Component {
           ),
         },
         {
+    dataField: "date_difference",
+    text: "Duration/ Days",
+    sort: false, // Sorting might not be straightforward with calculated fields
+    formatter: (cellContent, offeredTest) => {
+      const startDate = moment(offeredTest.start_date);
+      const endDate = moment(offeredTest.end_date);
+      const duration = endDate.diff(startDate);
+
+      // If either date is missing, show "--"
+      if (!startDate.isValid() || !endDate.isValid()) {
+        return "--";
+      }
+
+      // Calculate the difference in days, hours, and minutes
+      const days = moment.duration(duration).days();
+      const hours = moment.duration(duration).hours();
+      const minutes = moment.duration(duration).minutes();
+
+      // Format the duration
+      let formattedDuration = "";
+      if (days > 0) formattedDuration += `${days}`;
+      // if (hours > 0) formattedDuration += `${hours}h `;
+      // formattedDuration += `${minutes}m`;
+
+      return <span>{formattedDuration}</span>;
+    },
+  },
+        {
           dataField: "test_status",
           text: "Status",
           sort: true,
@@ -146,10 +194,12 @@ class OfferedTestsList extends Component {
           dataField: "price",
           text: "Price",
           sort: true,
+          
+          style: { textAlign: 'right' },
           formatter: (cellContent, offeredTest) => (
             <>
               {(
-                <span>{offeredTest.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</span>
+                <span className="float-end">{offeredTest.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</span>
               )}
             </>
           ),
@@ -162,7 +212,7 @@ class OfferedTestsList extends Component {
           text: "Action",
           formatter: (cellContent, offeredTest) => (
             <div className="d-flex gap-3" style={{ textAlign: "center", justifyContent: "center" }}>
-              {offeredTest.test_status == "Expire" ? (
+              {offeredTest.test_status == "Expired" ? (
                 <Tooltip title="Update">
                   <Link className="text-success" to="#">
                     <i

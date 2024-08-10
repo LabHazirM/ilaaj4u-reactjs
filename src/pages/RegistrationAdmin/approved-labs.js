@@ -456,7 +456,8 @@ When lab is approved b2b shares for all the existing b2b clients is automaticall
                                       responsive
                                       ref={this.node}
                                       filter={filterFactory()}
-                                      sort={{ sortCaret: (order, column) => order === 'desc' ? <i className="fa fa-arrow-up" style={iconStyle}></i> : <i className="fa fa-arrow-down" style={iconStyle}></i> }} // Customize sort caret icons
+                                      sort={{ sortCaret: (order, column) => order === 'desc' ? <i className="fa fa-arrow-up" 
+                                      style={iconStyle}></i> : <i className="fa fa-arrow-down" style={iconStyle}></i> }} // Customize sort caret icons
 
                                     />
                                     {this.state.isHovered && (

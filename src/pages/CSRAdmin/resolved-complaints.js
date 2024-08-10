@@ -142,16 +142,20 @@ class ResolvedComplaints extends Component {
           dataField: "complainee",
           text: "Complaint Against",
           sort: true,
-          formatter: (cellContent, resolvedComplaint) => (
+          formatter: (cellContent, pendingComplaint) => (
             <>
-              {resolvedComplaint.complainee === "Lab" ? (
-                <>
-                  <strong className="text-danger float-start">{resolvedComplaint.complainee}</strong><br></br>
-                  <span className="float-start">{resolvedComplaint.lab_name}</span></>
+              {pendingComplaint.complainee === "Lab" ? (
+                <Link to="#" 
+                  onMouseEnter={e => this.openCompalneeModal(e, pendingComplaint)}
+                  onPointerLeave={this.handleMouseExit()}
+                >
+                  <strong className="text-danger float-start">{pendingComplaint.complainee}</strong><br></br>
+                  <span className="float-start">{pendingComplaint.lab_name}</span>
+                </Link>
               ) : (
                 <>
-                  <strong className="text-danger float-start">{resolvedComplaint.complainee}</strong><br></br>
-                  <span className="float-start">{resolvedComplaint.labhazir_complainee}</span>
+                  <strong className="text-danger float-start">{pendingComplaint.complainee}</strong><br></br>
+                  <span className="float-start">{pendingComplaint.labhazir_complainee}</span>
                 </>
               )}
             </>
@@ -286,11 +290,29 @@ class ResolvedComplaints extends Component {
       phone:arg.phone,
     });
   };
+  toggleComplaneeModal = () => {
+    this.setState(prevState => ({
+      complaneeModal: !prevState.complaneeModal,
+    }));
+    this.state.btnText === "Copy"
+      ? this.setState({ btnText: "Copied" })
+      : this.setState({ btnText: "Copy" });
+  };
+
+  openCompalneeModal = (e, arg) => {
+    console.log("message model is call in case when complanee is lab", arg)
+    this.setState({ complaneeModal: true, 
+      lab_city: arg.lab_city,
+      lab_phone: arg.lab_phone,
+
+     });
+  };
   handleMouseExit = () => {
     this.setState({
       PatientModal: false,
       isHovered: false,
       messageModal:false,
+      complaneeModal: false,
     });
   };
   togglePatientModal = () => {
@@ -542,6 +564,82 @@ class ResolvedComplaints extends Component {
                                                 </div>
                                               </Col>
                                             </Row>
+                                          </Form>
+                                        </Formik>
+                                      </ModalBody>
+                                    </Modal>
+                                    <Modal
+                                      isOpen={this.state.complaneeModal}
+                                      onPointerLeave={this.handleMouseExit}
+                                      toggle={this.toggleComplaneeModal}
+                                    >
+                                    <ModalHeader
+                                        toggle={this.toggleComplaneeModal}
+                                        tag="h4"
+                                      >
+                                        <span>Complainant Against: </span>
+                                      </ModalHeader>
+                                      <ModalBody>
+                                        <Formik>
+                                          <Form>
+                                        <Row>
+                                        <Col className="col-12">
+
+                                                <div className="mb-3 row">
+                                                  <div className="col-md-3">
+                                                    <Label className="form-label">
+                                                      City
+                                                    </Label>
+                                                  </div>
+                                                  <div className="col-md-9">
+                                                    <input
+                                                      type="text"
+                                                      value={
+                                                        this.state.lab_city
+                                                      }
+                                                      className="form-control"
+                                                      readOnly={true}
+                                                    />
+                                                  </div>
+                                                </div>
+
+                                                <div className="mb-3 row">
+                                                  <div className="col-md-3">
+                                                    <Label className="form-label">
+                                                      Mobile No.
+                                                    </Label>
+                                                  </div>
+                                                  <div className="col-md-6">
+                                                    <input
+                                                      type="text"
+                                                      value={
+                                                        this.state.lab_phone
+                                                      }
+                                                      className="form-control"
+                                                      readOnly={true}
+                                                    />
+                                                  </div>
+
+                                                  <div className="col-md-3">
+                                                    <button
+                                                      type="button"
+                                                      className="btn btn-secondary"
+                                                      onClick={() => {
+                                                        navigator.clipboard.writeText(
+                                                          this.state
+                                                            .lab_phone
+                                                        );
+                                                        this.setState({
+                                                          btnText: "Copied",
+                                                        });
+                                                      }}
+                                                    >
+                                                      {this.state.btnText}
+                                                    </button>
+                                                  </div>
+                                                </div>
+                                              </Col>
+                                        </Row>
                                           </Form>
                                         </Formik>
                                       </ModalBody>

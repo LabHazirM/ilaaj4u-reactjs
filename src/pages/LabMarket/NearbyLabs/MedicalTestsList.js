@@ -83,6 +83,8 @@ class MedicalTestList extends Component {
     // this.toggle = this.toggle.bind(this);
     this.handlePatientFeedbackClick =
       this.handlePatientFeedbackClick.bind(this);
+    console.log("yaha ani chahi hai uuid", this.props.match.params.id, this.state.user_id, this.props.match.params.filnalurl)
+    console.log(this.state.user_type)
   }
 
   componentDidMount() {

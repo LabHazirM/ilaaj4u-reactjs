@@ -20,6 +20,10 @@ import {
   GET_TERRITORIES_LIST_SUCCESS,
   GET_TERRITORIES_LIST_FAIL,
   ADD_STAFF_FAIL,
+
+  GET_MARKETERS_LIST,
+  GET_MARKETERS_LIST_SUCCESS,
+  GET_MARKETERS_LIST_FAIL,
 } from "./actionTypes";
 
 // Territories
@@ -54,6 +58,20 @@ export const getCSRListFail = error => ({
   payload: error,
 });
 
+export const getMarketersList = () => ({
+  type: GET_MARKETERS_LIST,
+  payload: {},
+});
+
+export const getMarketersListSuccess = marketersList => ({
+  type: GET_MARKETERS_LIST_SUCCESS,
+  payload: marketersList,
+});
+
+export const getMarketersListFail = error => ({
+  type: GET_MARKETERS_LIST_FAIL,
+  payload: error,
+});
 export const getAuditorList = () => ({
   type: GET_AUDITOR_LIST,
   payload: {},

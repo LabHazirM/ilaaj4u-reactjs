@@ -21,8 +21,6 @@ export const GET_LABS = `${API_ENDPOINT}/api/finance-officer/lab-MOF-list`;
 export const GET_ALL_LABS_LIST = `${API_ENDPOINT}/api/finance-officer/labs-list`;
 export const GET_MAIN_LABS = `${API_ENDPOINT}/api/lab/lab-list`;
 
-
-
 // TEST
 export const GET_TESTS = `${API_ENDPOINT}/api/medicaltest/test-list`;
 export const GET_UNITS = `${API_ENDPOINT}/api/medicaltest/unit-list`;
@@ -55,6 +53,7 @@ export const GET_CSR_OFFICER_NOTIFICATION = `${API_ENDPOINT}/api/complaint/csrof
 export const GET_ACTIVITY_LOG_FINANCE = `${API_ENDPOINT}/api/finance-officer/activity-log-finance`;
 export const GET_CORPORATE_COMMIT = `${API_ENDPOINT}/api/corporate/corporate-commit`;
 export const GET_ACTIVITY_LOG_MARKETER = `${API_ENDPOINT}/api/marketer-admin/activity-log-marketer`;
+export const GET_LAB_ACTIVITY_LOG_MARKETER = `${API_ENDPOINT}/api/marketer-admin/activity-log-lab-marketer`;
 export const GET_PATHOLOGISTS = `${API_ENDPOINT}/api/lab/pathologist-list`;
 export const ADD_NEW_PATHOLOGIST = `${API_ENDPOINT}/api/lab/pathologist`;
 export const UPDATE_PATHOLOGIST = `${API_ENDPOINT}/api/lab/pathologist`;
@@ -307,6 +306,8 @@ export const UPDATE_BANK_TRANSFER = `${API_ENDPOINT}/api/finance-officer/bank-tr
 export const GET_BANK_TRANSFER = `${API_ENDPOINT}/api/finance-officer/bank-transfer-detail`;
 
 export const GET_PAYMENT_STATUSS = `${API_ENDPOINT}/api/finance-officer/get-payment-in-created`;
+//////////////////////////
+export const GET_PAY_STATUSS = `${API_ENDPOINT}/api/finance-officer/get-payment-in-created`;
 export const GET_DEPOSIT_STATUSS = `${API_ENDPOINT}/api/finance-officer/get-payment-in-deposited`;
 export const GET_CLEAR_STATUSS = `${API_ENDPOINT}/api/finance-officer/get-payment-in-cleared`;
 export const UPDATE_PAYMENT_STATUS = `${API_ENDPOINT}/api/finance-officer/payment-in`;
@@ -314,13 +315,9 @@ export const UPDATE_PAYMENTIN_STATUS = `${API_ENDPOINT}/api/finance-officer/get-
 export const GET_BOUNCEDIN_STATUSS = `${API_ENDPOINT}/api/finance-officer/get-payment-in-bounced`;
 export const UPDATE_PAYMENTINBOUNCED_STATUS = `${API_ENDPOINT}/api/finance-officer/get-payment-in-bounced`;
 export const GET_PAYMENTOUT_CLEAR_STATUSS = `${API_ENDPOINT}/api/finance-officer/get-payment-out-cleared`;
-
-
-
-
-
 export const GET_PAYMENTOUT_STATUSS = `${API_ENDPOINT}/api/finance-officer/get-payment-out-pending`;
 export const GET_CREATEDOUT_STATUSS = `${API_ENDPOINT}/api/finance-officer/get-payment-out-created`;
+export const GET_CREATEDOUTDETAIL_STATUSS = `${API_ENDPOINT}/api/corporate/corporate-payment-detail`;
 export const UPDATE_PAYMENTOUT_STATUS = `${API_ENDPOINT}/api/finance-officer/get-payment-out-pending`;
 export const UPDATE_PAYMENTOUTCREATED_STATUS = `${API_ENDPOINT}/api/finance-officer/get-payment-out-created`;
 export const GET_BOUNCED_STATUSS = `${API_ENDPOINT}/api/finance-officer/get-payment-out-bounced`;
@@ -358,6 +355,7 @@ export const GET_REGION_WISE_ADVERTISEMENT = `${API_ENDPOINT}/api/marketer-admin
 
 export const GET_DONORS = `${API_ENDPOINT}/api/donor/list-donor`;
 export const GET_DONORSA = `${API_ENDPOINT}/api/finance-admin/donationappointment-list`;
+export const GET_LABS_LISTING = `${API_ENDPOINT}/api/marketer-admin/labs-list`;
 export const GET_DONORS_LIST = `${API_ENDPOINT}/api/donor/list-donor`;
 // export const GET_CL_LIST = `${API_ENDPOINT}/api/accountstatement/corporate-account-statements-list`;
 export const GET_CL_LIST = `${API_ENDPOINT}/api/accountstatement/corporate-statements-list`;
@@ -399,6 +397,7 @@ export const GET_BANK_STATEMENTS = `${API_ENDPOINT}/api/finance-officer/bank-tra
 
 // DONOR STATEMENYTS
 export const GET_DONOR_ACCOUNT_STATEMENTS = `${API_ENDPOINT}/api/accountstatement/donor-account-statements`;
+export const GET_DONORS_ACCOUNT_STATEMENTS = `${API_ENDPOINT}/api/accountstatement/donor-account-statements`;
 
 // DONOR STATEMENYTS
 export const GET_B2B_ACCOUNT_STATEMENTS = `${API_ENDPOINT}/api/accountstatement/b2b-account-statements`;
@@ -439,6 +438,7 @@ export const GET_APPROVED_DONORS = `${API_ENDPOINT}/api/registration-admin/appro
 export const GET_UNAPPROVED_DONORS = `${API_ENDPOINT}/api/registration-admin/unapproved-donors`;
 export const APPROVE_UNAPPROVE_DONOR = `${API_ENDPOINT}/api/registration-admin/approve-unapprove-donor`;
 export const GET_LABS_RATING = `${API_ENDPOINT}/api/registration-admin/labs-rating`;
+export const GET_LABS_TESTING = `${API_ENDPOINT}/api/marketer-admin/labs-list`;
 
 // FINANCE ADMIN
 
@@ -453,6 +453,7 @@ export const GET_LC_LIST = `${API_ENDPOINT}/api/accountstatement/corporate-accou
 
 // STAFF
 export const GET_CSR_LIST = `${API_ENDPOINT}/api/staff/csr-list`;
+export const GET_MARKETERS_LIST = `${API_ENDPOINT}/api/staff/marketers-list`;
 export const GET_AUDITOR_LIST = `${API_ENDPOINT}/api/staff/auditor-list`;
 export const GET_FINANCE_OFFICER_LIST = `${API_ENDPOINT}/api/staff/finance-officer-list`;
 export const ADD_STAFF = `${API_ENDPOINT}/api/staff/register-staff`;

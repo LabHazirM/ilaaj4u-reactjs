@@ -51,6 +51,7 @@ class PaymentStatussList extends Component {
     this.state = {
       paymentStatuss: [],
       paymentStatus: "",
+      cheque_image: "",
       modal: false,
       payment_status: "Pending Clearance",
       deleteModal: false,
@@ -87,6 +88,15 @@ class PaymentStatussList extends Component {
     this.toggle();
   };
 
+  handleSubmit = () => {
+    // Validate the form before submission
+    if (this.state.paymentStatus.is_cleared === "No" && !this.state.cheque_image) {
+      // If payment status is "No" and no image is selected, prevent form submission
+      // You can display an error message or handle it as per your UI/UX design
+      alert("Please select a bank voucher image.");
+      return;
+    }
+  };
   // eslint-disable-next-line no-unused-vars
   componentDidUpdate(prevProps, prevState, snapshot) {
     const { paymentStatuss } = this.props;
@@ -126,6 +136,7 @@ class PaymentStatussList extends Component {
         cleared_at: arg.cleared_at,
         is_cleared: arg.is_cleared,
         payment_status: arg.payment_status,
+        cheque_image: arg.cheque_image,
       },
       isEdit: true,
     });
@@ -504,10 +515,15 @@ class PaymentStatussList extends Component {
                                                 this.state.paymentStatus
                                                   .is_cleared) ||
                                               "",
-                                            cleared_at:
+                                              cleared_at:
                                               (this.state.paymentStatus &&
                                                 this.state.paymentStatus
                                                   .cleared_at) ||
+                                              "",
+                                              cheque_image:
+                                              (this.state.paymentStatus &&
+                                                this.state.paymentStatus
+                                                  .cheque_image) ||
                                               "",
                                             payment_status:
                                               (this.state.paymentStatus &&
@@ -524,6 +540,11 @@ class PaymentStatussList extends Component {
                                                 then: Yup.string().required('Cleared At is required'),
                                                 otherwise: Yup.string(),
                                               }),
+                                              cheque_image: Yup.string().when('is_cleared', {
+                                                is: 'No',
+                                                then: Yup.string().required('cheque_image is required'),
+                                                otherwise: Yup.string(),
+                                              }),
 
                                           })}
                                           onSubmit={values => {
@@ -533,8 +554,8 @@ class PaymentStatussList extends Component {
 
                                               is_cleared: values.is_cleared,
                                               cleared_at: values.cleared_at,
-
-
+                                              cheque_image: values.cheque_image,
+                                              
                                             };
 
                                             // update PaymentStatus
@@ -559,47 +580,6 @@ class PaymentStatussList extends Component {
                                                     name="hiddenEditFlag"
                                                     value={isEdit}
                                                   />
-                                                  {/* <div className="mb-3">
-                                                    <Label className="form-label">
-                                                      Varified By
-                                                      <span className="text-danger font-size-12">
-                                                        *
-                                                      </span>
-                                                    </Label>
-                                                    <Input
-                                                      name="is_cleared"
-                                                      type="text"
-                                                      value={
-                                                        this.state
-                                                          .paymentStatus
-                                                          .is_cleared
-                                                      }
-                                                      onChange={e => {
-                                                        this.setState({
-                                                          paymentStatus: {
-                                                            id: paymentStatus.id,
-                                                            status:
-                                                              paymentStatus.status,
-                                                            cleared_at: paymentStatus.cleared_at,
-                                                            is_cleared:
-                                                              e.target.value,
-                                                          },
-                                                        });
-                                                      }}
-                                                      className={
-                                                        "form-control" +
-                                                        (errors.is_cleared &&
-                                                        touched.is_cleared
-                                                          ? " is-invalid"
-                                                          : "")
-                                                      }
-                                                    />
-                                                    <ErrorMessage
-                                                      name="is_cleared"
-                                                      component="div"
-                                                      className="invalid-feedback"
-                                                    />
-                                                  </div> */}
 
                                                   <div className="mb-3">
                                                     <Label className="form-label">
@@ -623,9 +603,6 @@ class PaymentStatussList extends Component {
                                                         this.setState({
                                                           paymentStatus: {
                                                             id: paymentStatus.id,
-                                                            // deposit_bank:
-                                                            //   paymentStatus.deposit_bank,
-                                                            // // deposited_at: paymentStatus.deposit_bank,
                                                             cleared_at: paymentStatus.cleared_at,
                                                             is_cleared:
                                                               e.target.value,
@@ -682,9 +659,6 @@ class PaymentStatussList extends Component {
                                                           this.setState({
                                                             paymentStatus: {
                                                               id: paymentStatus.id,
-                                                              // deposit_bank:
-                                                              //   paymentStatus.deposit_bank,
-                                                              // // deposited_at: paymentStatus.deposit_bank,
                                                               is_cleared: paymentStatus.is_cleared,
                                                               cleared_at:
                                                                 e.target.value,
@@ -706,65 +680,50 @@ class PaymentStatussList extends Component {
                                                       />
                                                     </div>
                                                   ) : null}
-                                                  {/* Certificate Type field */}
-                                                  {/* <div className="mb-3">
-                                                    <Label className="form-label">
-                                                      Status Type
-                                                      <span className="text-danger font-size-12">
-                                                        *
-                                                      </span>
-                                                    </Label>
-                                                    <Field
-                                                      name="status"
-                                                      as="select"
-                                                      // className="form-control"
-                                                      className={
-                                                        "form-control" +
-                                                        (errors.status &&
-                                                        touched.status
-                                                          ? " is-invalid"
-                                                          : "")
-                                                      }
-                                                      onChange={e => {
-                                                        this.setState({
-                                                          paymentStatus: {
-                                                            id: paymentStatus.id,
-                                                            cleared_at: paymentStatus.cleared_at,
-                                                            is_cleared: paymentStatus.is_cleared,
-                                                            status :
-                                                              e.target.value,
-                                                          },
-                                                        });
-                                                      }}
-                                                      multiple={false}
-                                                      value={
-                                                        this.state
-                                                          .paymentStatus
-                                                          .status
-                                                      }
-                                                    >
-                                                      <option value="">
-                                                        --- Please select
-                                                        status type ---
-                                                      </option>
-                                                      <option value="Created">
-                                                      Created
-                                                      </option>
-                                                      <option value="Deposited">
-                                                      Deposited
-                                                      </option>
-                                                      <option value="Cleared">
-                                                      Cleared
-                                                      </option>
-                                                      
-                                                    </Field>
-                                                    <ErrorMessage
-                                                      name="status"
-                                                      component="div"
-                                                      className="invalid-feedback"
-                                                    />
-                                                  </div> */}
+                                                     {this.state.paymentStatus.is_cleared == "No" ? (
+                                                    <div className="mb-3">
 
+                                                      <Label htmlFor="cardnumberInput">
+                                                        Bank Voucher
+                                                        <span
+                                                          style={{ color: "#f46a6a" }}
+                                                          className="font-size-18"
+                                                        >
+                                                          *
+                                                        </span>
+                                                      </Label>
+                                                      <Input
+                                            id="formFile"
+                                            name="cheque_image"
+                                            type="file"
+                                            multiple={false}
+                                            accept=".jpg,.jpeg,.png,.pdf"
+                                            onChange={e => {
+                                              this.setState({
+                                                paymentStatus: {
+                                                  id: paymentStatus.id,
+                                                  is_cleared: paymentStatus.is_cleared,
+                                                  cheque_image:
+                                                  e.target.files[0],
+                                                },
+                                              });
+                                            }}
+                                            // className="form-control is-invalid"
+                                            className={
+                                              "form-control" +
+                                              (errors.is_cleared &&
+                                              touched.is_cleared
+                                                ? " is-invalid"
+                                                : "")
+                                            }
+                                          />
+                                                      <ErrorMessage
+                                                        name="is_cleared"
+                                                        component="div"
+                                                        className="invalid-feedback"
+                                                      />
+                                                    </div>
+                                                  ) : null}
 
                                                 </Col>
                                               </Row>

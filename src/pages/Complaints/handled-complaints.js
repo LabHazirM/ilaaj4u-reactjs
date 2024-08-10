@@ -5,6 +5,8 @@ import MetaTags from "react-meta-tags";
 import { withRouter, Link } from "react-router-dom";
 import filterFactory, { textFilter } from 'react-bootstrap-table2-filter';
 import { Tooltip } from "@material-ui/core";
+import 'react-datepicker/dist/react-datepicker.css';
+import DatePicker from 'react-datepicker';
 import {
   Card,
   CardBody,
@@ -46,6 +48,9 @@ class handledComplaintsList extends Component {
     this.state = {
       handledComplaints: [],
       handledComplaint: "",
+      startDate: null,
+      endDate: null,
+      selectedLab: null,
       modal: false,
       btnText: "Copy",
       btnText1: "Copy",
@@ -149,7 +154,13 @@ class handledComplaintsList extends Component {
             </>
           ),
           filter: textFilter(),
-        },        
+        },      
+        {
+          dataField: "city",
+          text: "City",
+          sort: true,
+          filter: textFilter(),
+        },  
         // {
         //   dataField: "message",
         //   text: "Message",
@@ -176,7 +187,6 @@ class handledComplaintsList extends Component {
             <>
               <span>
                 {handledComplaint.time_difference_hours.toFixed().toString()}
-                {/* {moment(complaint.registered_at).format("DD MMM YYYY, h:mm A")} */}
               </span>
             </>
           ),
@@ -206,12 +216,63 @@ class handledComplaintsList extends Component {
     this.togglePatientModal = this.togglePatientModal.bind(this);
 
   }
-
   componentDidMount() {
-    const { handledComplaints, onGetHandledComplaints } = this.props;
-    onGetHandledComplaints(this.state.user_id);
-    this.setState({ handledComplaints });
+    this.setState({ handledComplaints: [] });
+    const currentMonthStart = moment().startOf("day");
+    const currentMonthEnd = moment().endOf("day");
+
+    this.setState({
+      startDate: currentMonthStart.toDate(),
+      endDate: currentMonthEnd.toDate(),
+    });
+
+    this.fetchData();
   }
+  
+  
+  componentDidUpdate(prevProps, prevState) {
+    if (
+      prevState.startDate !== this.state.startDate ||
+      prevState.endDate !== this.state.endDate
+    ) {
+      // Fetch data based on date filters
+      this.fetchData();
+    }
+
+    if (this.props.handledComplaints.length > 0 &&
+      this.props.handledComplaints !== prevProps.handledComplaints) {
+    const lastIndex = this.props.handledComplaints.findIndex((statement) => {
+        const statementDate = new Date(statement.registered_at);
+        const labFilter = !this.state.selectedLab || statement.lab_name === this.state.selectedLab;
+        return (
+          statementDate >= this.state.startDate &&
+          statementDate <= this.state.endDate &&
+          labFilter
+        );
+      });
+
+      // Do something with lastIndex if needed
+    }
+    const { handledComplaints } = this.props;
+    if (
+      !isEmpty(handledComplaints) &&
+      size(prevProps.handledComplaints) !== size(handledComplaints)
+    ) {
+      this.setState({ handledComplaints: {}, isEdit: false });
+    }
+  }
+
+  fetchData = () => {
+    if (this.state.user_id && this.state.startDate && this.state.endDate) {
+      const { onGetHandledComplaints } = this.props;
+      const userId = this.state.user_id;
+      const startDate = moment(this.state.startDate).format("YYYY-MM-DD");
+      const endDate = moment(this.state.endDate).format("YYYY-MM-DD");
+  
+      onGetHandledComplaints(userId, startDate, endDate); // Pass startDate and endDate to API call
+    }
+  };
+  
 
   toggle() {
     this.setState(prevState => ({
@@ -274,15 +335,7 @@ class handledComplaintsList extends Component {
   };
 
   // eslint-disable-next-line no-unused-vars
-  componentDidUpdate(prevProps, prevState, snapshot) {
-    const { handledComplaints } = this.props;
-    if (
-      !isEmpty(handledComplaints) &&
-      size(prevProps.handledComplaints) !== size(handledComplaints)
-    ) {
-      this.setState({ handledComplaints: {}, isEdit: false });
-    }
-  }
+  
 
   onPaginationPageChange = page => {
     if (
@@ -298,11 +351,24 @@ class handledComplaintsList extends Component {
 
   render() {
     const { SearchBar } = Search;
-
+    const { startDate, endDate, labsData } = this.state;
     const { handledComplaints } = this.props;
-
     const { onGetHandledComplaints } = this.props;
     const handledComplaint = this.state.handledComplaint;
+
+    const uniqueLabNames = [...new Set(this.props.handledComplaints.map(handledComplaints => handledComplaints.complainant))];
+    const labOptions = uniqueLabNames.map((typeoptions, index) => (
+      <option key={index} value={typeoptions}>
+        {typeoptions}
+      </option>
+    ));
+   
+    const uniqueCityNames = [...new Set(this.props.handledComplaints.map(handledComplaints => handledComplaints.city))];
+    const cityOptions = uniqueCityNames.map((cityName, index) => (
+      <option key={index} value={cityName}>
+        {cityName}
+      </option>
+    ));
 
     const pageOptions = {
       sizePerPage: 10,
@@ -310,6 +376,21 @@ class handledComplaintsList extends Component {
       custom: true,
     };
 
+    const filteredStatements = handledComplaints.filter((statement) => {
+      const orderedAt = moment(statement.registered_at);
+      const labFilter = !this.state.selectedLab || statement.complainant === this.state.selectedLab;
+      const CorporateFilter = !this.state.selectedCorporate || statement.city === this.state.selectedCorporate;
+      return (
+        labFilter && CorporateFilter &&
+        (!startDate || orderedAt.isSameOrAfter(startDate)) &&
+        (!endDate || orderedAt.isSameOrBefore(endDate))
+      );
+    });
+
+    filteredStatements.sort((a, b) => {
+      return moment(a.registered_at) - moment(b.registered_at);
+    });
+    console.log("Filtered Statements:", filteredStatements);
     const defaultSorted = [
       {
         dataField: "id", // if dataField is not match to any column you defined, it will be ignored.
@@ -330,6 +411,60 @@ class handledComplaintsList extends Component {
               <Col lg="12">
                 <Card>
                   <CardBody>
+                  <Row>
+              <Col lg="3">
+                <div className="mb-3">
+                  <label className="form-label">Start Date:</label>
+                  <DatePicker
+                    selected={startDate}
+                    onChange={(date) => this.setState({ startDate: date })}
+                    className="form-control"
+                    dateFormat="d MMM yyyy"
+
+                  />
+                </div></Col>
+              <Col lg="3">
+                <div className="mb-3">
+                  <label className="form-label">End Date:</label>
+                  <DatePicker
+                    selected={endDate}
+                    onChange={(date) => this.setState({ endDate: date })}
+                    className="form-control"
+                    dateFormat="d MMM yyyy"
+
+                  />
+                </div>
+
+              </Col>
+             <Col lg="3">
+  <div className="mb-3">
+    <label className="form-label">Complainant type</label>
+    <select
+      value={this.state.selectedLab}
+      onChange={(e) => this.setState({ selectedLab: e.target.value })}
+      className="form-control"
+    >
+      <option value="">All</option>
+      {labOptions}
+    </select>
+  </div>
+</Col>
+<Col lg="3">
+  <div className="mb-3">
+    <label className="form-label">City</label>
+    <select
+      value={this.state.selectedCorporate}
+      onChange={(e) => this.setState({ selectedCorporate: e.target.value })}
+      className="form-control"
+    >
+      <option value="">All Cities</option>
+      {cityOptions}
+    </select>
+  </div>
+</Col>
+
+
+            </Row>
                     <PaginationProvider
                       pagination={paginationFactory(pageOptions)}
                       keyField="id"
@@ -340,7 +475,7 @@ class handledComplaintsList extends Component {
                         <ToolkitProvider
                           keyField="id"
                           columns={this.state.handledComplaintListColumns}
-                          data={handledComplaints}
+                          data={filteredStatements}
                           search
                         >
                           {toolkitprops => (
@@ -363,7 +498,7 @@ class handledComplaintsList extends Component {
                                         toggle={this.togglePatientModal}
                                         tag="h4"
                                       >
-                                        <span>Patient details: </span>
+                                        <span>Details: </span>
                                       </ModalHeader>
                                       <ModalBody>
                                         <Formik>
@@ -524,8 +659,7 @@ class handledComplaintsList extends Component {
                                                       className="btn btn-secondary"
                                                       onClick={() => {
                                                         navigator.clipboard.writeText(
-                                                          this.state
-                                                            .lab_phone
+                                                          this.state.lab_phone
                                                         );
                                                         this.setState({
                                                           btnText: "Copied",
@@ -638,6 +772,7 @@ handledComplaintsList.propTypes = {
   className: PropTypes.any,
   onGetHandledComplaints: PropTypes.func,
 };
+
 
 const mapStateToProps = ({ complaints }) => ({
   handledComplaints: complaints.handledComplaints,

@@ -194,6 +194,12 @@ class DiscountLabHazirList extends Component {
                 ></i>
               </Link>
               </Tooltip>
+              <Tooltip title="Add Comment">
+                <Link
+                  className="fas fa-comment font-size-18"
+                  to={`/marketer-test-labdiscount-notes-list/${discountLabHazirToLab.id}`}
+                ></Link>
+              </Tooltip>
             </div>
           ),
         },

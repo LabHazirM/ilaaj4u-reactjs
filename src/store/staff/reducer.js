@@ -1,6 +1,8 @@
 import {
   GET_CSR_LIST_SUCCESS,
   GET_CSR_LIST_FAIL,
+  GET_MARKETERS_LIST_SUCCESS,
+  GET_MARKETERS_LIST_FAIL,
   GET_AUDITOR_LIST_SUCCESS,
   GET_AUDITOR_LIST_FAIL,
   GET_TERRITORIES_LIST_SUCCESS,
@@ -19,6 +21,7 @@ import {
 const INIT_STATE = {
   staff: [],
   csrList: [],
+  marketersList: [],
   auditorList: [],
   territoriesList: [],
   financeOfficerList: [],
@@ -54,6 +57,18 @@ const staff = (state = INIT_STATE, action) => {
         ...state,
         error: action.payload,
       };
+
+      case GET_MARKETERS_LIST_SUCCESS:
+        return {
+          ...state,
+          marketersList: action.payload.data,
+        };
+  
+      case GET_MARKETERS_LIST_FAIL:
+        return {
+          ...state,
+          error: action.payload,
+        };
 
     case GET_AUDITOR_LIST_SUCCESS:
       return {

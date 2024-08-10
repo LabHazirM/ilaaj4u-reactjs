@@ -113,11 +113,12 @@ class OfferedTestsList extends Component {
           formatter: (cellContent, offeredTest) => (
             <>
               <span>
-                {offeredTest.shared_percentage}
+                {offeredTest.shared_percentage ? `${(offeredTest.shared_percentage * 100).toFixed(0)}%` : '0%'}
               </span>
             </>
           ),
         },
+        
         {
           dataField: "status",
           text: "Status",
@@ -147,7 +148,7 @@ class OfferedTestsList extends Component {
                 // disabled={offeredTest.length == 0}
                 >
                   {/* <i className="mdi mdi-sticker-check-outline me-1" /> */}
-                  Cencel Request
+                  Cancel Request
                 </Button>
               ) : null}
               

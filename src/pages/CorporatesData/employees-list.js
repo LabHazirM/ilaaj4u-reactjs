@@ -63,6 +63,7 @@ class OfferedTestsList extends Component {
       offeredTest: "",
       type: "",
       selectedcorporate: null,
+      selectedType: null,
       modal: false,
       deleteModal: false,
       user_id: localStorage.getItem("authUser")
@@ -70,7 +71,7 @@ class OfferedTestsList extends Component {
         : "",
       offeredTestListColumns: [
         {
-          text: "Id",
+          text: "ID",
           dataField: "id",
           sort: true,
           formatter: (cellContent, offeredTest) => (
@@ -78,8 +79,9 @@ class OfferedTestsList extends Component {
         },
         {
           dataField: "name",
-          text: "Employee Name",
+          text: "Name",
           sort: true,
+          style:{textAlign: "left"},
           formatter: (cellContent, offeredTest) => (
             <>
               <span>
@@ -90,7 +92,7 @@ class OfferedTestsList extends Component {
         },
         {
           dataField: "employee_code",
-          text: "Employee ID",
+          text: "ID Card No.",
           sort: true,
           formatter: (cellContent, offeredTest) => (
             <>
@@ -121,6 +123,114 @@ class OfferedTestsList extends Component {
             defaultValue: 'All',
           }),
         },
+        {
+          dataField: "relation",
+          text: "Relation with Employee",
+          sort: true,
+          formatter: (cellContent, offeredTest) => (
+            <>
+              <span>
+                {offeredTest.relation || "--"}
+              </span>
+            </>
+          ), filter: textFilter(),
+        },
+        
+        {
+          dataField: "parent_employee_id",
+          text: "Parent Employee",
+          style:{textAlign: "left"},
+          sort: true,
+          formatter: (cellContent, offeredTest) => (
+            <>
+              <span>
+                {offeredTest.parent_employee_id || "--"}
+              </span>
+            </>
+          ),
+          filter: textFilter(),
+        },
+        {
+          dataField: "limit",
+          text: "Quota",
+          style:{textAlign: "right"},
+          sort: true,
+          formatter: (cellContent, offeredTest) => (
+            <>
+              <span>
+                {offeredTest.limit}
+              </span>
+            </>
+          ), filter: textFilter(),
+        },
+        {
+          dataField: "remening_quota",
+          text: "Remaining Quota",
+          style:{textAlign: "right"},
+          sort: true,
+          formatter: (cellContent, offeredTest) => (
+            <>
+              <span>
+                {offeredTest.remening_quota}
+              </span>
+            </>
+          ), filter: textFilter(),
+        },
+        {
+          dataField: "start_date",
+          text: "Starting Date",
+          sort: true,
+          formatter: (cellContent, paymentCreatedStatus) => {
+              // Check if start_date is null or undefined
+              if (!paymentCreatedStatus.start_date) {
+                  return (
+                      <p className="text-muted mb-0">-</p>
+                  );
+              }
+      
+              // Proceed with formatting if start_date is valid
+              const date = new Date(paymentCreatedStatus.start_date);
+              const day = date.getDate();
+              const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+              const month = monthNames[date.getMonth()];
+              const year = date.getFullYear().toString().slice(-2); // Get the last 2 digits of the year
+      
+              return (
+                  <p className="text-muted mb-0">
+                      {`${day}-${month}-${year}`}
+                  </p>
+              );
+          },
+          filter: textFilter(),
+      },
+      {
+        dataField: "date",
+        text: "Expiry Date",
+        sort: true,
+        formatter: (cellContent, paymentCreatedStatus) => {
+            // Check if start_date is null or undefined
+            if (!paymentCreatedStatus.date) {
+                return (
+                    <p className="text-muted mb-0">-</p>
+                );
+            }
+    
+            // Proceed with formatting if start_date is valid
+            const date = new Date(paymentCreatedStatus.date);
+            const day = date.getDate();
+            const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            const month = monthNames[date.getMonth()];
+            const year = date.getFullYear().toString().slice(-2); // Get the last 2 digits of the year
+    
+            return (
+                <p className="text-muted mb-0">
+                    {`${day}-${month}-${year}`}
+                </p>
+            );
+        },
+        filter: textFilter(),
+    },
+        
         {
           dataField: "status",
           text: "Activity Status",
@@ -192,7 +302,6 @@ class OfferedTestsList extends Component {
     }));
   }
 
-  // Select
   handleSelectGroup = selectedGroup => {
     this.setState({ offeredTest: selectedGroup.value });
   };
@@ -202,13 +311,7 @@ class OfferedTestsList extends Component {
       test_details: arg.test_details,
     });
   };
-  // handleMouseExit = () => {
-  //   this.setState({
-  //     PatientModal: false,
-  //     isHovered: false,
 
-  //   });
-  // };
   togglePatientModal = () => {
     this.setState(prevState => ({
       PatientModal: !prevState.PatientModal,
@@ -264,6 +367,8 @@ class OfferedTestsList extends Component {
         id: arg.id,
         name: arg.name,
         employee_code: arg.employee_code,
+        limit: arg.limit,
+        date: arg.date,
         status: arg.status,
       },
       isEdit: true,
@@ -271,31 +376,6 @@ class OfferedTestsList extends Component {
 
     this.toggle();
   };
-  // handleSaveButtonClick = () => {
-  //   // Your other logic...
-
-  //   const { offeredTest } = this.state;
-
-  //   const updateCemployee = {
-  //     id: offeredTest.id,
-  //     name: this.state.name,
-  //     employee_code: this.state.employee_code,
-  //   };
-
-  //   // Dispatch the action
-  //   this.props.onUpdateCemployee(updateCemployee);
-
-  //   // Optionally, you can handle the asynchronous behavior here
-  //   // For example, use a promise or callback function
-  //   setTimeout(() => {
-  //     this.props.onGetEmployeeCorporate(
-  //       this.state.user_id
-  //     );
-  //   }, 1000);
-
-  //   // Close the modal or perform other actions as needed
-  //   this.toggle();
-  // };
   handleDeletePathologist = () => {
     const { onDeletecedata, onGetEmployeeCorporate } = this.props;
     const { cemployeeDatas } = this.state;
@@ -328,11 +408,10 @@ class OfferedTestsList extends Component {
     ));
 
     const filteredStatements = cemployeeDatas.filter((statement) => {
-      const { selectedcorporate } = this.state;
-      const EmployeeFilter =
-        !selectedcorporate || statement.status
-        === selectedcorporate;
-      return EmployeeFilter;
+      const { selectedcorporate, selectedType } = this.state;
+      const EmployeeFilter = !selectedcorporate || statement.status === selectedcorporate;
+      const TypeFilter = !selectedType || statement.type === selectedType;
+      return EmployeeFilter && TypeFilter;
     });
     const offeredTest = this.state.offeredTest;
 
@@ -364,15 +443,22 @@ class OfferedTestsList extends Component {
             {/* Render Breadcrumbs */}
             <Breadcrumbs title="Employees Tests" breadcrumbItem="Employees List" />
             <Row>
-              {/* <div> <span className="text-danger font-size-12">
-                                    <strong> 
-                                    Note: If referral fee of any offered test is not entered by Labhazir, all such tests will not be online.
-                                    </strong>
-                                  </span>
-                                  </div> */}
+            <div> <span className="text-danger font-size-12">
+                  <strong>
+                    Note: Employees are registered with an inactive status, which changes to active upon login.
+
+                  </strong>
+                  <br></br>
+                  <strong>
+                    Note: When an employee is first registered, their status is inactive; it changes to active upon their first login.
+
+                  </strong>
+                  </span>
+                </div>
               <Col lg="12">
                 <Card>
                   <CardBody>
+                    <Row>
                     <Col lg="3">
                       <div className="mb-3">
                         <label className="form-label">All Employees</label>
@@ -386,6 +472,22 @@ class OfferedTestsList extends Component {
                         </select>
                       </div>
                     </Col>
+                    <Col lg="3">
+  <div className="mb-3">
+    <label className="form-label">Type</label>
+    <select
+      value={this.state.selectedType}
+      onChange={(e) => this.setState({ selectedType: e.target.value })}
+      className="form-control"
+    >
+      <option value="">Select type</option>
+      <option value="Employee">Employee</option>
+      <option value="Family">Family and Friends</option>
+    </select>
+  </div>
+</Col>
+</Row>
+
                     <PaginationProvider
                       pagination={paginationFactory(pageOptions)}
                       keyField="id"
@@ -401,19 +503,6 @@ class OfferedTestsList extends Component {
                         >
                           {toolkitprops => (
                             <React.Fragment>
-                              {/* <Row className="mb-2">
-                                <Col sm="8" lg="8">
-                                  <div className="search-box ms-2 mb-2 d-inline-block">
-                                    <div className="position-relative">
-                                      <SearchBar
-                                        {...toolkitprops.searchProps}
-                                      />
-                                      <i className="bx bx-search-alt search-icon" />
-                                    </div>
-                                  </div>
-                                </Col>
-
-                              </Row> */}
 
                               <Row className="mb-4">
                                 <Col xl="12">
@@ -499,6 +588,16 @@ class OfferedTestsList extends Component {
                                                 this.state.offeredTest
                                                   .employee_code) ||
                                               "",
+                                              limit:
+                                              (this.state.offeredTest &&
+                                                this.state.offeredTest
+                                                  .limit) ||
+                                              "",
+                                              date:
+                                              (this.state.offeredTest &&
+                                                this.state.offeredTest
+                                                  .date) ||
+                                              "",
                                             status:
                                               (this.state.offeredTest &&
                                                 this.state.offeredTest
@@ -521,6 +620,8 @@ class OfferedTestsList extends Component {
                                               employee_code:
                                                 values.employee_code,
                                               status: values.status,
+                                              limit: values.limit,
+                                              date: values.date,
                                             };
 
                                             // update PaymentStatus
@@ -569,6 +670,10 @@ class OfferedTestsList extends Component {
                                                               offeredTest.employee_code,
                                                             status:
                                                               offeredTest.status,
+                                                              limit:
+                                                              offeredTest.limit,
+                                                              date:
+                                                              offeredTest.date,
                                                             name:
                                                               e.target.value,
                                                           },
@@ -593,6 +698,31 @@ class OfferedTestsList extends Component {
                                                     />
                                                     <ErrorMessage name="employee_code" component="div" className="invalid-feedback" />
                                                   </div>
+
+                                                  <div className="mb-3">
+                                                    <Label className="col-form-label">Amount Limit</Label>
+                                                    <Field
+                                                      type="text"
+                                                      name="limit"
+                                                      className={"form-control" + (errors.limit && touched.limit ? " is-invalid" : "")}
+                                                    />
+                                                    <ErrorMessage name="limit" component="div" className="invalid-feedback" />
+                                                  </div>
+                                                  <div className="mb-3">
+                                                    <Label className="col-form-label">Expiry Date</Label>
+                                                    <Field
+                                                      type="datetime-local"
+                                                      name="date"
+                                                      min={new Date(
+                                                        new Date().toString().split("GMT")[0] +
+                                                        " UTC"
+                                                      )
+                                                        .toISOString()
+                                                        .slice(0, -8)}
+                                                      className={"form-control" + (errors.date && touched.date ? " is-invalid" : "")}
+                                                    />
+                                                    <ErrorMessage name="date" component="div" className="invalid-feedback" />
+                                                  </div>
                                                   <div className="mb-3">
                                                     <Label
                                                       for="status"
@@ -613,6 +743,10 @@ class OfferedTestsList extends Component {
                                                               offeredTest.name,
                                                             status:
                                                               e.target.value,
+                                                              date:
+                                                              offeredTest.date,
+                                                              limit:
+                                                              offeredTest.limit,
                                                           },
                                                         });
                                                       }}

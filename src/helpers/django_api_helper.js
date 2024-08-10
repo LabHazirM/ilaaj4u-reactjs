@@ -71,6 +71,7 @@ export const postPatientInformation = (id, patient) => {
   formData.append("phone", patient.phone);
   formData.append("email", patient.email);
   formData.append("city_id", patient.city_id);
+  formData.append("address", patient.address);
   formData.append("url", patient.url);
   formData.append("is_assosiatewith_anycorporate", patient.is_assosiatewith_anycorporate);
   formData.append("corporate_id", patient.corporate_id);
@@ -353,6 +354,19 @@ export const getDonorsA = () =>
   get(url.GET_DONORSA, {
     headers: getHeader(authHeader()),
   });
+//////////////////////////
+export const getLabsListing = () => {
+  get(url.GET_LABS_LISTING, {
+    headers: getHeader(authHeader()),
+  })
+  .then(response => {
+    console.log('Response data:', response.data);
+  })
+  .catch(error => {
+    console.error('Error occurred:', error);
+  });
+};
+
 export const getMainLabs = () =>
   get(url.GET_MAIN_LABS, {
     headers: getHeader(authHeader()),
@@ -805,6 +819,11 @@ export const getActivityLogMarketer = id =>
   get(`${url.GET_ACTIVITY_LOG_MARKETER}/${id}`, {
     headers: getHeader(authHeader()),
   });
+
+  export const getLabActivityLogMarketer = id =>
+  get(`${url.GET_LAB_ACTIVITY_LOG_MARKETER}/${id}`, {
+    headers: getHeader(authHeader()),
+  });
 // ------------- Pathologists START -------------
 export const getPathologists = id =>
   get(`${url.GET_PATHOLOGISTS}/${id}`, {
@@ -1105,6 +1124,7 @@ export const updatePatientProfile = (patientProfile, id) => {
   let formData = new FormData();
   formData.append("account_id", id);
   formData.append("name", patientProfile.name);
+  formData.append("email", patientProfile.email);
   formData.append("phone", patientProfile.phone);
 
   return axios.put(`${url.UPDATE_PATIENT_PROFILE}/${id}`, formData, {
@@ -1607,6 +1627,13 @@ export const getLabsRating =() =>
 //   });
 // };
 
+//testing
+export const getLabsTesting =() =>
+  get(`${url.GET_LABS_TESTING}`, {
+    headers: getHeader(authHeader()),
+  });
+
+
 // Get Test Description
 export const getTestDescriptions = id =>
   get(`${url.GET_TEST_DESCRIPTIONS}/${id}`, {
@@ -1805,6 +1832,13 @@ export const getDonorAccountStatements = id =>
   get(`${url.GET_DONOR_ACCOUNT_STATEMENTS}/${id}`, {
     headers: getHeader(authHeader()),
   });
+
+  export const getDonorsAccountStatements = id =>
+  get(`${url.GET_DONORS_ACCOUNT_STATEMENTS}/${id}`, {
+    headers: getHeader(authHeader()),
+  });
+
+
 // ------------- Donor Settings Requests START -------------
   export const addNewDonorPayment = (donorPayment, id) => {
     let formData = new FormData();
@@ -1870,6 +1904,10 @@ export const getDonorAccountStatements = id =>
     formData.append("name", cemployeeData.name);
     formData.append("employee_code", cemployeeData.employee_code);
     formData.append("type", cemployeeData.type);
+    formData.append("limit", cemployeeData.limit);
+    formData.append("date", cemployeeData.date);
+    formData.append("relation", cemployeeData.relation);
+    formData.append("parent_employee_id", cemployeeData.parent_employee_id);
 
     return axios.post(`${url.ADD_NEW_CEMPLOYEE_DATA}/${id}`, formData, {
       headers: getHeader(authHeader()),
@@ -1883,6 +1921,7 @@ export const getDonorAccountStatements = id =>
   export const addNewCemployeefile = (cemployeeData) => {
     let formData = new FormData();
     formData.append("excel_file", cemployeeData.excel_file);
+    formData.append("corporate_id", cemployeeData.corporate_id);
 
     console.log("django api helper", cemployeeData)
   
@@ -1898,6 +1937,8 @@ export const getDonorAccountStatements = id =>
     formData.append("name", cemployeeData.name);
     formData.append("employee_code", cemployeeData.employee_code);
     formData.append("status", cemployeeData.status);
+    formData.append("limit", cemployeeData.limit);
+    formData.append("date", cemployeeData.date);
   
     return axios.put(
       `${url.UPDATE_CEMPLOYEE}/${cemployeeData.id}`,
@@ -2079,7 +2120,10 @@ export const getCSRList = () =>
   get(`${url.GET_CSR_LIST}`, {
     headers: getHeader(authHeader()),
   });
-
+  export const getMARKETERSList = () =>
+  get(`${url.GET_MARKETERS_LIST}`, {
+    headers: getHeader(authHeader()),
+  });
 export const getAuditorList = () =>
   get(`${url.GET_AUDITOR_LIST}`, {
     headers: getHeader(authHeader()),
@@ -2406,6 +2450,16 @@ export const getDonorsList = ()=>
 get(`${url.GET_DONORS_LIST}`, {
   headers: getHeader(authHeader()),
 });
+/////////////////////////
+export const getLabsLists = ()=>
+get(`${url.GET_LABS_LIST}`, {
+  headers: getHeader(authHeader()),
+});
+export const getDonorsLists = ()=>
+get(`${url.GET_DONORS_LIST}`, {
+  headers: getHeader(authHeader()),
+});
+
 
 export const getClList = () =>
   get(`${url.GET_CL_LIST}`, {
@@ -2684,6 +2738,7 @@ export const updatePaymentInStatus = paymentInStatus => {
   let formData = new FormData();
   formData.append("is_cleared",  paymentInStatus.is_cleared);
   formData.append("cleared_at",  paymentInStatus.cleared_at);
+  formData.append("cheque_image",  paymentInStatus.cheque_image);
   return axios.put(
     `${url.UPDATE_PAYMENTIN_STATUS}/${paymentInStatus.id}`,
     formData,
@@ -2695,7 +2750,7 @@ export const updatePaymentInStatus = paymentInStatus => {
 export const updatePaymentInBouncedStatus = paymentInBouncedStatus => {
   let formData = new FormData();
   // formData.append("id", paymentInBouncedStatus.id);
-  formData.append("deposit_at", paymentInBouncedStatus.deposit_at);
+  formData.append("deposited_at", paymentInBouncedStatus.deposited_at);
   formData.append("bankaccount_id", paymentInBouncedStatus.bankaccount_id);
   formData.append("deposit_slip", paymentInBouncedStatus.deposit_slip);
   formData.append("payment_status", paymentInBouncedStatus.payment_status);
@@ -2716,8 +2771,6 @@ export const deleteLabAdvertisement = advertisement =>
   del(`${url.DELETE_LAB_ADVERTISEMENT}/${advertisement.id}`, {
     headers: getHeader(authHeader()),
   });
-
-
 export const getPaymentStatuss = id =>
   get(`${url.GET_PAYMENT_STATUSS}/${id}`, {
     headers: getHeader(authHeader()),
@@ -2788,6 +2841,7 @@ export const getAllDonationAppointments = id =>
     headers: getHeader(authHeader()),
   });
 
+
 // BANK ACCOUNTS
 export const getBankaccounts = id =>
   get(`${url.GET_BANKACCOUNTS}/${id}`, {
@@ -2799,6 +2853,7 @@ export const updateBankaccount = bankAccount => {
   formData.append("id", bankAccount.id);
   formData.append("account_no", bankAccount.account_no);
   formData.append("status", bankAccount.status);
+  formData.append("creating_at", bankAccount.creating_at);
 
   return axios.put(`${url.UPDATE_BANKACCOUNT}/${bankAccount.id}`, formData, {
     headers: getHeader(authHeader()),
@@ -3019,6 +3074,10 @@ export const getCCreatedOutStatuss = id =>
 
 export const getCreatedOutStatuss = id =>
   get(`${url.GET_CREATEDOUT_STATUSS}/${id}`, {
+    headers: getHeader(authHeader()),
+  });
+export const getCreatedOutDetailStatuss = id =>
+  get(`${url.GET_CREATEDOUTDETAIL_STATUSS}/${id}`, {
     headers: getHeader(authHeader()),
   });
 // ------------- PAYMENT IN STATUS---------------------

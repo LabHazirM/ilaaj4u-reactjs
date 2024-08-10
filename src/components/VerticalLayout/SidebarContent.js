@@ -399,9 +399,15 @@ class SidebarContent extends Component {
                 {/* </ul>
                 </li>  */}
                 <li>
-                  <Link to={"/cleared-in-payments"}>
+                  <Link to="/cleared-in-payments">
                     <i className="mdi mdi-office-building" />
-                    {this.props.t("MIF/ MOF")}
+                    <span>{this.props.t("MIF/ MOF")}</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/corporate-payment-confirmation">
+                    <i className="mdi mdi-cash font-size-18" />
+                    <span>{this.props.t("Corporate Payment Confirmation")}</span>
                   </Link>
                 </li>
                 <li>
@@ -448,24 +454,25 @@ class SidebarContent extends Component {
                     <span>{this.props.t("Labs List")}</span>
                   </Link>
                 </li>
-                <li>
+             
                 <li>
                   <Link to="/corporate-details">
                     <i className="bx bx-home-circle" />
                     <span>{this.props.t("Corporate List")}</span>
                   </Link>
                 </li>
-                <li>
+                {/* <li>
                   <Link to="/accepted-corporates-List">
                     <i className="bx bx-home-circle" />
                     <span>{this.props.t("Corporate statuses List")}</span>
                   </Link>
-                </li>
+                </li> */}
+                <li>
                   <Link to="/donor-details">
                     <i className="bx bx-home-circle" />
                     <span>{this.props.t("Donors List")}</span>
                   </Link>
-                </li>
+                </li>          
                 <li>
                   <Link to="/donors-appointments-list">
                     <i className="bx bx-home-circle" />
@@ -990,6 +997,13 @@ class SidebarContent extends Component {
                     <span>{this.props.t("Finance Officer")}</span>
                   </Link>
                 </li>
+
+                <li>
+                  <Link to="/marketers-list">
+                    <i className="mdi mdi-bullhorn" />
+                    <span>{this.props.t("Marketers List")}</span>
+                  </Link>
+                </li>
               </ul>
             </div>
           </SimpleBar>
@@ -1061,12 +1075,12 @@ class SidebarContent extends Component {
                   <ul className="sub-menu" aria-expanded="false">
                     <li>
                       <Link to={"/corporates-List"}>
-                        {this.props.t("Corporates List")}
+                        {this.props.t("Corporates List-Pending")}
                       </Link>
                     </li>
                     <li>
                       <Link to={"/accepted-corporates-List"}>
-                        {this.props.t("Accepted Corporates List")}
+                        {this.props.t("Corporates List-Accepted")}
                       </Link>
                     </li>
                     <li>
@@ -1074,7 +1088,12 @@ class SidebarContent extends Component {
                         {this.props.t("Statements")}
                       </Link>
                     </li>
-
+                    <li>
+                      <Link to="/payment-confirmation">
+                      {/* <i className="mdi mdi-cash font-size-18" /> */}
+                      <span>{this.props.t("Corporate Payment Confirmation")}</span>
+                      </Link>
+                    </li>
                   </ul>
                 </li>
                 {/* <li>
@@ -1139,9 +1158,9 @@ class SidebarContent extends Component {
                 </li>
                 {/* lab Advertisements*/}
                 <li>
-                  <Link to={"/lab-advertisement"}>
+                  <Link to="/lab-advertisement">
                     <i className="mdi mdi-book-open"></i>
-                    {this.props.t("Advertisements")}
+                    <span>{this.props.t("Advertisements")}</span>
                   </Link>
                 </li>
               </ul>
@@ -1210,11 +1229,11 @@ class SidebarContent extends Component {
                     <i className="mdi mdi-clipboard-list font-size-18" />
                     <span>{this.props.t("Payment Form")}</span>
                   </Link>
-                </li>
+                </li>                                                                                                           
                 <li>
                   <Link to="/corporate-payment-form-status">
                     <i className="mdi mdi-clipboard-list font-size-18" />
-                    <span>{this.props.t("Payment Status")}</span>
+                    <span>{this.props.t("Statements")}</span>
                   </Link>
                 </li>
 

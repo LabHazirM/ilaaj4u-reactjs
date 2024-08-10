@@ -52,58 +52,7 @@ class LabsRating extends Component {
       user_id: localStorage.getItem("authUser")
         ? JSON.parse(localStorage.getItem("authUser")).user_id
         : "",
-      feedbackListColumns: [
-        {
-          text: "id",
-          dataField: "id",
-          sort: true,
-          hidden: true,
-          formatter: (cellContent, labsrating) => <>{labsrating.id}</>,
-          filter: textFilter(),
-        },
-        // {
-        //   dataField: "order_id",
-        //   text: "Order id",
-        //   sort: true,
-        //   filter: textFilter(),
-        // },
-        {
-          dataField: "name",
-          text: "Lab Name",
-          sort: true,
-          filter: textFilter(),
-        },
-        {
-          dataField: "city",
-          text: "City",
-          sort: true,
-          filter: textFilter(),
-        },
-        {
-          dataField: "rating",
-          text: "Rating",
-          sort: true,
-          formatter: (cellContent, labsrating) => (
-            <StarRatings
-              rating={labsrating.rating}
-              starRatedColor="#F1B44C"
-              starEmptyColor="#2D363F"
-              numberOfStars={5}
-              name="rating"
-              starDimension="20px"
-              starSpacing="3px"
-            />
-          ),
-          filter: textFilter(),
-        },
-        
-        // {
-        //   dataField: "review",
-        //   text: "Review",
-        //   sort: true,
-        //   filter: textFilter(),
-        // },
-      ],
+      
     };
     this.toggle = this.toggle.bind(this);
   }
@@ -148,6 +97,78 @@ class LabsRating extends Component {
   };
 
   render() {
+
+    const columns=[
+    
+        {
+          text: "id",
+          dataField: "id",
+          sort: true,
+          hidden: true,
+          formatter: (cellContent, labsrating) => <>{labsrating.id}</>,
+          filter: textFilter(),
+          headerStyle: { backgroundColor: '#DCDCDC' },
+        },
+        // {
+        //   dataField: "order_id",
+        //   text: "Order id",
+        //   sort: true,
+        //   filter: textFilter(),
+        // },
+      
+{
+  dataField: "name",
+  text: "Lab Name",
+  sort: true,
+  filter: textFilter(),
+  formatter: (cellContent, labsrating) => (
+        <div className=" text-black fw-bold p-2">
+      {cellContent}</div>
+  ),
+  headerStyle: { backgroundColor: '#B05450',fontFamily: 'Calibri', fontSize: '16px'  },
+  style: {backgroundColor: '#D3A2A1',fontFamily: 'Calibri', fontSize: '16px'  },
+},
+{
+  dataField: "city",
+  text: "City",
+  sort: true,
+  filter: textFilter(),
+  formatter: (cellContent, labsrating) => (
+    <div className="text-black fw-bold p-2">
+      {cellContent}
+    </div>
+  ),
+  headerStyle: { backgroundColor: '#B05450',fontFamily: 'Calibri', fontSize: '16px'  },
+  style: {backgroundColor: '#ECB6B3',fontFamily: 'Calibri', fontSize: '16px'  },
+},
+{
+  dataField: "rating",
+  text: "Rating",
+  sort: true,
+  formatter: (cellContent, labsrating) => (    
+      <StarRatings
+        rating={labsrating.rating}
+        starRatedColor="#F1B44C"
+        starEmptyColor="#2D363F"
+        numberOfStars={5}
+        name="rating"
+        starDimension="20px"
+        starSpacing="3px"
+      />
+  ),
+  headerStyle: { backgroundColor: '#B05450',fontFamily: 'Calibri', fontSize: '16px'  },
+  style: {backgroundColor: '#C57E7C',fontFamily: 'Calibri', fontSize: '16px'  },
+  filter: textFilter(),
+},
+        
+        // {
+        //   dataField: "review",
+        //   text: "Review",
+        //   sort: true,
+        //   filter: textFilter(),
+        // },
+      
+    ]
     const { SearchBar } = Search;
 
     const { labsRating } = this.props;
@@ -159,7 +180,7 @@ class LabsRating extends Component {
     // const labprofile=this.state.labprofile;
 
     const pageOptions = {
-      sizePerPage: 10,
+      sizePerPage: 3,
       totalSize: labsRating.length, // replace later with size(labsRating),
       custom: true,
     };
@@ -238,12 +259,15 @@ class LabsRating extends Component {
                                       defaultSorted={defaultSorted}
                                       classes={"table align-middle table-hover"}
                                       bordered={false}
-                                      striped={true}
-                                      headerWrapperClasses={"table-light"}
+                                      columns={columns}
+                                  
+                                      headerWrapperClasses={"table-dark"}
                                       responsive
                                       ref={this.node}
                                       filter={ filterFactory() }
                                     />
+                                     
+
                                   </div>
                                 </Col>
                               </Row>

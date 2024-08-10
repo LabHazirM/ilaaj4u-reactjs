@@ -377,7 +377,7 @@ class TestAppointmentsList extends Component {
        
         {
           dataField: "status",
-          text: "Appointment Status",
+          text: "Appointment Statusssssssss",
           sort: true,
           formatter: (cellContent, testAppointment) => (
             <>

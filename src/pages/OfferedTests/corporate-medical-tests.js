@@ -70,13 +70,13 @@ class TestsList extends Component {
               <span style={{
                 width: '140px', // Set your desired width here
                 fontSize: '14px',
-              
+
                 textOverflow: 'ellipsis',
                 whiteSpace: 'prewrap',
                 textAlign: 'left', // Align text to the left
                 display: 'block',
               }}>
-                   {testsList.name}
+                {testsList.name}
               </span>
             </>
           ),
@@ -121,19 +121,19 @@ class TestsList extends Component {
           text: "Action",
           formatter: (cellContent, testsList) => (
             // <div className="d-flex gap-6">
-              <div className="float-middle">
-                <Button
-                  color="primary"
-                  className="w-55  btn-block btn btn-primary"
-                  // onClick={() => this.handleOfferedTestClicks(testsList.id)}
-                  onClick={e => this.handleOfferedTestClicks(e, testsList.id, testsList.name, testsList.sample_type)}
+            <div className="float-middle">
+              <Button
+                color="primary"
+                className="w-55  btn-block btn btn-primary"
+                // onClick={() => this.handleOfferedTestClicks(testsList.id)}
+                onClick={e => this.handleOfferedTestClicks(e, testsList.id, testsList.name, testsList.sample_type, testsList.average_price)}
 
-                // disabled={testsList.length == 0}
-                >
-                  <i className="mdi mdi-plus-circle-outline me-1" />
-                  Add Test
-                </Button>
-              </div>
+              // disabled={testsList.length == 0}
+              >
+                <i className="mdi mdi-plus-circle-outline me-1" />
+                Add Test
+              </Button>
+            </div>
             // </div>
           ),
         },
@@ -179,7 +179,7 @@ class TestsList extends Component {
   //     PatientModal: false,
   //     OtherModal: false,
   //     isHovered: false,
-    
+
   //   });
   // };
   toggleOtherModal = () => {
@@ -234,19 +234,22 @@ class TestsList extends Component {
 
     this.toggle();
   };
-  handleOfferedTestClicks = (e, arg1, arg2, arg3) => {
+  handleOfferedTestClicks = (e, arg1, arg2, arg3, arg4) => {
+    console.log("data in arg4", arg4)
     this.setState({
       offeredTest: "",
       isEdit: false,
       initialValues: {
         ...this.state.initialValues,
         test_id: arg1, // set the test_id value to arg
-        test_name:arg2,
-        sample_type:arg3
+        test_name: arg2,
+        sample_type: arg3,
+        average_price: arg4
       },
       selectedTest: arg1, // store arg in component state
-      selectedname: arg2, 
-      selectedtype: arg3, 
+      selectedname: arg2,
+      selectedtype: arg3,
+      selectedaveragePrice: arg4
 
     });
     this.toggle();
@@ -304,14 +307,14 @@ class TestsList extends Component {
                           {toolkitprops => (
                             <React.Fragment>
                               <Row className="mb-2">
-                              <div> 
+                                <div>
                                   <span className="text-danger font-size-12">
-                  <strong>
-                    Note: The Tests, Profile and Packages already added will not be displayed here.
-.
-                  </strong>
-                  </span>
-                  </div>
+                                    <strong>
+                                      Note: The Tests, Profile, and Packages previously added in Offered Tests will not be displayed here.
+                                      .
+                                    </strong>
+                                  </span>
+                                </div>
                                 <Col sm="4">
                                   <div className="search-box ms-2 mb-2 mt-2 d-inline-block">
                                     <div className="position-relative">
@@ -321,7 +324,7 @@ class TestsList extends Component {
                                       <i className="bx bx-search-alt search-icon" />
                                     </div>
                                   </div>
-                                  
+
                                 </Col>
                               </Row>
                               <Row className="mb-4">
@@ -357,6 +360,10 @@ class TestsList extends Component {
                                             price:
                                               (offeredTest &&
                                                 offeredTest.price) ||
+                                              "",
+                                            averagePrice:
+                                              (offeredTest &&
+                                                offeredTest.averagePrice) ||
                                               "",
                                             start_date:
                                               (offeredTest &&
@@ -401,31 +408,32 @@ class TestsList extends Component {
                                                 "Please enter a number less than or equal to 50000"
                                               ),
                                             start_date: Yup.string(
-                                                Yup.number()
-                                              ).when("discount", {
-                                                is: discount => discount > 0,
-                                                then: Yup.string().required(
-                                                  "Please select start date"
-                                                ),
-                                              }),
+                                              Yup.number()
+                                            ).when("discount", {
+                                              is: discount => discount > 0,
+                                              then: Yup.string().required(
+                                                "Please select start date"
+                                              ),
+                                            }),
                                             end_date: Yup.string(
-                                                Yup.number()
-                                              ).when("discount", {
-                                                is: discount => discount > 0,
-                                                then: Yup.string().required(
-                                                  "Please select end date"
-                                                ),
-                                              }),
+                                              Yup.number()
+                                            ).when("discount", {
+                                              is: discount => discount > 0,
+                                              then: Yup.string().required(
+                                                "Please select end date"
+                                              ),
+                                            }),
                                           })}
                                           // in onSubmit function
                                           onSubmit={values => {
-                                            const { isEdit, selectedTest , selectedname, selectedtype } = this.state; // get isEdit and selectedTest from component state
+                                            const { isEdit, selectedTest, selectedname, selectedaveragePrice, selectedtype } = this.state; // get isEdit and selectedTest from component state
                                             if (isEdit) {
                                               const updateOfferedTest = {
                                                 id: offeredTest.id,
                                                 test_id: selectedTest, // use selectedTest as the test_id value
                                                 test_name: selectedname,
                                                 price: values.price,
+                                                average_price:values.selectedaveragePrice,
                                                 start_date: values.start_date,
                                                 end_date: values.end_date,
 
@@ -433,6 +441,7 @@ class TestsList extends Component {
                                             } else {
                                               const newOfferedTest = {
                                                 test_id: selectedTest, // use selectedTest as the test_id value
+                                                
                                                 test_name: selectedname,
                                                 price: values.price,
                                                 start_date: values.start_date,
@@ -464,11 +473,11 @@ class TestsList extends Component {
                                                       name="test_id"
                                                       type="text"
                                                       readOnly={true}
-                                                      value= {this.state.selectedname}
+                                                      value={this.state.selectedname}
                                                       className={
                                                         "form-control" +
                                                         (errors.test_id &&
-                                                        touched.test_id
+                                                          touched.test_id
                                                           ? " is-invalid"
                                                           : "")
                                                       }
@@ -479,59 +488,59 @@ class TestsList extends Component {
                                                       className="invalid-feedback"
                                                     />
                                                   </div>
-                                                  
-      <div className="mb-3">
-        <Label className="form-label">
-          Start Date
-          <span className="text-danger font-size-12">*</span>
-        </Label>
-        <Field
-          name="start_date"
-          type="datetime-local" min={new Date(
-            new Date().toString().split("GMT")[0] +
-            " UTC"
-          )
-            .toISOString()
-            .slice(0, -8)}
-          className={
-            "form-control" +
-            (errors.start_date && touched.start_date
-              ? " is-invalid"
-              : "")
-          }
-        />
-        <ErrorMessage
-          name="start_date"
-          component="div"
-          className="invalid-feedback"
-        />
-      </div>
-      <div className="mb-3">
-        <Label className="form-label">
-          End Date
-          <span className="text-danger font-size-12">*</span>
-        </Label>
-        <Field
-          name="end_date"
-          type="datetime-local" min={new Date(
-            new Date().toString().split("GMT")[0] +
-            " UTC"
-          )
-            .toISOString()
-            .slice(0, -8)}
-          className={
-            "form-control" +
-            (errors.end_date && touched.end_date
-              ? " is-invalid"
-              : "")
-          }
-        />
-        <ErrorMessage
-          name="end_date"
-          component="div"
-          className="invalid-feedback"
-        />
-      </div>
+
+                                                  <div className="mb-3">
+                                                    <Label className="form-label">
+                                                      Start Date
+                                                      <span className="text-danger font-size-12">*</span>
+                                                    </Label>
+                                                    <Field
+                                                      name="start_date"
+                                                      type="datetime-local" min={new Date(
+                                                        new Date().toString().split("GMT")[0] +
+                                                        " UTC"
+                                                      )
+                                                        .toISOString()
+                                                        .slice(0, -8)}
+                                                      className={
+                                                        "form-control" +
+                                                        (errors.start_date && touched.start_date
+                                                          ? " is-invalid"
+                                                          : "")
+                                                      }
+                                                    />
+                                                    <ErrorMessage
+                                                      name="start_date"
+                                                      component="div"
+                                                      className="invalid-feedback"
+                                                    />
+                                                  </div>
+                                                  <div className="mb-3">
+                                                    <Label className="form-label">
+                                                      End Date
+                                                      <span className="text-danger font-size-12">*</span>
+                                                    </Label>
+                                                    <Field
+                                                      name="end_date"
+                                                      type="datetime-local" min={new Date(
+                                                        new Date().toString().split("GMT")[0] +
+                                                        " UTC"
+                                                      )
+                                                        .toISOString()
+                                                        .slice(0, -8)}
+                                                      className={
+                                                        "form-control" +
+                                                        (errors.end_date && touched.end_date
+                                                          ? " is-invalid"
+                                                          : "")
+                                                      }
+                                                    />
+                                                    <ErrorMessage
+                                                      name="end_date"
+                                                      component="div"
+                                                      className="invalid-feedback"
+                                                    />
+                                                  </div>
                                                   <div className="mb-3">
                                                     <Label className="form-label">
                                                       Price
@@ -554,6 +563,19 @@ class TestsList extends Component {
                                                       name="price"
                                                       component="div"
                                                       className="invalid-feedback"
+                                                    />
+                                                  </div>
+                                                  <div className="mb-3">
+                                                    <Label className="form-label">
+                                                      Average Price
+                                                      <span className="text-danger font-size-12">*</span>
+                                                    </Label>
+                                                    <Field
+                                                      name="averagePrice"
+                                                      type="number"
+                                                      readOnly={true}
+                                                      value={this.state.selectedaveragePrice}
+                                                      className={"form-control" + (errors.averagePrice && touched.averagePrice ? " is-invalid" : "")}
                                                     />
                                                   </div>
 

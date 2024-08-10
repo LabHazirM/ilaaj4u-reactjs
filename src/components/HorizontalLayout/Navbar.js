@@ -96,7 +96,11 @@ class Navbar extends Component {
                   id="topnav-menu-content"
                 >
                   <ul className="navbar-nav">
-                    <li className="nav-item">
+                    {this.props.patientProfile && (
+                      <>
+                        {!this.props.patientProfile.is_assosiatewith_anycorporate && !this.props.patientProfile.employee_id_card ? (
+                          <>
+                           <li className="nav-item">
                       <Link
                         to={"/tests-offered-labhazir"
                         }
@@ -118,7 +122,6 @@ class Navbar extends Component {
                         <span className="pt-4 font-size-12">Labs</span>
                       </Link>
                     </li>
-
                     <li className="nav-item">
                       <Link
                         to={
@@ -165,6 +168,32 @@ class Navbar extends Component {
                         {/* {this.props.t("Packages")} */}
                       </Link>
                     </li>
+                          </>) : (this.props.patientProfile.is_assosiatewith_anycorporate && this.props.patientProfile.employee_id_card) ? (
+                          <>
+                            <li className="nav-item">
+                              <Link
+                                to={this.props.match.params.guest_id ? `/corporate-labs/${this.props.match.params.guest_id}` :
+                                  this.props.match.params.uuid ? `/corporate-labs/${this.props.match.params.uuid}` : `/corporate-labs`}
+                                className="dropdown-item"
+                              >
+                                <span className="pt-4 font-size-12">Labs</span>
+                              </Link>
+                            
+                            </li>
+                             <li className="nav-item">
+                             <Link
+                                to={this.props.match.params.guest_id ? `/test-appointments/${this.props.match.params.guest_id}` :
+                                  this.props.match.params.uuid ? `/test-appointments/${this.props.match.params.uuid}` : `/corporate-labs`}
+                                className="dropdown-item"
+                              >
+                                <span className="pt-4 font-size-12">My Appointments</span>
+                              </Link>
+                             
+                           </li>
+                           </>
+                          ) : null}
+                      </>
+                    )}
 
                     {this.state.user_id && this.state.user_type == "patient" && (
                       <li className="nav-item">

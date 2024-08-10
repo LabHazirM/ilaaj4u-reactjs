@@ -64,6 +64,7 @@ class LabsLists extends Component {
           dataField: "name",
           text: "Lab Name/Type",
           sort: true,
+          style: { textAlign: 'left' },
           formatter: (cellContent, labsList) => (
             <>
               <span className="float-start">
@@ -123,9 +124,10 @@ class LabsLists extends Component {
           dataField: "address",
           text: "Address",
           sort: true,
+          style: { textAlign: 'left' },
           formatter: (cellContent, labsList) => (
             <>
-              <span className="float-start">{labsList.address}</span>
+              <span>{labsList.address}</span>
             </>
           ), filter: textFilter(), // Add a text filter for this column
         },
@@ -229,7 +231,9 @@ class LabsLists extends Component {
         sort: true,
         formatter: (cellContent, lab) => (
           <p className="text-end">
-            {lab.current_amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+            {lab.current_amount !== undefined && lab.current_amount !== null
+              ? lab.current_amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+              : ""}
           </p>
         ),
         filter: textFilter(),
