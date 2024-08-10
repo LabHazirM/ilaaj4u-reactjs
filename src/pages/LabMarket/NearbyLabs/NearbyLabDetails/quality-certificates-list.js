@@ -39,6 +39,7 @@ class LabQualityCertificates extends Component {
       certificateImg: "",
       modal: false,
       deleteModal: false,
+      lab_name : ""
     };
     this.toggle = this.toggle.bind(this);
   }
@@ -46,9 +47,19 @@ class LabQualityCertificates extends Component {
   componentDidMount() {
     const { qualityCertificates, onGetQualityCertificates } = this.props;
     onGetQualityCertificates();
-    this.setState({ qualityCertificates });
+    this.setState({
+      qualityCertificates,
+      lab_name: this.props.qualityCertificates.length > 0 ? this.props.qualityCertificates[0].lab_name : ""
+    });
   }
-
+  componentDidUpdate(prevProps) {
+    if (prevProps.qualityCertificates !== this.props.qualityCertificates) {
+      this.setState({
+        qualityCertificates: this.props.qualityCertificates,
+        lab_name: this.props.qualityCertificates.length > 0 ? this.props.qualityCertificates[0].lab_name : ""
+      });
+    }
+  }
   toggle() {
     this.setState(prevState => ({
       modal: !prevState.modal,
@@ -82,7 +93,7 @@ class LabQualityCertificates extends Component {
   render() {
     const { page, totalPage } = this.state;
     const { qualityCertificates } = this.props.qualityCertificates;
-
+    const { lab_name } = this.state;
     return (
       <React.Fragment>
         <div className="page-content">
@@ -95,7 +106,7 @@ class LabQualityCertificates extends Component {
               // breadcrumbItem="Certificates List"
               
             /> */}
-
+            <h4>Quality Certificates of {lab_name}</h4>
             <Row>
               {!isEmpty(this.props.qualityCertificates) && (
                 <h5>ISO Certificates</h5>
@@ -153,7 +164,7 @@ class LabQualityCertificates extends Component {
                           </CardBody>
                         </Card>
                       </Col>
-                    ): null
+                    ) : null
                   )
                 )}
             </Row>

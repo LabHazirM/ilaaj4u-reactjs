@@ -76,6 +76,7 @@ class TestsOffered extends Component {
       searchQuery: "", // New state property for search query
       totalPage: 5, //replace this with total pages of data
       itemsInCart: [],
+      lab_name: "",
     };
     this.toggleTab = this.toggleTab.bind(this);
     console.log("yaha ani chahi hai uuid", this.props.match.params.uuid)
@@ -93,12 +94,25 @@ class TestsOffered extends Component {
     const { ongetOfferedTestsReferrel } = this.props;
     if (this.state.applied) {
       ongetOfferedTestsReferrel();
-      this.setState({ offeredTests: this.props.offeredTests });
+      this.setState({ 
+         offeredTests: this.props.offeredTests,
+         lab_name: this.props.offeredTests.length > 0 ? this.props.offeredTests[0].lab_name : ""
+       });
     }
     setTimeout(() => {
       this.setState({ loading: false });
     }, 70000); // Set loading state to false after 7 seconds
   }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.offeredTests !== this.props.offeredTests) {
+      this.setState({
+        offeredTests: this.props.offeredTests,
+        lab_name: this.props.offeredTests.length > 0 ? this.props.offeredTests[0].lab_name : ""
+      });
+    }
+  }
+
   toggleTab(tab) {
     if (this.state.activeTab !== tab) {
       this.setState({
@@ -318,7 +332,7 @@ class TestsOffered extends Component {
 
   render() {
     const { onGetCarts } = this.props;
-
+    const {lab_name } = this.state;
     const { carts } = this.props;
     const { loading } = this.state;
     const isLargeScreen = window.innerWidth < 490;
@@ -330,7 +344,7 @@ class TestsOffered extends Component {
     const filteredTests = this.props.offeredTests.filter((test) =>
       test.test_name.toLowerCase().includes(searchQuery.toLowerCase())
     );
-
+console.log("lab name is ",lab_name)
     return (
       <React.Fragment>
        
@@ -339,8 +353,8 @@ class TestsOffered extends Component {
             <title>Tests Offered | Lab Hazir</title>
           </MetaTags>
           <Container fluid>
-            <Breadcrumbs title="Nearby Labs" breadcrumbItem="Tests Offered" />
-
+            {/* <Breadcrumbs title="Nearby Labs" breadcrumbItem="Tests Offered" /> */}
+            <h4>Tests Offered by {lab_name}</h4>
             {this.state.success ? (
               <Alert color="success" className="col-md-4">
                 {this.state.success}
