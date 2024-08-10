@@ -377,39 +377,43 @@ class OfferedTestsList extends Component {
             {/* Render Breadcrumbs */}
             <Breadcrumbs title="Corporate Offered Tests" breadcrumbItem="Tests List" />
             <Row className="mb-2">
-            <Col lg="6">
+  <Col lg="6" md="6" sm="12">
+    <div className="text-sm-left text-md-center text-lg-center">
+      {uniqueCorporateNames.length > 0 ? (
         <div>
-          {uniqueCorporateNames.length > 0 ? (
-            <div style={{ textAlign: 'center' }}>
-              {uniqueCorporateNames.map((name, index) => (
-                <div key={index}>
-                  <span style={{ fontWeight: 'bold' }}>Corporations Name:  </span>
-                  <span className="text-danger">{name}</span>
-                </div>
-              ))}
+          {uniqueCorporateNames.map((name, index) => (
+            <div key={index}>
+              <span style={{ fontWeight: 'bold' }}>Corporations Name: </span>
+              <span className="text-danger">{name}</span>
             </div>
-          ) : (
-            <div style={{ textAlign: 'center' }}>No Corporate Names Available</div>
-          )}
+          ))}
         </div>
-      </Col>
-      <Col lg="6">
+      ) : (
+        <div>No Corporate Names Available</div>
+      )}
+    </div>
+  </Col>
+  <Col lg="6" md="6" sm="12">
+    <div className="text-left">
+      {uniqueEmployeeCodes.length > 0 ? (
         <div>
-          {uniqueEmployeeCodes.length > 0 ? (
-            <div style={{ textAlign: 'left' }}>
-              {uniqueEmployeeCodes.map((code, index) => (
-                <div key={index}>
-                  <span style={{ fontWeight: 'bold' }}>Number of Total Employees:  </span>
-                  <span style={{ color: 'red' }}>{code}</span>
-                </div>
-              ))}
+          {uniqueEmployeeCodes.map((code, index) => (
+            <div key={index}>
+              <span style={{ fontWeight: 'bold' }}>Number of Total Employees: </span>
+              <span style={{ color: 'red' }}>{code}</span>
             </div>
-          ) : (
-            <div style={{ textAlign: 'left' }}>No Employee Codes Available</div>
-          )}
+          ))}
         </div>
-      </Col>
-            </Row>
+      ) : (
+        <div>
+                        <span style={{ fontWeight: 'bold' }}>Number of Total Employees: </span>
+                        <span style={{ color: 'red' }}>0</span>
+
+          </div>
+      )}
+    </div>
+  </Col>
+</Row>
             <Row>
               <Col lg="12">
                 <Card>

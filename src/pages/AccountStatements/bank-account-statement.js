@@ -165,7 +165,7 @@ class AccountStatements extends Component {
     const tableHeaders = [
       {
         dataField: 'clearence_datetime',
-        text: 'Clearence Date',
+        text: 'Clearance Date',
         sort: true,
         footer: '', // Empty footer for this column
         formatter: (cellContent, bankStatement) => {

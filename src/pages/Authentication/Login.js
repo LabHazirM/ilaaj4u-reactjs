@@ -54,7 +54,7 @@ class Login extends Component {
     console.log('Longitude:', longitudeFromUrl);
     if (latitudeFromUrl && longitudeFromUrl) {
 
-      const url = `http://localhost:3000/nearby-labs/&lat=${latitudeFromUrl}&lon=${longitudeFromUrl}`;
+      const url = `https://www.labhazir.com/nearby-labs/&lat=${latitudeFromUrl}&lon=${longitudeFromUrl}`;
       const queryString = url.substring(url.indexOf("&") + 1);
       const finalUrl = ("&") + queryString; // Remove the leading question mark ('?')        
       this.setState({ finalUrl: finalUrl });
@@ -361,7 +361,7 @@ class Login extends Component {
                                     } else if (success.account_type === "registration-admin") {
                                       this.props.history.push("/pending-labs");
                                     } else if (success.account_type === "marketer-admin") {
-                                      this.props.history.push("/discount-labhazir");
+                                      this.props.history.push("/dashboard-marketeradmin");
                                     } else if (success.account_type === "samplecollector") {
                                       this.props.history.push("/dashboard-samplecollector");
                                     } else if (success.account_type === "csr-admin") {

@@ -97,7 +97,8 @@ class OfferedTestsList extends Component {
         {
           dataField: "test_name",
           text: "Test Name",
-          sort: true,
+          sort: true,          
+          style: { textAlign: 'left' },
           formatter: (cellContent, offeredTest) => (
             <>
               <span style={{
@@ -193,6 +194,8 @@ class OfferedTestsList extends Component {
           dataField: "price",
           text: "Price",
           sort: true,
+          
+          style: { textAlign: 'right' },
           formatter: (cellContent, offeredTest) => (
             <>
               {(

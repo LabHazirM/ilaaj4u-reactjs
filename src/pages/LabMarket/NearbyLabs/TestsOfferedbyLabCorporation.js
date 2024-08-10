@@ -46,6 +46,7 @@ import Breadcrumbs from "components/Common/Breadcrumb";
 import { any } from "prop-types";
 
 import { getCOfferedTestsReferrel } from "store/offered-tests/actions";
+import { getPatientProfile } from "store/labmarket/actions";
 import { addToCart } from "store/actions";
 import { getCarts } from "store/carts/actions";
 
@@ -65,6 +66,7 @@ class TestsOffered extends Component {
       position: "right",
       activeTab: "1",
       offeredTests: [],
+      patientProfile: [],
       carts: [],
       cart: "",
       success: "",
@@ -86,6 +88,11 @@ class TestsOffered extends Component {
   }
 
   componentDidMount() {
+    const { onGetPatientProfile } = this.props;
+    // Assuming onGetPatientProfile is synchronous
+    onGetPatientProfile(this.state.user_id);
+    // Now you can safely access patientProfile from props
+    const { patientProfile } = this.props;  console.log("patient info",this.state.payment_method)
     const { carts, onGetCarts } = this.props;
     onGetCarts(this.state.user_id);
     this.setState({
@@ -337,9 +344,10 @@ class TestsOffered extends Component {
 
   render() {
     const { onGetCarts } = this.props;
-
+    const { patientProfile } = this.props;
     const { carts } = this.props;
     const { loading } = this.state;
+    const { onGetPatientProfile } = this.props;
     const isLargeScreen = window.innerWidth < 490;
 
     const { page, totalPage } = this.state;
@@ -828,12 +836,14 @@ class TestsOffered extends Component {
   color={this.props.carts.some(cartItem => cartItem.offered_test_id === offeredTest.id) ? 'secondary' : 'primary'}
   className={`btn mt-3 me-1${this.props.carts.some(cartItem => cartItem.offered_test_id === offeredTest.id) ? ' disabled' : ''}`}
   // onClick={() => this.handleAddToCart(offeredTest)}
-  onClick={() => {
-    // Check if offeredTest.name is equal to any cartItem.name
+    onClick={() => {
     if (this.props.carts.some(cartItem => cartItem.test_name === offeredTest.test_name)) {
       alert("An item with the same name but from a different lab is already in the cart. Please remove the previous one first.");
+    } else if (
+      this.props.patientProfile && this.props.patientProfile.corporate_id !== "undefined" && this.props.patientProfile.is_assosiatewith_anycorporate == true && offeredTest.price > this.props.patientProfile.quota 
+    ) {
+      alert("Unfortunately, there are no funds available in your allocated quota for this test. For more information, please contact your corporation.");
     } else {
-      // If not, proceed with adding to the cart
       this.handleAddToCart(offeredTest);
     }
   }}
@@ -890,13 +900,18 @@ TestsOffered.propTypes = {
   t: PropTypes.any,
   carts: PropTypes.any,
   onGetCarts: PropTypes.func,
+  onGetPatientProfile: PropTypes.func,
+  patientProfile: PropTypes.array,
+
 };
 
-const mapStateToProps = ({ offeredTests, carts }) => ({
+const mapStateToProps = ({ offeredTests, carts, LabMarket }) => ({
   offeredTests: offeredTests.offeredTests,
   carts: carts.carts,
   success: carts.success,
   error: carts.error,
+  patientProfile: LabMarket.patientProfile,
+
 
 });
 
@@ -905,6 +920,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     dispatch(getCOfferedTestsReferrel(ownProps.match.params.lab_account_id)),
   onAddToCart: (cart, id) => dispatch(addToCart(cart, id)),
   onGetCarts: id => dispatch(getCarts(id)),
+  onGetPatientProfile: id => dispatch(getPatientProfile(id)),
 
 });
 

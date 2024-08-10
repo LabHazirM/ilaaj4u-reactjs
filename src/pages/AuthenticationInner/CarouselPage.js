@@ -132,7 +132,7 @@ export default class CarouselPage extends Component {
                           </div>
                         )}
 
-                        {window.location.href.includes("patient-information") || window.location.href.includes("b2bclient-information") ? (
+                        {window.location.href.includes("patient-information") || window.location.href.includes("corporate-information") ||  window.location.href.includes("donor-information") || window.location.href.includes("b2bclient-information") ? (
                           <div className="text-center">
                             <h4 className="mb-3">
                               <i className="bx bxs-quote-alt-left text-primary h1 align-middle me-3"></i>
@@ -345,7 +345,7 @@ export default class CarouselPage extends Component {
                           </div>
                         )}
 
-                        {window.location.href.includes("patient-information") || window.location.href.includes("b2bclient-information") ? (
+                        {window.location.href.includes("patient-information") ||  window.location.href.includes("donor-information") || window.location.href.includes("corporate-information") || window.location.href.includes("b2bclient-information") ? (
                           <div className="text-center">
                             <h2>
                               <i className="bx bxs-quote-alt-left text-primary h1 align-middle me-3"></i>

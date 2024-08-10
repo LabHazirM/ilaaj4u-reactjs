@@ -14,6 +14,9 @@ import {
   GET_CCREATEDOUT_STATUSS,
   GET_CCREATEDOUT_STATUSS_FAIL,
   GET_CCREATEDOUT_STATUSS_SUCCESS,
+  GET_CREATEDOUTDETAIL_STATUSS,
+  GET_CREATEDOUTDETAIL_STATUSS_SUCCESS,
+  GET_CREATEDOUTDETAIL_STATUSS_FAIL,
   // GET_CLEAROUT_STATUSS,
   // GET_CLEAROUT_STATUSS_FAIL,
   // GET_CLEAROUT_STATUSS_SUCCESS,
@@ -196,6 +199,26 @@ export const getCreatedOutStatussFail = error => ({
   type: GET_CREATEDOUT_STATUSS_FAIL,
   payload: error,
 });
+
+export const getCreatedOutDetailStatuss = id => {
+  console.log('ID passed to action:', id); // Log the ID passed to the action
+  return {
+    type: GET_CREATEDOUTDETAIL_STATUSS,
+    payload: id,
+  };
+};
+export const getCreatedOutDetailStatussSuccess = paymentCreatedStatuss => (
+  console.log('ID passed to action:', paymentCreatedStatuss),
+  {
+  type: GET_CREATEDOUTDETAIL_STATUSS_SUCCESS,
+  payload: paymentCreatedStatuss,
+});
+
+export const getCreatedOutDetailStatussFail = error => ({
+  type: GET_CREATEDOUTDETAIL_STATUSS_FAIL,
+  payload: error,
+});
+
 export const getCreatedOutStatuss = id => ({
   type: GET_CREATEDOUT_STATUSS,
   payload: id,

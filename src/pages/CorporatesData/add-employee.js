@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import Select from "react-select";
 import MetaTags from "react-meta-tags";
 import PropTypes from "prop-types";
-import { any } from "prop-types";
 import { Field, Formik } from "formik";
 import { connect } from "react-redux";
 import { Link, withRouter } from "react-router-dom";
@@ -10,37 +9,26 @@ import {
   Container,
   Row,
   Col,
-  Table,
   Input,
-  Nav,
-  NavItem,
-  NavLink,
-  TabContent,
-  TabPane,
+  Alert,
   Card,
   Form,
   FormGroup,
   Label,
   CardBody,
   CardTitle,
-  Alert,
 } from "reactstrap";
-
 import classnames from "classnames";
-
 import { isEmpty, map, size } from "lodash";
 
-//Import Breadcrumb
+// Import Breadcrumb
 import Breadcrumbs from "../../components/Common/Breadcrumb";
 
 import {
   addNewCemployeeData,
-} from "store/corporatedata/actions";
-import {
-  // getUnits,
   getEmployeeCorporate,
-
 } from "store/corporatedata/actions";
+
 class DonorPayment extends Component {
   constructor(props) {
     super(props);
@@ -54,74 +42,99 @@ class DonorPayment extends Component {
       employee_code: "",
       type: "Employee",
       parent_employee_id: "",
+      relation: "",
+      limit: "",
+      date: "",
       isDisabled: true,
       isRequiredFilled: true,
       cemployeeData: "",
       checkedoutData: "",
       selectedGroup: null,
+      errors: {},
     };
     this.handleSelectGroup = this.handleSelectGroup.bind(this);
   }
-  componentDidMount() {
 
-    const { cemployeeDatas, onGetEmployeeCorporate, } = this.props;
+  componentDidMount() {
+    const { cemployeeDatas, onGetEmployeeCorporate } = this.props;
     onGetEmployeeCorporate(this.state.user_id);
     this.setState({ cemployeeDatas });
-    console.log("state", cemployeeDatas)
-
+    console.log("state", cemployeeDatas);
   }
 
-  handleSelectGroup = selectedGroup => {
-    this.setState({ selectedGroup });
+  handleSelectGroup = (selectedGroup) => {
+    this.setState({
+      parent_employee_id: selectedGroup.label, // Store the name instead of the ID
+      errors: { ...this.state.errors, parent_employee_id: "" }, // Clear error
+    });
   };
 
   handleProceedClick = () => {
-    this.setState({
-      cemployeeData: {
-        name: this.state.name,
-        employee_code: this.state.employee_code,
-        type: this.state.type,
-        parent_employee_id: this.state.parent_employee_id,
-      },
-    });
+    const errors = {};
 
-    // API call to get the checkout items
-    const { onAddcemployeeData } = this.props; setTimeout(() => {
-      console.log(
-        onAddcemployeeData(this.state.cemployeeData, this.state.user_id)
-      );
-    }, 1000);
-    // If no error messages then show wait message
-    setTimeout(() => {
-      if (this.state.cemployeeData) {
-        this.setState({
-          complaintSuccess:
-            "Employee Added Successfully",
-        });
+    if (!this.state.name) errors.name = "Name is required";
+    if (!this.state.employee_code) errors.employee_code = "ID Card No is required";
+    if (!this.state.limit) errors.limit = "Amount Limit is required";
+    if (!this.state.date) errors.date = "Limit Expiry Date is required";
+
+    if (this.state.type === "Family") {
+      if (!this.state.parent_employee_id) errors.parent_employee_id = "Parent Employee Name is required";
+      if (!this.state.relation) errors.relation = "Relation with Employee is required";
+    }
+
+    if (Object.keys(errors).length > 0) {
+      this.setState({ errors });
+      return;
+    }
+
+    const relation = this.state.type === "Family" ? this.state.relation : "Himself";
+
+    this.setState(
+      {
+        cemployeeData: {
+          name: this.state.name,
+          employee_code: this.state.employee_code,
+          type: this.state.type,
+          parent_employee_id: this.state.parent_employee_id,
+          relation,
+          limit: this.state.limit,
+          date: this.state.date,
+        },
+      },
+      () => {
+        const { onAddcemployeeData } = this.props;
+        setTimeout(() => {
+          onAddcemployeeData(this.state.cemployeeData, this.state.user_id);
+        }, 1000);
+        setTimeout(() => {
+          if (this.state.cemployeeData) {
+            this.setState({
+              complaintSuccess: "Data Added Successfully",
+            });
+          }
+        }, 1000);
+        setTimeout(() => {
+          this.setState({
+            complaintSuccess: "",
+            employee_code: "",
+            type: "",
+            name: "",
+            parent_employee_id: "",
+            relation: "",
+            limit: "",
+            date: "",
+          });
+        }, 5000);
+        setTimeout(() => {
+          if (this.state.cemployeeData) {
+            this.props.history.push("/employee-list");
+          }
+        }, 3000);
       }
-    }, 1000);
-    setTimeout(() => {
-      this.setState({
-        complaintSuccess: "",
-        employee_code: "",
-        type: "",
-        name: "",
-        parent_employee_id: "",
-      });
-    }, 5000);
-    setTimeout(() => {
-      if (this.state.cemployeeData) {
-        this.props.history.push("/employee-list");
-      }
-    }, 3000)
+    );
   };
 
-
-
-
-  // eslint-disable-next-line no-unused-vars
   componentDidUpdate(prevProps, prevState, snapshot) {
-
     const { cemployeeDatas } = this.props;
     if (
       isEmpty(prevProps.cemployeeDatas) &&
@@ -133,19 +146,28 @@ class DonorPayment extends Component {
   }
 
   render() {
-    const cemployeeData = this.state.cemployeeData;
-
-    const { cemployeeDatas } = this.props;
+    const { cemployeeDatas, errors } = this.state;
 
     const employeeList = [];
     for (let i = 0; i < cemployeeDatas.length; i++) {
-      if (cemployeeDatas[i].status == "Active") {
+      if (cemployeeDatas[i].status === "Active" && cemployeeDatas[i].type === "Employee") {
         employeeList.push({
-          label: cemployeeDatas[i].name,
+          label: `${cemployeeDatas[i].id} - ${cemployeeDatas[i].name}`,
           value: cemployeeDatas[i].id,
         });
       }
     }
+
+    const relationOptions = [
+      { label: "Mother", value: "Mother" },
+      { label: "Father", value: "Father" },
+      { label: "Spouse", value: "Spouse" },
+      { label: "Son", value: "Son" },
+      { label: "Daughter", value: "Daughter" },
+      { label: "Sibling", value: "Sibling" },
+      { label: "Other", value: "Other" },
+    ];
+
     return (
       <React.Fragment>
         <div className="page-content">
@@ -153,25 +175,23 @@ class DonorPayment extends Component {
             <title>Employee | Lab Hazir - Dashboard</title>
           </MetaTags>
           <Container fluid>
-            {/* Render Breadcrumb */}
             <Breadcrumbs title="Add" breadcrumbItem="Employee Data" />
-            <Col sm="2" lg="2" style={{ marginLeft: "80%", marginBottom: "10px" }}>
+            <Col
+              sm="2"
+              lg="2"
+              style={{ marginLeft: "80%", marginBottom: "10px" }}
+            >
               <div>
-                <Link
-                  to={"/employee-file"}
-                  className="w-70 font-10 btn btn-secondary"
-                >
-                  {" "}
+                <Link to={"/employee-file"} className="w-70 font-10 btn btn-secondary">
                   <i className="mdi mdi-upload me-1" />
-                  Upload File{" "}
+                  Upload File
                 </Link>
               </div>
             </Col>
             <Formik>
               <div className="checkout-tabs">
                 <Row>
-                  <Col lg="1" sm="1">
-                  </Col>
+                  <Col lg="1" sm="1"></Col>
                   <Col lg="10" sm="9">
                     {!this.state.isRequiredFilled ? (
                       <Alert color="danger" className="col-md-5">
@@ -187,7 +207,6 @@ class DonorPayment extends Component {
                     <Card>
                       <CardBody>
                         <div>
-
                           <CardTitle className="h4">
                             Employee Information
                           </CardTitle>
@@ -195,153 +214,116 @@ class DonorPayment extends Component {
                             Fill the Employee Information
                           </p>
                           <FormGroup className="mb-4" row>
-                            <Label htmlFor="employee_code"
-                              md="2"
-                              className="col-form-label">
+                            <Label htmlFor="type" md="2" className="col-form-label">
                               Type
                             </Label>
                             <Col md="10">
-
                               <Field
                                 name="payment_method"
                                 as="select"
                                 className="form-control"
                                 multiple={false}
-                                value={
-                                  this.state.type
-                                }
-                                onChange={e =>
+                                value={this.state.type}
+                                onChange={(e) =>
                                   this.setState({
                                     type: e.target.value,
                                   })
                                 }
                               >
-                                <option value="Employee">
-                                  Employee
-                                </option>
+                                <option value="Employee">Employee</option>
                                 <option value="Family">
                                   Family and Friends
                                 </option>
-                              </Field></Col>
+                              </Field>
+                            </Col>
                           </FormGroup>
-                          {this.state.type == "Family" ? (
-                            cemployeeData.parent_employee_id ? (
+                          {this.state.type === "Family" && (
+                            <>
                               <FormGroup className="mb-3" row>
-                                <Label htmlFor="employee_code"
-                              md="2"
-                              className="col-form-label">
-                                  Employee Names
+                                <Label htmlFor="parent_employee_id" md="2" className="col-form-label">
+                                  Parent Employee Name
                                 </Label>
                                 <Col md="10">
-
-                                <Field
-                                  name="parent_employee_id"
-                                  as="select"
-                                  defaultValue={
-                                    cemployeeData.parent_employee_id
-                                  }
-                                  className="form-control"
-                                  readOnly={true}
-                                  multiple={false}
-                                >
-                                  <option
-                                    key={
-                                      cemployeeData.parent_employee_id
+                                  <Select
+                                    name="parent_employee_id"
+                                    component="Select"
+                                    onChange={this.handleSelectGroup}
+                                    className={
+                                      "defautSelectParent" +
+                                      (!this.state.parent_employee_id ? " is-invalid" : "")
                                     }
-                                    value={
-                                      cemployeeData.parent_employee_id
-                                    }
-                                  >
-                                    {
-                                      cemployeeData.name
-                                    }
-                                  </option>
-                                </Field></Col>
+                                    styles={{
+                                      control: (base, state) => ({
+                                        ...base,
+                                        borderColor: !this.state.parent_employee_id
+                                          ? "#f46a6a"
+                                          : "#ced4da",
+                                      }),
+                                    }}
+                                    options={employeeList}
+                                    placeholder="Select Employee..."
+                                  />
+                                  {errors.parent_employee_id && (
+                                    <div className="invalid-feedback">
+                                      {errors.parent_employee_id}
+                                    </div>
+                                  )}
+                                </Col>
                               </FormGroup>
-                            ) : (
-                              <FormGroup className="mb-3" row>
-                                <Label htmlFor="employee_code"
-                              md="2"
-                              className="col-form-label">Employee Names</Label>
+                              <FormGroup className="mb-4" row>
+                                <Label htmlFor="relation" md="2" className="col-form-label">
+                                  Relation with Employee
+                                </Label>
                                 <Col md="10">
-
-                                <Select
-                                  name="parent_employee_id"
-                                  component="Select"
-                                  onChange={selectedGroup =>
-                                    this.setState({
-                                      parent_employee_id:
-                                        selectedGroup.value,
-                                    })
-                                  }
-                                  className={
-                                    "defautSelectParent" +
-                                    (!this.state.parent_employee_id
-                                      ? " is-invalid"
-                                      : "")
-                                  }
-                                  styles={{
-                                    control: (
-                                      base,
-                                      state
-                                    ) => ({
-                                      ...base,
-                                      borderColor: !this
-                                        .state.parent_employee_id
-                                        ? "#f46a6a"
-                                        : "#ced4da",
-                                    }),
-                                  }}
-                                  options={employeeList}
-                                  placeholder="Select Donor..."
-                                />
-
-                                <div className="invalid-feedback">
-                                  Please select Parent Employee.
-                                </div></Col>
+                                  <Select
+                                    name="relation"
+                                    component="Select"
+                                    onChange={(selectedOption) =>
+                                      this.setState({
+                                        relation: selectedOption.value,
+                                      })
+                                    }
+                                    options={relationOptions}
+                                    placeholder="Select Relation..."
+                                  />
+                                  {errors.relation && (
+                                    <div className="invalid-feedback">
+                                      {errors.relation}
+                                    </div>
+                                  )}
+                                </Col>
                               </FormGroup>
-                            )
-
-                          ) : null}
+                            </>
+                          )}
                           <FormGroup className="mb-4" row>
-                            <Label
-                              htmlFor="name"
-                              md="2"
-                              className="col-form-label"
-                            >
-                              Employee Name
-                              <span
-                                style={{ color: "#f46a6a" }}
-                                className="font-size-18"
-                              >
+                            <Label htmlFor="name" md="2" className="col-form-label">
+                              Name
+                              <span style={{ color: "#f46a6a" }} className="font-size-18">
                                 *
                               </span>
                             </Label>
                             <Col md="10">
                               <Input
                                 type="text"
-                                className="form-control"
+                                className={`form-control ${errors.name ? "is-invalid" : ""}`}
                                 name="name"
-                                placeholder="Enter Employee Name"
-                                onChange={e =>
+                                placeholder="Enter Name"
+                                onChange={(e) =>
                                   this.setState({
                                     name: e.target.value,
+                                    errors: { ...this.state.errors, name: "" }, // Clear error
                                   })
                                 }
                               />
+                              {errors.name && (
+                                <div className="invalid-feedback">{errors.name}</div>
+                              )}
                             </Col>
                           </FormGroup>
                           <FormGroup className="mb-4" row>
-                            <Label
-                              htmlFor="employee_code"
-                              md="2"
-                              className="col-form-label"
-                            >
-                              Employee ID Card No
-                              <span
-                                style={{ color: "#f46a6a" }}
-                                className="font-size-18"
-                              >
+                            <Label htmlFor="employee_code" md="2" className="col-form-label">
+                              ID Card No
+                              <span style={{ color: "#f46a6a" }} className="font-size-18">
                                 *
                               </span>
                             </Label>
@@ -350,41 +332,116 @@ class DonorPayment extends Component {
                                 id="employee_code"
                                 name="employee_code"
                                 type="text"
-                                placeholder="Please Enter Employee ID."
-                                onChange={e =>
-                                  this.setState({
-                                    employee_code: e.target.value,
-                                  })
-                                }
+                                className={`form-control ${errors.employee_code ? "is-invalid" : ""}`}
+                                placeholder="Please Enter ID."
+                                onChange={(e) => {
+                                  const value = e.target.value;
+                                  if (value.length <= 13 && /^[0-9]*$/.test(value)) {
+                                    this.setState({
+                                      employee_code: value,
+                                      errors: { ...this.state.errors, employee_code: "" }, // Clear error
+                                    });
+                                  }
+                                }}
                                 value={this.state.employee_code}
                               />
+                              {errors.employee_code && (
+                                <div className="invalid-feedback">
+                                  {errors.employee_code}
+                                </div>
+                              )}
                             </Col>
                           </FormGroup>
-                        
+                          <FormGroup className="mb-4" row>
+                            <Label
+                              htmlFor="limit"
+                              md="2"
+                              className="col-form-label"
+                            >
+                              Quota Amount
+                              <span
+                                style={{ color: "#f46a6a" }}
+                                className="font-size-18"
+                              >
+                                *
+                              </span>
+                            </Label>
+                            <Col md="10">
+                              <Input
+                                id="limit"
+                                name="limit"
+                                type="text"
+                                className={`form-control ${errors.limit ? "is-invalid" : ""}`}
+                                placeholder="Please Enter limit."
+                                onChange={(e) => {
+                                  const value = e.target.value;
+                                  if (value.length <= 13 && /^[0-9]*$/.test(value)) {
+                                    this.setState({
+                                      limit: value,
+                                      errors: { ...this.state.errors, limit: "" }, // Clear error
+                                    });
+                                  }
+                                }}
+                                value={this.state.limit}
+                              />
+                              {errors.limit && (
+                                <div className="invalid-feedback">{errors.limit}</div>
+                              )}
+                            </Col>
+                          </FormGroup>
+                          <FormGroup className="mb-4" row>
+                            <Label htmlFor="date" md="2" className="col-form-label">
+                              Limit Expiry Date
+                              <span style={{ color: "#f46a6a" }} className="font-size-18">
+                                *
+                              </span>
+                            </Label>
+                            <Col md="10">
+                              <Input
+                                id="date"
+                                name="date"
+                                min={new Date(
+                                  new Date().toString().split("GMT")[0] +
+                                  " UTC"
+                                )
+                                  .toISOString()
+                                  .slice(0, -8)}
+                                type="datetime-local"
+                                className={`form-control ${errors.date ? "is-invalid" : ""}`}
+                                placeholder="Please Enter Date."
+                                onChange={(e) =>
+                                  this.setState({
+                                    date: e.target.value,
+                                    errors: { ...this.state.errors, date: "" }, // Clear error
+                                  })
+                                }
+                                value={this.state.date}
+                              />
+                              {errors.date && (
+                                <div className="invalid-feedback">{errors.date}</div>
+                              )}
+                            </Col>
+                          </FormGroup>
                         </div>
                       </CardBody>
                     </Card>
                     <Row className="mt-4">
-                      <Col sm="6">
-                      </Col>
+                      <Col sm="6"></Col>
                       <Col sm="6">
                         <div className="text-end">
                           <button
                             component={Link}
                             onClick={this.handleProceedClick}
-                            // to="/donor-appointment"
                             className="btn btn-success mb-4"
                           >
-                            <i className="mdi mdi-truck-fast me-1" /> Create{" "}
+                            <i className="mdi mdi-truck-fast me-1" /> Create
                           </button>
                         </div>
                       </Col>
                     </Row>
                   </Col>
                 </Row>
-                <Row>
-
-                </Row>
+                <Row></Row>
               </div>
             </Formik>
           </Container>
@@ -396,31 +453,25 @@ class DonorPayment extends Component {
 
 DonorPayment.propTypes = {
   match: PropTypes.object,
-  history: any,
+  history: PropTypes.any,
   cemployeeDatas: PropTypes.array,
-  // onGetDonorPaymentItems: PropTypes.func,
   onAddcemployeeData: PropTypes.func,
   cemployeeData: PropTypes.array,
   onGetEmployeeCorporate: PropTypes.func,
-
 };
 
 const mapStateToProps = ({ cemployeeData }) => ({
   cemployeeDatas: cemployeeData.cemployeeDatas,
   cemployeeData: cemployeeData.cemployeeData,
-
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-
   onAddcemployeeData: (cemployeeData, id) =>
     dispatch(addNewCemployeeData(cemployeeData, id)),
-  onGetEmployeeCorporate: id => dispatch(getEmployeeCorporate(id)),
-
+  onGetEmployeeCorporate: (id) => dispatch(getEmployeeCorporate(id)),
 });
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(withRouter(DonorPayment));
-

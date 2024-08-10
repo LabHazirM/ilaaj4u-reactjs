@@ -8,6 +8,8 @@ import {
   GET_CREATEDOUT_STATUSS_SUCCESS,
   GET_CREATEDOUT_STATUSS_FAIL,
   GET_CCREATEDOUT_STATUSS_SUCCESS,
+  GET_CREATEDOUTDETAIL_STATUSS_SUCCESS,
+  GET_CREATEDOUTDETAIL_STATUSS_FAIL,
   GET_CCREATEDOUT_STATUSS_FAIL,
   GET_CLEAR_STATUSS_SUCCESS,
   GET_CLEAR_STATUSS_FAIL,
@@ -153,6 +155,18 @@ const paymentStatuss = (state = INIT_STATE, action) => {
         };
     
     case GET_CREATEDOUT_STATUSS_FAIL:
+        return {
+          ...state,
+          error: action.payload,
+        };
+    case GET_CREATEDOUTDETAIL_STATUSS_SUCCESS:
+    
+        return {
+          ...state,
+          paymentCreatedStatuss: action.payload.data,
+        };
+    
+    case GET_CREATEDOUTDETAIL_STATUSS_FAIL:
         return {
           ...state,
           error: action.payload,

@@ -685,14 +685,15 @@ class Checkout extends Component {
       mdd2: "Yes",
       mdd4: "Medical Test",
       mdd5: "Yes",
-      mdd7: "Has to be a number",
+      mdd7: "1",
       mdd20: "No",
+
     };
 
     console.log('Payment Data:', paymentData); // Log the payment data
 
     // try {
-    //     const response = await axios.post('http://127.0.0.1:8000/api/patient/hblcartpayments', paymentData);
+    //     const response = await axios.post('https://labhazirapi.com/api/patient/hblcartpayments', paymentData);
     //     console.log('Response:', response); // Log the response for debugging
 
     //     if (response.data.message === 'Success') {
@@ -1075,37 +1076,38 @@ class Checkout extends Component {
                                     </Col>
                                   </FormGroup>
                                   <FormGroup className="mb-4" row>
-                                    <Label md="2" className="col-form-label">
-                                      Patient Age
-                                      <span style={{ color: "#f46a6a" }} className="font-size-18">
-                                        *
-                                      </span>
-                                    </Label>
-                                    <Col md={4}>
-                                      <input
-                                        type="number"
-                                        className="form-control"
-                                        name="patient_age"
-                                        min="0"
-                                        placeholder="Enter age"
-                                        value={this.state.patient_age}
-                                        onChange={this.handleAgeChange}
-                                      />
-                                    </Col>
-                                    <Col md={4}>
-                                      <Input
-                                        type="select"
-                                        name="ageFormat"
-                                        value={this.state.ageFormat}
-                                        onChange={this.handleAgeFormatChange}
-                                        style={{ color: 'red' }}
-                                      >
-                                        <option value="years">Years</option>
-                                        <option value="months">Months</option>
-                                        <option value="days">Days</option>
-                                      </Input>
-                                    </Col>
-                                  </FormGroup>
+  <Label md="2" className="col-form-label">
+    Patient Age
+    <span style={{ color: "#f46a6a" }} className="font-size-18">
+      *
+    </span>
+  </Label>
+  <Col md={4} className="mb-3 mb-md-0"> {/* Adds margin-bottom for smaller screens */}
+    <input
+      type="number"
+      className="form-control"
+      name="patient_age"
+      min="0"
+      placeholder="Enter age"
+      value={this.state.patient_age}
+      onChange={this.handleAgeChange}
+    />
+  </Col>
+  <Col md={4}>
+    <Input
+      type="select"
+      name="ageFormat"
+      value={this.state.ageFormat}
+      onChange={this.handleAgeFormatChange}
+      style={{ color: 'red' }}
+    >
+      <option value="years">Years</option>
+      <option value="months">Months</option>
+      <option value="days">Days</option>
+    </Input>
+  </Col>
+</FormGroup>
+
                                   <div className="form-group row">
                                     <label className="col-md-2" htmlFor="flatpickrInput">
                                       Select a date for the appointment?{' '}

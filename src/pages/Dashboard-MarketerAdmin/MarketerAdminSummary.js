@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 
-import { Row, Col, Card, CardBody } from "reactstrap";
+import { Row, Col, Card, CardBody , Container} from "reactstrap";
 import { withRouter, Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { withTranslation } from "react-i18next";
@@ -42,6 +42,7 @@ class MarketerAdminSummary extends Component {
     return (
       <React.Fragment>
         {/* Welcome profile */}
+        <Container fluid className="d-flex justify-content-center align-items-center">
         <Col xl="4">
           <Card className="overflow-hidden">
             <div className="bg-primary bg-soft">
@@ -49,7 +50,7 @@ class MarketerAdminSummary extends Component {
                 <Col xs="7">
                   <div className="text-primary p-3">
                     <h5 className="text-primary">Welcome Back !</h5>
-                    <p>Lab Hazir Dashboard</p>
+                    <p>Marketer Admin Dashboard</p>
                   </div>
                 </Col>
                 <Col xs="5" className="align-self-end">
@@ -73,10 +74,10 @@ class MarketerAdminSummary extends Component {
                       <Col xs="6">
                         <div className="mt-2">
                         <Link
-                            to={"/activity-log-marketer"}
+                            to={"/change-password"}
                             className="btn btn-primary btn-sm"
                           >
-                            Activity Log{" "}
+                            Change Password{" "}
                             <i className="mdi mdi-arrow-right ms-1" />
                           </Link>
                         </div>
@@ -99,7 +100,7 @@ class MarketerAdminSummary extends Component {
             </CardBody>
           </Card>
         </Col>
-
+        </Container>
         {/* Revenue and Appointment Details */}
         {/* <Col xl="8">
           <Row>

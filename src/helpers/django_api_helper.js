@@ -1124,6 +1124,7 @@ export const updatePatientProfile = (patientProfile, id) => {
   let formData = new FormData();
   formData.append("account_id", id);
   formData.append("name", patientProfile.name);
+  formData.append("email", patientProfile.email);
   formData.append("phone", patientProfile.phone);
 
   return axios.put(`${url.UPDATE_PATIENT_PROFILE}/${id}`, formData, {
@@ -1903,7 +1904,11 @@ export const getDonorAccountStatements = id =>
     formData.append("name", cemployeeData.name);
     formData.append("employee_code", cemployeeData.employee_code);
     formData.append("type", cemployeeData.type);
+    formData.append("limit", cemployeeData.limit);
+    formData.append("date", cemployeeData.date);
+    formData.append("relation", cemployeeData.relation);
     formData.append("parent_employee_id", cemployeeData.parent_employee_id);
+
     return axios.post(`${url.ADD_NEW_CEMPLOYEE_DATA}/${id}`, formData, {
       headers: getHeader(authHeader()),
     });
@@ -1916,6 +1921,7 @@ export const getDonorAccountStatements = id =>
   export const addNewCemployeefile = (cemployeeData) => {
     let formData = new FormData();
     formData.append("excel_file", cemployeeData.excel_file);
+    formData.append("corporate_id", cemployeeData.corporate_id);
 
     console.log("django api helper", cemployeeData)
   
@@ -1931,6 +1937,8 @@ export const getDonorAccountStatements = id =>
     formData.append("name", cemployeeData.name);
     formData.append("employee_code", cemployeeData.employee_code);
     formData.append("status", cemployeeData.status);
+    formData.append("limit", cemployeeData.limit);
+    formData.append("date", cemployeeData.date);
   
     return axios.put(
       `${url.UPDATE_CEMPLOYEE}/${cemployeeData.id}`,
@@ -2845,6 +2853,7 @@ export const updateBankaccount = bankAccount => {
   formData.append("id", bankAccount.id);
   formData.append("account_no", bankAccount.account_no);
   formData.append("status", bankAccount.status);
+  formData.append("creating_at", bankAccount.creating_at);
 
   return axios.put(`${url.UPDATE_BANKACCOUNT}/${bankAccount.id}`, formData, {
     headers: getHeader(authHeader()),
@@ -3065,6 +3074,10 @@ export const getCCreatedOutStatuss = id =>
 
 export const getCreatedOutStatuss = id =>
   get(`${url.GET_CREATEDOUT_STATUSS}/${id}`, {
+    headers: getHeader(authHeader()),
+  });
+export const getCreatedOutDetailStatuss = id =>
+  get(`${url.GET_CREATEDOUTDETAIL_STATUSS}/${id}`, {
     headers: getHeader(authHeader()),
   });
 // ------------- PAYMENT IN STATUS---------------------

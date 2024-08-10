@@ -81,7 +81,7 @@ class B2bClientInformation extends Component {
             <Row className="g-0">
               <CarouselPage />
 
-              <Col xl={6}>
+              <Col md={6} lg={6} xl={6}>
                 <div className="auth-full-page-content p-md-5 p-4">
                   <div className="w-100">
                     <div className="d-flex flex-column h-100">

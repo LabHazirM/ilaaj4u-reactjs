@@ -65,6 +65,8 @@ import CorporateLabAppointmentsList from "../pages/CorporatesData/corporate-lab-
 import CorporateLabsList from "../pages/CorporatesData/corporate-labs-list";
 import CorporatePaymentForm from "../pages/CorporatesData/corporate-out-payment";
 import PaymentFormStatus from "../pages/CorporatesData/corporate-paymentout-created-statuss-list";
+import PaymentConfirmation from "../pages/CorporatesData/payment-confirmation";
+import LabhazirPaymentConfirmation from "../pages/CorporatesData/labhazir-payment-confirmation";
 import corporatecommit from "../pages/CorporatesData/commit-corporate";
 import corporatevoucher from "../pages/CorporatesData/corporate-paymentout-created-statuss-detail"
 import AccountStatementsCorporate from "pages/CorporatesData/corporate-lab-appointments";
@@ -487,6 +489,18 @@ const labAuthProtectedRoutes = [
     path: "/corporate-offered-tests/:id",
     component: CorporateOfferedTestsListForLab,
   },
+  {
+    path: "/payment-confirmation",
+    component: PaymentConfirmation,
+  },
+  {
+    path: "/corporate-activity-log-lab/:id",
+    component: corporatecommit,
+  },
+  {
+    path: "/corporate-voucher-lab/:id",
+    component: corporatevoucher,
+  },
 ];
 
 const b2bclientAuthProtectedRoutes = [
@@ -617,6 +631,18 @@ const financeAdminAuthProtectedRoutes = [
   {
     path: "/accepted-corporates-List",
     component: AcceptedCorporatesLists,
+  },
+  {
+    path: "/corporate-payment-confirmation",
+    component: LabhazirPaymentConfirmation,
+  },
+  {
+    path: "/corporate-payment-activity-log/:id",
+    component: corporatecommit,
+  },
+  {
+    path: "/corporate-payment-voucher/:id",
+    component: corporatevoucher,
   },
 
 

@@ -315,13 +315,9 @@ export const UPDATE_PAYMENTIN_STATUS = `${API_ENDPOINT}/api/finance-officer/get-
 export const GET_BOUNCEDIN_STATUSS = `${API_ENDPOINT}/api/finance-officer/get-payment-in-bounced`;
 export const UPDATE_PAYMENTINBOUNCED_STATUS = `${API_ENDPOINT}/api/finance-officer/get-payment-in-bounced`;
 export const GET_PAYMENTOUT_CLEAR_STATUSS = `${API_ENDPOINT}/api/finance-officer/get-payment-out-cleared`;
-
-
-
-
-
 export const GET_PAYMENTOUT_STATUSS = `${API_ENDPOINT}/api/finance-officer/get-payment-out-pending`;
 export const GET_CREATEDOUT_STATUSS = `${API_ENDPOINT}/api/finance-officer/get-payment-out-created`;
+export const GET_CREATEDOUTDETAIL_STATUSS = `${API_ENDPOINT}/api/corporate/corporate-payment-detail`;
 export const UPDATE_PAYMENTOUT_STATUS = `${API_ENDPOINT}/api/finance-officer/get-payment-out-pending`;
 export const UPDATE_PAYMENTOUTCREATED_STATUS = `${API_ENDPOINT}/api/finance-officer/get-payment-out-created`;
 export const GET_BOUNCED_STATUSS = `${API_ENDPOINT}/api/finance-officer/get-payment-out-bounced`;

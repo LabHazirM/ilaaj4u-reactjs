@@ -47,9 +47,11 @@ class AccountStatements extends Component {
   }
 
   componentDidMount() {
-    if (this.state.user_id) {
-      const { onGetCLabAccountStatements } = this.props;
-      onGetCLabAccountStatements(this.state.user_id);
+    const { onGetCLabAccountStatements, match } = this.props;
+    const userId = match.params.id || this.state.user_id;
+    
+    if (userId) {
+      onGetCLabAccountStatements(userId);
     }
   }
 
@@ -86,18 +88,6 @@ class AccountStatements extends Component {
       this.node.current.props.pagination.options.onPageChange(page);
     }
   };
-  // exportToExcel = () => {
-  //   const { b2baccountStatements } = this.props;
-  //   const fileType =
-  //     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
-  //   const fileExtension = ".xlsx";
-  //   const ws = XLSX.utils.json_to_sheet(b2baccountStatements);
-  //   const wb = { Sheets: { data: ws }, SheetNames: ["data"] };
-  //   const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
-  //   const data = new Blob([excelBuffer], { type: fileType });
-  //   const fileName = "account_statements" + fileExtension;
-  //   saveAs(data, fileName);
-  // };
   exportToExcel = () => {
     const { b2baccountStatements } = this.props;
     const fileType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
@@ -180,20 +170,22 @@ class AccountStatements extends Component {
       <React.Fragment>
         <div className="page-content">
           <MetaTags>
-            <title>Appointment Statements | Lab Hazir</title>
+            <title>Appointments Statement | Lab Hazir</title>
           </MetaTags>
           <Container fluid>
-            <Breadcrumbs title="Corporate" breadcrumbItem="Appointment Statements" />
-            <div> <span className="text-danger font-size-12">
-                                    <strong> 
-                                    Note: Settled Appointments indicate that payment has been made to both the respective lab where the corporate employee tests were performed and to Lab Hazir.                                    
-                                    </strong>
-                                  </span>
-                                  </div>
+            <Breadcrumbs title="Statements" breadcrumbItem="Appointments Statement" />
             <Row>
               <Col lg="12" style={{ marginLeft: "87%" }}>
                 <Button onClick={this.exportToExcel} className="mb-3">Export to Excel</Button>
               </Col>
+              <div> 
+                                  <span className="text-danger font-size-12">
+                  <strong>
+                    Note: Settled Appointements indicate that payment has been made to both the respective lab where the corporate employee tests were performed and to Lab Hazir.
+.
+                  </strong>
+                  </span>
+                  </div>
             </Row>
             {isEmpty(this.props.b2baccountStatements) && (
               <Row>
@@ -204,19 +196,17 @@ class AccountStatements extends Component {
                         <Table>
                           <thead className="table-light">
                             <tr>
-                            <th scope="col">Employee ID</th>
+                              <th scope="col">Employee ID</th>
                               <th scope="col">Employee Name</th>
                               <th scope="col">Order ID</th>
                               <th scope="col">Lab Name</th>
-                              <th scope="col">Lab Type</th>
+                              <th scope="col">Lab Type</th>                              
                               <th scope="col">Appointment Status</th>
                               <th scope="col">Payment Method/ Status</th>
                               <th scope="col">Invoice Value</th>
                               <th scope="col">Lab Payable</th>
                               <th scope="col">Labhazir Payable</th>
                               <th scope="col">Is Settled</th>
-
-                              {/* <th scope="col">Is Settled</th> */}
                             </tr>
                           </thead>
                         </Table>
@@ -264,27 +254,25 @@ class AccountStatements extends Component {
                               value={this.state.isSettledFilter}
                             >
                               <option value="">All</option>
-                              <option value="true">Sattled</option>
-                              <option value="false">Not Sattled</option>
+                              <option value="true">Settled</option>
+                              <option value="false">Not Settled</option>
                             </select>
                           </Col>
                         </Row>
                         <Table>
                           <thead className="table-light">
-                            <tr>
-                            <th scope="col">Employee ID</th>
+                          <tr>
+                              <th scope="col">Employee ID</th>
                               <th scope="col">Employee Name</th>
                               <th scope="col">Order ID</th>
                               <th scope="col">Lab Name</th>
-                              <th scope="col">Lab Type</th>
+                              <th scope="col">Lab Type</th>                              
                               <th scope="col">Appointment Status</th>
                               <th scope="col">Payment Method/ Status</th>
                               <th scope="col">Invoice Value</th>
                               <th scope="col">Lab Payable</th>
                               <th scope="col">Labhazir Payable</th>
                               <th scope="col">Is Settled</th>
-
-                              {/* <th scope="col">Is Settled</th> */}
                             </tr>
                           </thead>
                           <tbody>
@@ -305,7 +293,7 @@ class AccountStatements extends Component {
                                       </h5>
                                     </td>
                                     <td>
-                                      <h5 className="font-size-14 text-truncate float-start">
+                                      <h5 className="font-size-14 text-truncate">
                                         <span>{b2baccountStatement.employee_name}</span>
                                       </h5>
                                     </td>
@@ -338,7 +326,7 @@ class AccountStatements extends Component {
                                         <span>{b2baccountStatement.lab_type}</span>
                                       </h5>
                                     </td>
-                                   
+                                    
                                     
                                     <td>
                                       <h5 className="font-size-14 text-truncate">
@@ -408,10 +396,6 @@ class AccountStatements extends Component {
                                     </td>
 
                                     <td>
-
-                                      {/* <p>
-                                         {b2baccountStatement.is_settled}
-                                        </p> */}
                                       {b2baccountStatement.is_settled == true ? (
                                         <div className="text-success">
                                           <i className="mdi mdi-check-circle font-size-18"></i>
@@ -423,62 +407,9 @@ class AccountStatements extends Component {
                                       )}
 
                                     </td>
-
-                                    {/* <td>
-                                      {b2baccountStatement.map((statement, index) => (
-                                        (isSettledFilter === '' || String(statement.is_settled) === isSettledFilter) && (
-                                          <div key={index}>
-                                            {statement.is_settled ? (
-                                              <div className="text-success">
-                                                <i className="mdi mdi-check-circle font-size-18"></i>
-                                              </div>
-                                            ) : (
-                                              <div className="text-danger">
-                                                <i className="mdi mdi-close-circle font-size-18"></i>
-                                              </div>
-                                            )}
-                                            
-                                          </div>
-                                        )
-                                      ))}
-                                    </td> */}
-
                                   </tr>
                                 </>
-                              ))}
-                            {/* <tr className="bg-success bg-soft">
-                              <td colSpan="3" className="border-0 text-end">
-                                <strong>Total</strong>
-                              </td>
-                              <td className="border-10">
-                                <p className="float-end">
-                                  {this.props.b2baccountStatements
-                                    .slice(-1)
-                                    .pop()
-                                    .total_amount.toString()
-                                    .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-                                </p>
-                              </td>
-                              <td className="border-10">
-                                <p className="float-end">
-                                  {this.props.b2baccountStatements
-                                    .slice(-1)
-                                    .pop()
-                                    .total_receivable.toString()
-                                    .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-                                </p>
-                              </td>
-                              <td className="border-10">
-                                <p className="float-end">
-                                  {this.props.b2baccountStatements
-                                    .slice(-1)
-                                    .pop()
-                                    .total_payable.toString()
-                                    .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-                                </p>
-                              </td>
-                              <td className="border-10"></td>
-                            </tr> */}
+                              ))}                            
                             <tr className="bg-success bg-soft">
                               <td colSpan="7" className="border-0 text-end">
                                 <strong>Total</strong>
@@ -568,23 +499,6 @@ class AccountStatements extends Component {
                                           readOnly={true}
                                         />
                                       </div>
-
-                                      {/* <div className="col-md-3">
-                                                    <button
-                                                      type="button"
-                                                      className="btn btn-secondary"
-                                                      onClick={() => {
-                                                        navigator.clipboard.writeText(
-                                                          this.state.lab_phone
-                                                        );
-                                                        this.setState({
-                                                          btnText: "Copied",
-                                                        });
-                                                      }}
-                                                    >
-                                                      {this.state.btnText}
-                                                    </button>
-                                                  </div> */}
                                     </div>
                                   </Col>
                                 </Row>

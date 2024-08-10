@@ -82,7 +82,7 @@ class Dashboard extends Component {
       <React.Fragment>
         <div className="page-content">
           <MetaTags>
-            <title>Dashboard | Finance Admin</title>
+            <title>Dashboard | Marketer Admin</title>
           </MetaTags>
           <Container fluid>
             {/* Render Breadcrumb */}
@@ -93,7 +93,7 @@ class Dashboard extends Component {
             <Row>
               <StaffSummary />
 
-              <Col xl="12">
+              {/* <Col xl="12">
                 <Card>
                   <CardBody>
                     <div className="d-sm-flex flex-wrap">
@@ -164,9 +164,9 @@ class Dashboard extends Component {
                     </div>
                     <div className="clearfix" />
                     {/* <StackedColumnChart chartSeries={this.state.chartSeries} /> */}
-                  </CardBody>
-                </Card>
-              </Col>
+                  {/* </CardBody> */}
+                {/* </Card> */}
+              {/* </Col> */} 
             </Row>
           </Container>
         </div>

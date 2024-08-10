@@ -200,6 +200,17 @@ class ReferredPatientsList extends Component {
           ),filter: textFilter(),
         },
         {
+          dataField: "donortesting",
+          text: "Status",
+          sort: true,
+          formatter: (cellContent, patientTestAppointment) => (
+            <>
+              <strong>{patientTestAppointment.donortesting}</strong>
+            </>
+          ),filter: textFilter(),
+        },
+
+        {
           dataField: "dues",
           text: "Invoice Amount",
           sort: true,
