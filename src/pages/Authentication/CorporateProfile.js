@@ -460,7 +460,7 @@ class CorporateProfile extends Component {
     this.setState({
       selectedCities: selectedGroups,
       // Update city state with the names of the selected cities
-      city: selectedGroups ? selectedGroups.map(group => group.label).join(", ") : ""
+      city: selectedGroups ? selectedGroups.map(group => group.value).join(", ") : ""
     });
   }}
   className={
