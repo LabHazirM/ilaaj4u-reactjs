@@ -21,6 +21,7 @@ const carts = (state = INIT_STATE, action) => {
       return {
         ...state,
         carts: action.payload.data,
+        total_balance_sum: action.payload.total_balance_sum,
       };
 
     case GET_CARTS_FAIL:

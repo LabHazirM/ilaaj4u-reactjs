@@ -48,6 +48,7 @@ class LabPathologists extends Component {
       pathologist: "",
       modal: false,
       deleteModal: false,
+      lab_name: "",
       // pathologistListColumns: [
       //   {
       //     text: "id",
@@ -104,7 +105,18 @@ class LabPathologists extends Component {
   componentDidMount() {
     const { pathologists, onGetPathologists } = this.props;
     onGetPathologists();
-    this.setState({ pathologists });
+    this.setState({ 
+      pathologists,
+      lab_name: this.props.pathologists.length > 0 ? this.props.pathologists[0].lab_name : ""
+     });
+  }
+  componentDidUpdate(prevProps) {
+    if (prevProps.pathologists !== this.props.pathologists) {
+      this.setState({
+        pathologists: this.props.pathologists,
+        lab_name: this.props.pathologists.length > 0 ? this.props.pathologists[0].lab_name : ""
+      });
+    }
   }
 
   toggle() {
@@ -140,6 +152,7 @@ class LabPathologists extends Component {
   render() {
     const { page, totalPage } = this.state;
     const { pathologists } = this.props.pathologists;
+    const {lab_name } = this.state;
     return (
       <React.Fragment>
         <div className="page-content">
@@ -148,10 +161,11 @@ class LabPathologists extends Component {
           </MetaTags>
           <Container fluid>
             {/* Render Breadcrumbs */}
-            <Breadcrumbs
+            {/* <Breadcrumbs
               title="Pathologists"
               breadcrumbItem="Pathologists List"
-            />{" "}
+            />{" "} */}
+            <h4>Pathologists of {lab_name}</h4>
             <Row>
               <Row>
                 {!isEmpty(this.props.pathologists) &&

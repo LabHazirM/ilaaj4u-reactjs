@@ -40,6 +40,7 @@ class LabSampleCollectors extends Component {
       collectorImg: "",
       modal: false,
       deleteModal: false,
+      lab_name: "",
       // sampleCollectorListColumns: [
       //   {
       //     text: "id",
@@ -103,9 +104,18 @@ class LabSampleCollectors extends Component {
   componentDidMount() {
     const { sampleCollectors, onGetSampleCollectors } = this.props;
     onGetSampleCollectors();
-    this.setState({ sampleCollectors });
+    this.setState({ sampleCollectors,
+      lab_name: this.props.sampleCollectors.length > 0 ? this.props.sampleCollectors[0].lab_name : ""
+     });
   }
-
+  componentDidUpdate(prevProps) {
+    if (prevProps.sampleCollectors !== this.props.sampleCollectors) {
+      this.setState({
+        sampleCollectors: this.props.sampleCollectors,
+        lab_name: this.props.sampleCollectors.length > 0 ? this.props.sampleCollectors[0].lab_name : ""
+      });
+    }
+  }
   toggle() {
     this.setState(prevState => ({
       modal: !prevState.modal,
@@ -139,6 +149,7 @@ class LabSampleCollectors extends Component {
   render() {
     const { page, totalPage } = this.state;
     const { sampleCollectors } = this.props.sampleCollectors;
+    const {lab_name } = this.state;
     return (
       <React.Fragment>
         <div className="page-content">
@@ -147,11 +158,12 @@ class LabSampleCollectors extends Component {
           </MetaTags>
           <Container fluid>
             {/* Render Breadcrumbs */}
-            <Breadcrumbs
+            {/* <Breadcrumbs
               title="Home Sample Collectors"
               breadcrumbItem="Collectors List"
-            />
-            <Row>
+            /> */}
+            <h4>Sample Collectors of {lab_name}</h4>
+            <Row className="mb-3">
               <Row>
                 {!isEmpty(this.props.sampleCollectors) &&
                   this.props.sampleCollectors.map((sampleCollector, key) => (

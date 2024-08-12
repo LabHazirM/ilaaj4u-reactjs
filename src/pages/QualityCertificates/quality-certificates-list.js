@@ -1025,7 +1025,7 @@ class QualityCertificatesList extends Component {
                                                         </Label>
                                                         <Field
                                                           name="start_date"
-                                                          type="datetime-local"
+                                                          type="date"
                                                           max={new Date(
                                                             new Date().toString().split("GMT")[0] +
                                                             " UTC"

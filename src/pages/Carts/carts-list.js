@@ -400,7 +400,7 @@ class CartList extends Component {
 
     const { SearchBar } = Search;
 
-    const { carts } = this.props;
+    const { carts,total_balance_sum  } = this.props;
 
     const { deleteModal } = this.state;
 
@@ -1377,6 +1377,18 @@ class CartList extends Component {
                                   </div>
                                 </Col>
                               </Row>
+                              <Row>
+                  <Col sm="12">
+                  <div className="text-sm-end mt-2 mt-sm-0">
+                  
+                      <h5>Total After Discount : <span>
+                  {Math.round(total_balance_sum)
+                    .toString()
+                    .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                </span></h5>
+                    </div>
+                  </Col>
+                </Row>
                               <Row className="align-items-md-center mt-30">
                                 <Col className="pagination pagination-rounded justify-content-end mb-2">
                                   <PaginationListStandalone
@@ -1439,7 +1451,7 @@ class CartList extends Component {
                           </button>
                         </div>
                       </Col>
-                    </Row>
+                    </Row>                  
                   </CardBody>
                 </Card>
               </Col>
@@ -1456,6 +1468,7 @@ CartList.propTypes = {
   location: PropTypes.any,
   match: PropTypes.object,
   carts: PropTypes.array,
+  total_balance_sum: PropTypes.array,
   className: PropTypes.any,
   onGetCarts: PropTypes.func,
   onDeleteCart: PropTypes.func,
@@ -1469,6 +1482,7 @@ CartList.propTypes = {
 
 const mapStateToProps = ({ carts, LabMarket }) => ({
   carts: carts.carts,
+  total_balance_sum: carts.total_balance_sum,
   patientProfile: LabMarket.patientProfile,
 
 });
