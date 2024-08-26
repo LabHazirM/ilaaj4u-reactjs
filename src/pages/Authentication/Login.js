@@ -299,6 +299,13 @@ class Login extends Component {
                                       console.log("finalUrl in mobile app else case", this.state.finalUrl);
                                       if (success.account_type === "samplecollector") {
                                         this.props.history.push("/dashboard-samplecollector");
+                                      } else if (success.account_type === "patient") {
+                                        this.props.history.push(
+                                          this.props.match.params.uuid
+                                            ? `/nearby-labs/${this.props.match.params.uuid}`
+                                            : `/nearby-labs`
+                                        );
+                                        console.log("yaha pr aya nahi",this.props.match.params.uuid);
                                       }
                                     }
                                     else if (
