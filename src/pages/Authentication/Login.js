@@ -301,11 +301,11 @@ class Login extends Component {
                                         this.props.history.push("/dashboard-samplecollector");
                                       } else if (success.account_type === "patient") {
                                         this.props.history.push(
-                                          this.props.match.params.uuid
-                                            ? `/nearby-labs/${this.props.match.params.uuid}`
+                                          this.state.finalUrl
+                                            ? `/nearby-labs/${this.state.finalUrl}`
                                             : `/nearby-labs`
                                         );
-                                        console.log("yaha pr aya nahi",this.props.match.params.uuid);
+                                        console.log("yaha pr aya nahi",this.state.finalUrl);
                                       }
                                     }
                                     else if (
