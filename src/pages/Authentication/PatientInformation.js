@@ -57,7 +57,7 @@ class PatientInformation extends Component {
   }
   // fetchEmployeeCodes = async () => {
   //   try {
-  //     const response = await axios.get(`https://labhazirapi.com/api/corporate/employees-list`);
+  //     const response = await axios.get(`http://127.0.0.1:8000/api/corporate/employees-list`);
   //     const employeeData = response.data.data;
   
   //     if (employeeData && employeeData.length > 0) {
@@ -273,8 +273,8 @@ class PatientInformation extends Component {
                                   console.log(this.props.match.params.uuid);
                                   this.props.history.push(
                                     this.props.match.params.uuid
-                                      ? `/corporate-csr/${this.props.match.params.uuid}/${this.props.match.params.id}`
-                                      : `/corporate-csr/${this.props.match.params.id}`
+                                      ? `/tests-offered-labhazir/${this.props.match.params.uuid}/${this.props.match.params.id}`
+                                      : `/tests-offered-labhazir/${this.props.match.params.id}`
                                   );
                                 }
                                 else if (
@@ -284,13 +284,6 @@ class PatientInformation extends Component {
                                   this.state.employee_id_card &&
                                   this.state.user_type === "CSR"
                                 ){
-                                  console.log(
-                                    "Patient Profile:",
-                                    this.state.is_assosiatewith_anycorporate,
-                                    this.props.patient,
-                                    this.state.employee_id_card,
-                                    this.state.user_type
-                                  );
                                   const uuid = this.props.match.params.id;
                                   const accountId = this.state.corporate_id;
                                   const url = uuid

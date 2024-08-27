@@ -623,73 +623,99 @@ class NearbyLabs extends Component {
   };
 
   onChangeAddress = e => {
-    const { onGetNearbyLabs } = this.props;
-  
     // Apply that city's latitude and longitude as city bound so that we see addresses of that city only
     var cityBounds = new google.maps.LatLngBounds(
       new google.maps.LatLng(this.state.latitude, this.state.longitude)
     );
-  
-    // Initialize AutocompleteService
-    const autocompleteService = new google.maps.places.AutocompleteService();
-  
-    // Call AutocompleteService to get place predictions
-    autocompleteService.getPlacePredictions(
-      {
-        input: e.target.value,
-        bounds: cityBounds,
-        types: ["geocode", "establishment"],
-      },
-      (predictions, status) => {
-        if (status === google.maps.places.PlacesServiceStatus.OK) {
-          // Filter predictions to include only those inside Pakistan
-          const pakistanPredictions = predictions.filter(prediction => {
-            return (
-              prediction.structured_formatting.main_text_matched_substrings.some(
-                match => match.offset === 0
-              ) &&
-              prediction.terms.some(term => term.value === "Pakistan")
-            );
-          });
-  
-          // Handle predictions, e.g., update the state or perform further actions
-          const locationDetails = {
-            // Extract relevant details from the first prediction
-            latitude:
-              pakistanPredictions.length > 0
-                ? pakistanPredictions[0].geometry.location.lat()
-                : "",
-            longitude:
-              pakistanPredictions.length > 0
-                ? pakistanPredictions[0].geometry.location.lng()
-                : "",
-            search_type: this.state.search_type,
-            address: e.target.value,
-            city: this.state.city,
-            LabType: this.state.LabType,
-            km: this.state.km,
-            name: this.state.name,
-            locationAccessAllowed: this.state.locationAccessAllowed,
-            corporatepatient: this.props.patientProfile ? this.props.patientProfile.corporate_id : undefined,
 
-          };
-  
-          // Call the action to get nearby labs
-          onGetNearbyLabs(locationDetails);
+    const options = {
+      bounds: cityBounds,
+      types: ["establishment"],
+      componentRestrictions: { country: "pk" },
+    };
 
-          this.setState({ nearbyLabs: [] });
+    var searchBox = new window.google.maps.places.SearchBox(e.target, options);
 
-  
-          // Update state after a delay (if needed)
-          setTimeout(() => {
-            this.setState({ nearbyLabs: this.props.nearbyLabs });
-          }, 1000);
-        } else {
-          console.error("AutocompleteService failed with status:", status);
-        }
-      }
-    );
+    searchBox.addListener("places_changed", () => {
+      const newAddress = e.target.value;
+      this.handleAddressChange(newAddress);
+
+      // // Find and adjust the z-index of the suggestion list
+      // const suggestionList = document.querySelector(".pac-container");
+      // if (suggestionList) {
+      //   suggestionList.style.zIndex = "9999"; // Adjust the z-index value as needed
+      // }
+    });
   };
+
+  // onChangeAddress = e => {
+  //   const { onGetNearbyLabs } = this.props;
+  
+  //   // Apply that city's latitude and longitude as city bound so that we see addresses of that city only
+  //   var cityBounds = new google.maps.LatLngBounds(
+  //     new google.maps.LatLng(this.state.latitude, this.state.longitude)
+  //   );
+  
+  //   // Initialize AutocompleteService
+  //   const autocompleteService = new google.maps.places.AutocompleteService();
+  
+  //   // Call AutocompleteService to get place predictions
+  //   autocompleteService.getPlacePredictions(
+  //     {
+  //       input: e.target.value,
+  //       bounds: cityBounds,
+  //       types: ["geocode", "establishment"],
+  //     },
+  //     (predictions, status) => {
+  //       if (status === google.maps.places.PlacesServiceStatus.OK) {
+  //         // Filter predictions to include only those inside Pakistan
+  //         const pakistanPredictions = predictions.filter(prediction => {
+  //           return (
+  //             prediction.structured_formatting.main_text_matched_substrings.some(
+  //               match => match.offset === 0
+  //             ) &&
+  //             prediction.terms.some(term => term.value === "Pakistan")
+  //           );
+  //         });
+  
+  //         // Handle predictions, e.g., update the state or perform further actions
+  //         const locationDetails = {
+  //           // Extract relevant details from the first prediction
+  //           latitude:
+  //             pakistanPredictions.length > 0
+  //               ? pakistanPredictions[0].geometry.location.lat()
+  //               : "",
+  //           longitude:
+  //             pakistanPredictions.length > 0
+  //               ? pakistanPredictions[0].geometry.location.lng()
+  //               : "",
+  //           search_type: this.state.search_type,
+  //           address: e.target.value,
+  //           city: this.state.city,
+  //           LabType: this.state.LabType,
+  //           km: this.state.km,
+  //           name: this.state.name,
+  //           locationAccessAllowed: this.state.locationAccessAllowed,
+  //           corporatepatient: this.props.patientProfile ? this.props.patientProfile.corporate_id : undefined,
+
+  //         };
+  
+  //         // Call the action to get nearby labs
+  //         onGetNearbyLabs(locationDetails);
+
+  //         this.setState({ nearbyLabs: [] });
+
+  
+  //         // Update state after a delay (if needed)
+  //         setTimeout(() => {
+  //           this.setState({ nearbyLabs: this.props.nearbyLabs });
+  //         }, 1000);
+  //       } else {
+  //         console.error("AutocompleteService failed with status:", status);
+  //       }
+  //     }
+  //   );
+  // };
   
   
 
@@ -1016,8 +1042,12 @@ class NearbyLabs extends Component {
 
     return (
       <React.Fragment>
-        {this.props.patientProfile && !this.props.patientProfile.corporate_id && this.props.patientProfile.is_assosiatewith_anycorporate == false ? (
-          <div className="topnav">
+        {/* {this.props.patientProfile && !this.props.patientProfile.corporate_id && this.props.patientProfile.is_assosiatewith_anycorporate == false ? (
+         
+        ) : (
+          null
+        )} */}
+         <div className="topnav">
           <div className="container-fluid left-space">
             <nav
               className="navbar navbar-light navbar-expand-lg topnav-menu"
@@ -1638,9 +1668,6 @@ class NearbyLabs extends Component {
             </nav>
           </div>
           </div>
-        ) : (
-          null
-        )}
         
 
         <div className="page-content">

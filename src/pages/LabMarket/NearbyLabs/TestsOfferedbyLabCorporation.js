@@ -372,6 +372,18 @@ class TestsOffered extends Component {
                         id="topnav-menu-content"
                       >
                         <ul className="navbar-nav">
+                            <li className="nav-item">
+                              <Link
+                                to={
+                                  this.props.match.params.uuid
+                                    ? `/corporate-labs/${this.props.match.params.uuid}`
+                                    : `/corporate-labs`
+                                }
+                                className="dropdown-item"
+                              >
+                                <span className="pt-4 font-size-12">Labs</span>
+                              </Link>
+                            </li>
 
                             <li className="nav-item">
                               <Link to={
