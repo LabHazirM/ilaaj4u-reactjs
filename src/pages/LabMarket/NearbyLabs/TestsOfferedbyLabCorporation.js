@@ -852,7 +852,7 @@ class TestsOffered extends Component {
     if (this.props.carts.some(cartItem => cartItem.test_name === offeredTest.test_name)) {
       alert("An item with the same name but from a different lab is already in the cart. Please remove the previous one first.");
     } else if (
-      this.props.patientProfile && this.props.patientProfile.corporate_id !== "undefined" && this.props.patientProfile.is_assosiatewith_anycorporate == true && offeredTest.price > this.props.patientProfile.quota 
+      this.props.patientProfile && this.props.patientProfile.corporate_id !== "undefined" && this.props.patientProfile.is_assosiatewith_anycorporate == true && this.props.patientProfile.corporate_payment === "Payment by Coorporate to LH" &&offeredTest.price > this.props.patientProfile.quota 
     ) {
       alert("Unfortunately, there are no funds available in your allocated quota for this test. For more information, please contact your corporation.");
     } else {
