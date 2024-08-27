@@ -10,6 +10,7 @@ import {
   Row,
   Label,
   Input,
+  FormGroup
 } from "reactstrap";
 import Select from "react-select";
 import { Formik, Field, Form, ErrorMessage } from "formik";
@@ -43,6 +44,10 @@ class CorporateProfile extends Component {
       address: "",
       city: "",
       payment_terms: "",
+      payment_request: "",
+      limit: "",
+      end_date: "",
+      reason: "",
       isProfileUpdated: false,
       user_id: localStorage.getItem("authUser")
       ? JSON.parse(localStorage.getItem("authUser")).user_id
@@ -76,6 +81,11 @@ class CorporateProfile extends Component {
     }
     return new File([u8arr], filename, { type: mime });
   };
+  // Converts a date string to the required format
+  formatDateForInput(dateStr) {
+    const date = new Date(dateStr);
+    return date.toISOString().slice(0, 16); // Converts to YYYY-MM-DDTHH:MM
+  }
 
   componentDidMount() {
     this.props.getCorporateProfile(this.state.user_id);
@@ -85,6 +95,7 @@ class CorporateProfile extends Component {
   componentDidUpdate(prevProps) {
     if (prevProps.success !== this.props.success) {
       const { success } = this.props;
+      console.log("payment request  is ", success.payment_request)
       if (success) {
         this.setState({
           name: success.name || "",
@@ -96,6 +107,10 @@ class CorporateProfile extends Component {
           address: success.address || "",
           city: success.city || "",
           payment_terms: success.payment_terms || "",
+          limit:  success.limit || "",
+          end_date: success.end_date ? this.formatDateForInput(success.end_date) : "",
+          reason: success.reason || "",
+          payment_request: success.payment_request || "",
         });
   
         // Check if city and city_id are present and not empty
@@ -103,13 +118,13 @@ class CorporateProfile extends Component {
           // Parse the cities and city_ids
           const cities = success.city.split(", ");
           const cityIds = success.city_id.split(",").map(id => parseInt(id));
-          
+  
           // Combine cities and cityIds into an array of objects compatible with react-select
-          const selectedCities = cities.map((city, index) => ({
-            label: city,
-            value: cityIds[index],
+          const selectedCities = cityIds.map((id, index) => ({
+            label: cities[index],
+            value: id,
           }));
-          
+  
           // Set the selected cities in the state
           this.setState({ selectedCities });
         } else {
@@ -119,9 +134,9 @@ class CorporateProfile extends Component {
     }
   }
   
-  
 
   render() {
+   
     const cityList = [];
     for (let i = 0; i < this.props.territoriesList.length; i++) {
       cityList.push({
@@ -180,7 +195,11 @@ class CorporateProfile extends Component {
                     landline: (this.state && this.state.landline) || "",
                     address: (this.state && this.state.address) || "",
                     city: (this.state && this.state.city) || "",
-                    payment_terms: (this.state && this.state.payment_terms) || "",
+                    payment_terms:  this.state.payment_terms || "",
+                    limit: this.state.limit || "",
+                    end_date:  this.state.end_date ||"",
+                    reason: this.state.reason ||"",
+                    payment_request: (this.state && this.state.payment_request) || "",
                   }}
                   validationSchema={Yup.object().shape({
                     name: Yup.string()
@@ -218,6 +237,18 @@ class CorporateProfile extends Component {
                       .trim()
                       .required("Please enter your full address")
                       .max(255, "Please enter maximum 255 characters"),
+                    limit: Yup.string().when('payment_terms', {
+                      is: 'Payment by Coorporate to LH',
+                      then: Yup.string().required("Please enter quota amount")
+                    }),
+                    end_date: Yup.string().when('payment_terms', {
+                      is: 'Payment by Coorporate to LH',
+                      then: Yup.string().required("Please enter limit expiry end_date")
+                    }),
+                    reason: Yup.string().when('payment_terms', {
+                      is: 'Request for Change Payment',
+                      then: Yup.string().required("Please enter reason for change payment method")
+                      }),
                     // city: Yup.string()
                     //   .trim()
                     //   .required("Please enter your city")
@@ -243,6 +274,7 @@ class CorporateProfile extends Component {
                           dataUrl,
                           values.logo.split("/").at(-1)
                         );
+                        values.city_id = this.state.selectedCities.map(city => city.value).join(", ");
                         values.logo = fileData;
 
                         this.props.updateCorporateProfile(values, this.state.user_id);
@@ -252,6 +284,7 @@ class CorporateProfile extends Component {
 
                     // Otherwise just call update method
                     else {
+                      values.city_id = this.state.selectedCities.map(city => city.value).join(", ");
                       this.props.updateCorporateProfile(values, this.state.user_id);
                       // console.log("update howa yah nahi  else", this.props.updateCorporateProfile(values, this.state.user_id))
                     }
@@ -283,7 +316,7 @@ class CorporateProfile extends Component {
                     }, 5000);
                   }}
                 >
-                  {({ errors, status, touched }) => (
+                  {({ errors, status, touched, values, setFieldValue }) => (
                     <Form className="form-horizontal">
 
                       {/* Name field */}
@@ -459,8 +492,8 @@ class CorporateProfile extends Component {
     // Update selectedCities state with the new selection
     this.setState({
       selectedCities: selectedGroups,
-      // Update city state with the names of the selected cities
-      city: selectedGroups ? selectedGroups.map(group => group.label).join(", ") : ""
+      // Update city state with the names of the selected cities for display purposes if needed
+      city: selectedGroups ? selectedGroups.map(group => group.value).join(", ") : ""
     });
   }}
   className={
@@ -493,7 +526,6 @@ class CorporateProfile extends Component {
 />
 </div>
                       {/* Address field */}
-
                       <div className="mb-3">
                         <Label for="address" className="form-label">
                           Complete Address
@@ -520,30 +552,288 @@ class CorporateProfile extends Component {
                         />
                       </div>
 
-                      {/* Payment Terms */}
+{values.payment_terms === "Payment by Coorporate to LH" && (
                       <div className="mb-3">
-                        <Label
-                          for="payment_terms"
-                          className="form-label"
-                        >
-                          What is your Payments Terms?
-                        </Label>
-                        <Field
-                          name="payment_terms"
-                          component="select"
-                          defaultValue="No"
-                          onChange={e =>
-                            this.setState({
-                              payment_terms: e.target.value,
-                            })
+                      <Label for="payment_terms" className="form-label">
+                        What are your Payment Terms?
+                      </Label>
+                      <Field
+                        name="payment_terms"
+                        as="select"
+                        onChange={e => {
+                          const value = e.target.value;
+                          setFieldValue('payment_terms', value);
+
+                          // Reset fields when changing payment terms
+                          if (value !== "Payment by Coorporate to LH") {
+                            setFieldValue('limit', '');
+                            setFieldValue('end_date', '');
                           }
-                          value={this.state.payment_terms}
-                          className="form-select"
-                        >
-                          <option value="Payment by Patient to Lab">Payment by Patient to Lab</option>
-                          <option value="Payment by Coorporate to LH">Payment by Corporate to Lab</option>
-                        </Field>
-                      </div>
+                          if (value !== "Request for Change Payment") {
+                            setFieldValue('reason', '');
+                          }
+                          // Adjust payment_terms if payment_request is "Request for Change Payment"
+                          // if (values.payment_request === "Request for Change Payment" && value === "Payment by Coorporate to LH") {
+                          //   setFieldValue('payment_terms', "Request for Change Payment");
+                          // }ehjfrier jeiuw different way to use the appoitments thats needs to be the end of the dates tehjwow ahqwyeq juwew the hiuej hdiusw hjqiurhb hyewhd this us iufiue huee udhueyiw this is theiwejwhww jdhiue jhfeiukjw nduyeqoweiw but the is jhdeuy this is heye  ueiwheiue yuewwhie 
+                        }}
+                        value={values.payment_terms}
+                        className="form-select"
+                      >
+                        <>
+                            <option value="Payment by Coorporate to LH">
+                              Payment by Corporate to LH
+                            </option>
+                            <option value="Request for Change Payment">
+                              Request for Change Payment
+                            </option>
+                            {/* <option value="Payment by Patient to Lab">
+                              Payment by Patient to Lab
+                            </option> */}
+                          </>
+                        {/* Conditionally render options based on payment_terms and payment_request */}
+                        {/* {values.payment_terms === "" || values.payment_terms === "Payment by Coorporate to LH" ? (
+                          <>
+                            <option value="Payment by Coorporate to LH">
+                              Payment by Corporate to Lab
+                            </option>
+                            <option value="Request for Change Payment">
+                              Request for Change Payment
+                            </option>
+                          </>
+                        ) : null}
+                        {values.payment_terms === "" || values.payment_terms === "Payment by Patient to Lab" ? (
+                          <>
+                            <option value="Payment by Patient to Lab">
+                              Payment by Patient to Lab
+                            </option>
+                            <option value="Payment by Coorporate to LH">
+                              Payment by Corporate to Lab
+                            </option>
+                          </>
+                        ) : null}
+                        {values.payment_terms === "" || values.payment_terms === "Request for Change Payment" ? (
+                          <>
+                            <option value="Request for Change Payment">
+                              Request for Change Payment
+                            </option>
+                            <option value="Payment by Patient to Lab">
+                              Payment by Patient to Lab
+                            </option>
+                          </>
+                        ) : null} */}
+                      </Field>
+                      <ErrorMessage name="payment_terms" component="div" className="invalid-feedback" />
+                    </div>
+)}
+{values.payment_terms === "Payment by Patient to Lab" && (
+                      <div className="mb-3">
+                      <Label for="payment_terms" className="form-label">
+                        What are your Payment Terms?
+                      </Label>
+                      <Field
+                        name="payment_terms"
+                        as="select"
+                        onChange={e => {
+                          const value = e.target.value;
+                          setFieldValue('payment_terms', value);
+
+                          // Reset fields when changing payment terms
+                          if (value !== "Payment by Coorporate to LH") {
+                            setFieldValue('limit', '');
+                            setFieldValue('end_date', '');
+                          }
+                          if (value !== "Request for Change Payment") {
+                            setFieldValue('reason', '');
+                          }
+                          // Adjust payment_terms if payment_request is "Request for Change Payment"
+                          // if (values.payment_request === "Request for Change Payment" && value === "Payment by Coorporate to LH") {
+                          //   setFieldValue('payment_terms', "Request for Change Payment");
+                          // }
+                        }}
+                        value={values.payment_terms}
+                        className="form-select"
+                      >
+                        <>
+                            <option value="Payment by Patient to Lab">
+                              Payment by Patient to Lab
+                            </option>
+                            <option value="Payment by Coorporate to LH">
+                              Payment by Corporate to Lab
+                            </option>
+                            
+                            
+                          </>
+                        {/* Conditionally render options based on payment_terms and payment_request */}
+                        {/* {values.payment_terms === "" || values.payment_terms === "Payment by Coorporate to LH" ? (
+                          <>
+                            <option value="Payment by Coorporate to LH">
+                              Payment by Corporate to Lab
+                            </option>
+                            <option value="Request for Change Payment">
+                              Request for Change Payment
+                            </option>
+                          </>
+                        ) : null}
+                        {values.payment_terms === "" || values.payment_terms === "Payment by Patient to Lab" ? (
+                          <>
+                            <option value="Payment by Patient to Lab">
+                              Payment by Patient to Lab
+                            </option>
+                            <option value="Payment by Coorporate to LH">
+                              Payment by Corporate to Lab
+                            </option>
+                          </>
+                        ) : null}
+                        {values.payment_terms === "" || values.payment_terms === "Request for Change Payment" ? (
+                          <>
+                            <option value="Request for Change Payment">
+                              Request for Change Payment
+                            </option>
+                            <option value="Payment by Patient to Lab">
+                              Payment by Patient to Lab
+                            </option>
+                          </>
+                        ) : null} */}
+                      </Field>
+                      <ErrorMessage name="payment_terms" component="div" className="invalid-feedback" />
+                    </div>
+)}
+ {values.payment_terms === "Request for Change Payment" && (
+                      <div className="mb-3">
+                      <Label for="payment_terms" className="form-label">
+                        What are your Payment Terms?
+                      </Label>
+                      <Field
+                        name="payment_terms"
+                        as="select"
+                        onChange={e => {
+                          const value = e.target.value;
+                          setFieldValue('payment_terms', value);
+
+                          // Reset fields when changing payment terms
+                          if (value !== "Payment by Coorporate to LH") {
+                            setFieldValue('limit', '');
+                            setFieldValue('end_date', '');
+                          }
+                          if (value !== "Request for Change Payment") {
+                            setFieldValue('reason', '');
+                          }
+                          // Adjust payment_terms if payment_request is "Request for Change Payment"
+                          // if (values.payment_request === "Request for Change Payment" && value === "Payment by Coorporate to LH") {
+                          //   setFieldValue('payment_terms', "Request for Change Payment");
+                          // }
+                        }}
+                        value={values.payment_terms}
+                        className="form-select"
+                      >
+                        <>
+                            <option value="Request for Change Payment">
+                              Request for Change Payment
+                            </option>
+                            <option value="Payment by Coorporate to LH">
+                              Payment by Corporate to LH
+                            </option>
+                            {/* <option value="Request for Change Payment">
+                              Request for Change Payment
+                            </option> */}
+                           
+                          </>
+                        {/* Conditionally render options based on payment_terms and payment_request */}
+                        {/* {values.payment_terms === "" || values.payment_terms === "Payment by Coorporate to LH" ? (
+                          <>
+                            <option value="Payment by Coorporate to LH">
+                              Payment by Corporate to Lab
+                            </option>
+                            <option value="Request for Change Payment">
+                              Request for Change Payment
+                            </option>
+                          </>
+                        ) : null}
+                        {values.payment_terms === "" || values.payment_terms === "Payment by Patient to Lab" ? (
+                          <>
+                            <option value="Payment by Patient to Lab">
+                              Payment by Patient to Lab
+                            </option>
+                            <option value="Payment by Coorporate to LH">
+                              Payment by Corporate to Lab
+                            </option>
+                          </>
+                        ) : null}
+                        {values.payment_terms === "" || values.payment_terms === "Request for Change Payment" ? (
+                          <>
+                            <option value="Request for Change Payment">
+                              Request for Change Payment
+                            </option>
+                            <option value="Payment by Patient to Lab">
+                              Payment by Patient to Lab
+                            </option>
+                          </>
+                        ) : null} */}
+                      </Field>
+                      <ErrorMessage name="payment_terms" component="div" className="invalid-feedback" />
+                    </div>
+)}
+{/* Conditionally render Quota Amount and Limit Expiry Date */}
+{values.payment_terms === "Payment by Coorporate to LH" && (values.payment_request !== "Request for Change Payment" || values.payment_request !== "Approved Payment Method") && (
+  <>
+    <div className="mb-3">
+      <Label for="limit" className="form-label">
+        Quota Amount
+        <span style={{ color: "#f46a6a" }} className="font-size-18">*</span>
+      </Label>
+      <Field
+        id="limit"
+        name="limit"
+        type="text"
+        className={
+          "form-control" +
+          (errors.limit && touched.limit ? " is-invalid" : "")
+        }
+      />
+      <ErrorMessage name="limit" component="div" className="invalid-feedback" />
+    </div>
+
+    <div className="mb-3">
+      <Label for="end_date" className="form-label">
+        End Date
+      </Label>
+      <Input
+        id="end_date"
+        name="end_date"
+        type="datetime-local"
+        value={values.end_date}
+        onChange={e => {
+          setFieldValue('end_date', e.target.value);
+        }}
+        className="form-control"
+      />
+      <ErrorMessage name="end_date" component="div" className="text-danger" />
+    </div>
+  </>
+)}
+{/* Conditionally render Reason */}
+{values.payment_terms === "Request for Change Payment" && (
+  <div className="mb-3">
+    <Label for="reason" className="form-label">
+      Reason
+    </Label>
+    <Field
+      as="textarea"
+      id="reason"
+      name="reason"
+      rows="2"
+      cols="5"
+      placeholder="Enter reason for change payment method"
+      className={
+        "form-control" +
+        (errors.reason && touched.reason ? " is-invalid" : "")
+      }
+    />
+    <ErrorMessage name="reason" component="div" className="invalid-feedback" />
+  </div>
+)}
+
 
                       {/* District field */}
                       {/* <div className="mb-3">

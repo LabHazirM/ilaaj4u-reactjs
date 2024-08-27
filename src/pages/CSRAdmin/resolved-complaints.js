@@ -219,6 +219,12 @@ class ResolvedComplaints extends Component {
           filter: textFilter(),
         },
         {
+          dataField: "office",
+          text: "Office",
+          sort: true, 
+          filter: textFilter(),    
+        },
+        {
           dataField: "data",
           text: "id",
           isDummyField: true,
@@ -367,7 +373,7 @@ class ResolvedComplaints extends Component {
     const { onAssignComplaint, onGetResolvedComplaints } = this.props;
 
     const pageOptions = {
-      sizePerPage: 100,
+      sizePerPage: 10,
       totalSize: resolvedComplaints.length, // replace later with size(resolvedComplaints),
       custom: true,
     };
@@ -966,13 +972,13 @@ class ResolvedComplaints extends Component {
                                   </div>
                                 </div>
                               </Modal>
-                              {/* <Row className="align-items-md-center mt-30">
+                              <Row className="align-items-md-center mt-30">
                                 <Col className="pagination pagination-rounded justify-content-end mb-2">
                                   <PaginationListStandalone
                                     {...paginationProps}
                                   />
                                 </Col>
-                              </Row> */}
+                              </Row>
                             </React.Fragment>
                           )}
                         </ToolkitProvider>

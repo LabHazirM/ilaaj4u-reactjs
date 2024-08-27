@@ -36,6 +36,9 @@ import Breadcrumbs from "../../components/Common/Breadcrumb";
 import {
   addNewCemployeefile,
 } from "store/corporatedata/actions";
+import {
+  getCorporateProfile,
+} from "../../store/actions";
 
 class DonorPayment extends Component {
   constructor(props) {
@@ -100,7 +103,22 @@ class DonorPayment extends Component {
           });
         }, 5000);        
   };
-
+  async componentDidMount() {
+    const { getCorporateProfile } = this.props;
+    try {
+      const response = await getCorporateProfile(this.state.user_id);
+      if (response && response.payment_terms) {
+        this.setState({
+          payment_terms: response.payment_terms,
+        });
+      } else {
+        console.log('Payment terms not found in response');
+      }
+    } catch (error) {
+      console.error('Error fetching corporate profile:', error);
+    }
+  
+  }
   // eslint-disable-next-line no-unused-vars
   componentDidUpdate(prevProps, prevState, snapshot) {
 
@@ -115,6 +133,8 @@ class DonorPayment extends Component {
   }
 
   render() {
+    console.log("Props CorporateProfile:", this.props.CorporateProfile);
+    console.log(" payment_terms:", this.props.CorporateProfile.payment_terms);
     return (
       <React.Fragment>
         <div className="page-content">
@@ -140,20 +160,31 @@ class DonorPayment extends Component {
                         {this.state.complaintSuccess}
                       </Alert>
                     )}
-                    <div className="mb-3" style={{marginLeft: "80%"}}>
-                      <Link
-                          className="btn btn-primary"
-                          to={{
-                            pathname:
-                              process.env.REACT_APP_BACKENDURL +
-                              "/media/public/employee-data-list.xlsx",
-                          }}
-                          target="_blank"
-                        >
-                          <i className="mdi mdi-download me-1" />
-                          Download File Format
-                        </Link>{" "}
-                    </div>
+                    <div className="mb-3" style={{ marginLeft: "80%" }}>
+  {this.props.CorporateProfile.payment_terms === "Payment by Coorporate to LH" ? (
+    <Link
+      className="btn btn-primary"
+      to={{
+        pathname: `${process.env.REACT_APP_BACKENDURL}/media/public/employee-data-list.xlsx`,
+      }}
+      target="_blank"
+    >
+      <i className="mdi mdi-download me-1" />
+      Download File Format
+    </Link>
+  ) : (
+    <Link
+      className="btn btn-primary"
+      to={{
+        pathname: `${process.env.REACT_APP_BACKENDURL}/media/public/employee-data-list-patient-to-lab.xlsx`,
+      }}
+      target="_blank"
+    >
+      <i className="mdi mdi-download me-1" />
+      Download File Format
+    </Link>
+  )}
+</div>
                      
                     <Card>
                       <CardBody>
@@ -260,18 +291,21 @@ DonorPayment.propTypes = {
   // onGetDonorPaymentItems: PropTypes.func,
   onAddcemployeefile: PropTypes.func,
   cemployeeData: PropTypes.array,
+  getCorporateProfile: PropTypes.func.isRequired,
+  CorporateProfile: PropTypes.object, // Adjusted this to object
 };
 
-const mapStateToProps = ({ cemployeeData }) => ({
+const mapStateToProps = ({ cemployeeData,CorporateProfile }) => ({
   cemployeeDatas: cemployeeData.cemployeeDatas,
   cemployeeData: cemployeeData.cemployeeData,
-
+  CorporateProfile:CorporateProfile.success,
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
 
   onAddcemployeefile: (cemployeeData) =>
     dispatch(addNewCemployeefile(cemployeeData)),
+  getCorporateProfile: (id) => dispatch(getCorporateProfile(id)),
 });
 
 export default connect(

@@ -1352,14 +1352,18 @@ export const getCorporateProfileforpayment = id =>
     let formData = new FormData();
     formData.append("name", CorporateProfile.name);
     formData.append("logo", CorporateProfile.logo);
+    formData.append("limit", CorporateProfile.limit);
+    formData.append("end_date", CorporateProfile.end_date);
     formData.append("email", CorporateProfile.email);
     formData.append("phone", CorporateProfile.phone);
     formData.append("landline", CorporateProfile.landline);
     formData.append("address", CorporateProfile.address);
-    formData.append("city", CorporateProfile.city);
+    formData.append("city", CorporateProfile.city_id);
     formData.append("payment_terms", CorporateProfile.payment_terms);
     formData.append("national_taxation_no", CorporateProfile.national_taxation_no);
-  
+    formData.append("reason", CorporateProfile.reason);
+    formData.append("payment_request", CorporateProfile.payment_request);
+
     return axios.put(`${url.UPDATE_CORPORATE_PROFILE}/${id}`, formData, {
       headers: getHeader(authHeader()),
     });

@@ -1819,8 +1819,9 @@ class MedicalTestList extends Component {
                                                 starDimension="14px"
                                                 starSpacing="3px"
                                               />
-                                              {referrelFeeLab && referrelFeeLab.rating && (
-    <p> {referrelFeeLab.rating}</p>
+                                       {referrelFeeLab && referrelFeeLab.rating && (
+                                                
+     <p>{referrelFeeLab.rating.toFixed(1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
 )}
                                             </div>
                                             
@@ -1859,7 +1860,7 @@ class MedicalTestList extends Component {
                                           starSpacing="3px"
                                         />
                                         {referrelFeeLab && referrelFeeLab.rating && (
-    <p> {referrelFeeLab.rating}</p>
+  <p>{referrelFeeLab.rating.toFixed(1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
 )}
                                       </div>
                                       
@@ -1894,7 +1895,7 @@ class MedicalTestList extends Component {
                                           starSpacing="3px"
                                         />
                                         {referrelFeeLab && referrelFeeLab.rating && (
-    <p> {referrelFeeLab.rating}</p>
+    <p>{referrelFeeLab.rating.toFixed(1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
 )}
                                       </div>
                                       
@@ -1929,7 +1930,7 @@ class MedicalTestList extends Component {
                                           starSpacing="3px"
                                         />
                                         {referrelFeeLab && referrelFeeLab.rating && (
-    <p> {referrelFeeLab.rating}</p>
+  <p>{referrelFeeLab.rating.toFixed(1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
 )}
                                       </div>
                                       
@@ -2163,7 +2164,7 @@ class MedicalTestList extends Component {
                                                 starSpacing="3px"
                                               />
                                               {referrelFeeLab && referrelFeeLab.rating && (
-    <p> {referrelFeeLab.rating}</p>
+ <p>{referrelFeeLab.rating.toFixed(1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
 )}
                                             </div>
                                             
@@ -2202,7 +2203,7 @@ class MedicalTestList extends Component {
                                           starSpacing="3px"
                                         />
                                         {referrelFeeLab && referrelFeeLab.rating && (
-    <p> {referrelFeeLab.rating}</p>
+   <p>{referrelFeeLab.rating.toFixed(1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
 )}
                                       </div>
                                       
@@ -2237,7 +2238,7 @@ class MedicalTestList extends Component {
                                           starSpacing="3px"
                                         />
                                         {referrelFeeLab && referrelFeeLab.rating && (
-    <p> {referrelFeeLab.rating}</p>
+  <p>{referrelFeeLab.rating.toFixed(1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
 )}
                                       </div>
                                       
@@ -2272,7 +2273,7 @@ class MedicalTestList extends Component {
                                           starSpacing="3px"
                                         />
                                         {referrelFeeLab && referrelFeeLab.rating && (
-    <p> {referrelFeeLab.rating}</p>
+  <p>{referrelFeeLab.rating.toFixed(1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
 )}
                                       </div>
                                       
@@ -2504,7 +2505,7 @@ class MedicalTestList extends Component {
                                                 starSpacing="3px"
                                               />
                                               {referrelFeeLab && referrelFeeLab.rating && (
-    <p> {referrelFeeLab.rating}</p>
+   <p>{referrelFeeLab.rating.toFixed(1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
 )}
                                             </div>
                                             
@@ -2543,7 +2544,7 @@ class MedicalTestList extends Component {
                                           starSpacing="3px"
                                         />
                                         {referrelFeeLab && referrelFeeLab.rating && (
-    <p> {referrelFeeLab.rating}</p>
+  <p>{referrelFeeLab.rating.toFixed(1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
 )}
                                       </div>
                                       
@@ -2578,7 +2579,7 @@ class MedicalTestList extends Component {
                                           starSpacing="3px"
                                         />
                                         {referrelFeeLab && referrelFeeLab.rating && (
-    <p> {referrelFeeLab.rating}</p>
+    <p>{referrelFeeLab.rating.toFixed(1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
 )}
                                       </div>
                                       
@@ -2613,7 +2614,7 @@ class MedicalTestList extends Component {
                                           starSpacing="3px"
                                         />
                                         {referrelFeeLab && referrelFeeLab.rating && (
-    <p> {referrelFeeLab.rating}</p>
+    <p>{referrelFeeLab.rating.toFixed(1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
 )}
                                       </div>
                                       

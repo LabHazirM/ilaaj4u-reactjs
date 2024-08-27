@@ -142,7 +142,7 @@ const Footer = () => {
               <div className="mb-2">
                 <Link
                   to={
-                    `/pages-comingsoon/`
+                    `/register/`
                   }
                 >
                   Corporate Customer

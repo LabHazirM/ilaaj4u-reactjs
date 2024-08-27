@@ -29,6 +29,10 @@ import {
   getEmployeeCorporate,
 } from "store/corporatedata/actions";
 
+import {
+  getCorporateProfile,
+} from "../../store/actions";
+
 class DonorPayment extends Component {
   constructor(props) {
     super(props);
@@ -45,6 +49,8 @@ class DonorPayment extends Component {
       relation: "",
       limit: "",
       date: "",
+      CorporateProfile: [],
+      payment_terms: "",
       isDisabled: true,
       isRequiredFilled: true,
       cemployeeData: "",
@@ -55,12 +61,46 @@ class DonorPayment extends Component {
     this.handleSelectGroup = this.handleSelectGroup.bind(this);
   }
 
-  componentDidMount() {
-    const { cemployeeDatas, onGetEmployeeCorporate } = this.props;
+  async componentDidMount() {
+    const { cemployeeDatas,onGetEmployeeCorporate, getCorporateProfile } = this.props;
+    try {
+      const response = await getCorporateProfile(this.state.user_id);
+      if (response && response.payment_terms) {
+        this.setState({
+          payment_terms: response.payment_terms,
+        });
+      } else {
+        console.log('Payment terms not found in response');
+      }
+    } catch (error) {
+      console.error('Error fetching corporate profile:', error);
+    }
+  
     onGetEmployeeCorporate(this.state.user_id);
     this.setState({ cemployeeDatas });
-    console.log("state", cemployeeDatas);
   }
+  
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    const { cemployeeDatas } = this.props;
+    console.log("cemployeeDatas",cemployeeDatas);
+    if (
+      isEmpty(prevProps.cemployeeDatas) &&
+      !isEmpty(cemployeeDatas) &&
+      size(cemployeeDatas) !== size(prevProps.cemployeeDatas)
+    ) {
+      this.setState({ cemployeeDatas });
+    }
+    if (prevProps.CorporateProfile !== this.props.CorporateProfile) {
+      const { CorporateProfile } = this.props;
+      if (CorporateProfile && CorporateProfile.payment_terms) {
+        this.setState({
+          payment_terms: CorporateProfile.payment_terms,
+        });
+      }
+    }
+  }
+ 
+  
 
   handleSelectGroup = (selectedGroup) => {
     this.setState({
@@ -74,8 +114,11 @@ class DonorPayment extends Component {
 
     if (!this.state.name) errors.name = "Name is required";
     if (!this.state.employee_code) errors.employee_code = "ID Card No is required";
-    if (!this.state.limit) errors.limit = "Amount Limit is required";
-    if (!this.state.date) errors.date = "Limit Expiry Date is required";
+
+    if (this.state.payment_terms === "Payment by Coorporate to LH") {
+      if (!this.state.limit) errors.limit = "Amount Limit is required";
+      if (!this.state.date) errors.date = "Limit Expiry Date is required";
+    }
 
     if (this.state.type === "Family") {
       if (!this.state.parent_employee_id) errors.parent_employee_id = "Parent Employee Name is required";
@@ -100,8 +143,12 @@ class DonorPayment extends Component {
           limit: this.state.limit,
           date: this.state.date,
         },
+        CorporateProfile:{
+          payment_terms:this.state.payment_terms,
+        }
       },
       () => {
+        console.log("Payment Terms:", this.state.CorporateProfile.payment_terms);
         const { onAddcemployeeData } = this.props;
         setTimeout(() => {
           onAddcemployeeData(this.state.cemployeeData, this.state.user_id);
@@ -134,20 +181,12 @@ class DonorPayment extends Component {
     );
   };
 
-  componentDidUpdate(prevProps, prevState, snapshot) {
-    const { cemployeeDatas } = this.props;
-    if (
-      isEmpty(prevProps.cemployeeDatas) &&
-      !isEmpty(cemployeeDatas) &&
-      size(cemployeeDatas) !== size(prevProps.cemployeeDatas)
-    ) {
-      this.setState({ cemployeeDatas });
-    }
-  }
-
   render() {
-    const { cemployeeDatas, errors } = this.state;
-
+    const { cemployeeDatas, errors, payment_terms,CorporateProfile} = this.state;
+    console.log("cemployeeDatas",cemployeeDatas);
+    console.log("State CorporateProfile:", this.state.CorporateProfile);
+    console.log("Props CorporateProfile:", this.props.CorporateProfile);
+  
     const employeeList = [];
     for (let i = 0; i < cemployeeDatas.length; i++) {
       if (cemployeeDatas[i].status === "Active" && cemployeeDatas[i].type === "Employee") {
@@ -157,7 +196,7 @@ class DonorPayment extends Component {
         });
       }
     }
-
+  
     const relationOptions = [
       { label: "Mother", value: "Mother" },
       { label: "Father", value: "Father" },
@@ -167,7 +206,7 @@ class DonorPayment extends Component {
       { label: "Sibling", value: "Sibling" },
       { label: "Other", value: "Other" },
     ];
-
+  
     return (
       <React.Fragment>
         <div className="page-content">
@@ -203,7 +242,7 @@ class DonorPayment extends Component {
                         {this.state.complaintSuccess}
                       </Alert>
                     )}
-
+  
                     <Card>
                       <CardBody>
                         <div>
@@ -352,44 +391,42 @@ class DonorPayment extends Component {
                               )}
                             </Col>
                           </FormGroup>
-                          <FormGroup className="mb-4" row>
-                            <Label
-                              htmlFor="limit"
-                              md="2"
-                              className="col-form-label"
-                            >
-                              Quota Amount
-                              <span
-                                style={{ color: "#f46a6a" }}
-                                className="font-size-18"
-                              >
-                                *
-                              </span>
-                            </Label>
-                            <Col md="10">
-                              <Input
-                                id="limit"
-                                name="limit"
-                                type="text"
-                                className={`form-control ${errors.limit ? "is-invalid" : ""}`}
-                                placeholder="Please Enter limit."
-                                onChange={(e) => {
-                                  const value = e.target.value;
-                                  if (value.length <= 13 && /^[0-9]*$/.test(value)) {
-                                    this.setState({
-                                      limit: value,
-                                      errors: { ...this.state.errors, limit: "" }, // Clear error
-                                    });
-                                  }
-                                }}
-                                value={this.state.limit}
-                              />
-                              {errors.limit && (
-                                <div className="invalid-feedback">{errors.limit}</div>
-                              )}
-                            </Col>
-                          </FormGroup>
-                          <FormGroup className="mb-4" row>
+                          {payment_terms === "Payment by Coorporate to LH" && (
+                            <>
+                              <FormGroup className="mb-4" row>
+                                <Label htmlFor="limit" md="2" className="col-form-label">
+                                  Quota Amount
+                                  <span
+                                    style={{ color: "#f46a6a" }}
+                                    className="font-size-18"
+                                  >
+                                    *
+                                  </span>
+                                </Label>
+                                <Col md="10">
+                                  <Input
+                                    id="limit"
+                                    name="limit"
+                                    type="text"
+                                    className={`form-control ${errors.limit ? "is-invalid" : ""}`}
+                                    placeholder="Please Enter limit."
+                                    onChange={(e) => {
+                                      const value = e.target.value;
+                                      if (value.length <= 13 && /^[0-9]*$/.test(value)) {
+                                        this.setState({
+                                          limit: value,
+                                          errors: { ...this.state.errors, limit: "" }, // Clear error
+                                        });
+                                      }
+                                    }}
+                                    value={this.state.limit}
+                                  />
+                                  {errors.limit && (
+                                    <div className="invalid-feedback">{errors.limit}</div>
+                                  )}
+                                </Col>
+                              </FormGroup>
+                              <FormGroup className="mb-4" row>
                             <Label htmlFor="date" md="2" className="col-form-label">
                               Limit Expiry Date
                               <span style={{ color: "#f46a6a" }} className="font-size-18">
@@ -422,6 +459,8 @@ class DonorPayment extends Component {
                               )}
                             </Col>
                           </FormGroup>
+                            </>
+                          )}
                         </div>
                       </CardBody>
                     </Card>
@@ -454,21 +493,24 @@ class DonorPayment extends Component {
 DonorPayment.propTypes = {
   match: PropTypes.object,
   history: PropTypes.any,
+  success: PropTypes.any,
   cemployeeDatas: PropTypes.array,
   onAddcemployeeData: PropTypes.func,
-  cemployeeData: PropTypes.array,
+  getCorporateProfile: PropTypes.func.isRequired,
+  CorporateProfile: PropTypes.object, // Adjusted this to object
   onGetEmployeeCorporate: PropTypes.func,
 };
-
-const mapStateToProps = ({ cemployeeData }) => ({
+const mapStateToProps = ({ cemployeeData,CorporateProfile }) => ({
   cemployeeDatas: cemployeeData.cemployeeDatas,
   cemployeeData: cemployeeData.cemployeeData,
+  CorporateProfile:CorporateProfile.success,
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
   onAddcemployeeData: (cemployeeData, id) =>
     dispatch(addNewCemployeeData(cemployeeData, id)),
   onGetEmployeeCorporate: (id) => dispatch(getEmployeeCorporate(id)),
+  getCorporateProfile: (id) => dispatch(getCorporateProfile(id)),
 });
 
 export default connect(

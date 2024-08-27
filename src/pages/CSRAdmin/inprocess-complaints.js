@@ -233,7 +233,7 @@ class InProcessComplaints extends Component {
         },
        
         {
-          dataField: "city",
+          dataField: "office",
           text: "Office",
           sort: true, 
           filter: textFilter(),    
@@ -391,7 +391,7 @@ class InProcessComplaints extends Component {
     const { onAssignComplaint, onGetInProcessComplaints } = this.props;
 
     const pageOptions = {
-      sizePerPage: 100,
+      sizePerPage: 10,
       totalSize: inProcessComplaints.length, // replace later with size(inProcessComplaints),
       custom: true,
     };
@@ -988,13 +988,13 @@ class InProcessComplaints extends Component {
                                   </div>
                                 </Col>
                               </Row>
-                              {/* <Row className="align-items-md-center mt-30">
+                              <Row className="align-items-md-center mt-30">
                                 <Col className="pagination pagination-rounded justify-content-end mb-2">
                                   <PaginationListStandalone
                                     {...paginationProps}
                                   />
                                 </Col>
-                              </Row> */}
+                              </Row>
                             </React.Fragment>
                           )}
                         </ToolkitProvider>

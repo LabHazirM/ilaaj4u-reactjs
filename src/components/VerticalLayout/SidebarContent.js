@@ -1078,11 +1078,11 @@ class SidebarContent extends Component {
                         {this.props.t("Corporates List-Pending")}
                       </Link>
                     </li>
-                    <li>
+                    {/* <li>
                       <Link to={"/accepted-corporates-List"}>
                         {this.props.t("Corporates List-Accepted")}
                       </Link>
-                    </li>
+                    </li> */}
                     <li>
                       <Link to={"/clab-account-statements"}>
                         {this.props.t("Statements")}

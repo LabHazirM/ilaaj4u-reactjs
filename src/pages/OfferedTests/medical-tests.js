@@ -622,20 +622,20 @@ class TestsList extends Component {
                                                           .offeredTest
                                                           .duration_required
                                                       }
-                                                      onChange={e => {
-                                                        this.setState({
-                                                          offeredTest: {
-                                                            id: this.state
-                                                              .offeredTest
-                                                              .id,
-                                                              duration_required:
-                                                              e.target.value,
-                                                            lab_id:
-                                                              this.props.match
-                                                                .params.id,
-                                                          },
-                                                        });
-                                                      }}
+                                                      // onChange={e => {
+                                                      //   this.setState({
+                                                      //     offeredTest: {
+                                                      //       id: this.state
+                                                      //         .offeredTest
+                                                      //         .id,
+                                                      //         duration_required:
+                                                      //         e.target.value,
+                                                      //       lab_id:
+                                                      //         this.props.match
+                                                      //           .params.id,
+                                                      //     },
+                                                      //   });
+                                                      // }}
                                                       className={
                                                         "form-control" +
                                                         (errors.duration_required &&

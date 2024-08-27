@@ -224,6 +224,17 @@ class InvoiceDetail extends Component {
                               </td>
                             </tr>
                             <tr>
+                              <td colSpan="6" className="border-0 text-end">
+                                <strong>Platform Charges</strong>
+                              </td>
+                              <td className="border-10 text-end">
+                                {
+                                  this.props.invoiceDetail[0]
+                                    .charges_except_total_dues.toFixed(0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                                }
+                              </td>
+                            </tr>
+                            <tr>
                               <td colSpan="6" className="border-10 text-end">
                                 <strong>Total</strong>
                               </td>
