@@ -20,8 +20,10 @@ import {
   ModalBody,
   Label,
   Input,
+  FormGroup
 } from "reactstrap";
 
+import Flatpickr from 'react-flatpickr';
 import paginationFactory, {
   PaginationProvider,
   PaginationListStandalone,
@@ -56,17 +58,20 @@ class TestAppointmentsInProcessList extends Component {
   constructor(props) {
     super(props);
     this.node = React.createRef();
+    const now = moment();
     this.state = {
       labs: [],
       testAppointments: [],
       labProfiles: [],
       patient: [],
       sampleCollectors: [],
+      main_lab_appointments: "Main",
+      end_date: now.clone().endOf('month').format('DD MMM YYYY'),
+      start_date: now.clone().startOf('month').format('DD MMM YYYY'),
       sampleCollector: "",
       btnText: "Copy",
       resultFile: "",
       testAppointment: "",
-      main_lab_appointments: "",
       modal: false,
       PaymentModal: false,
       ReshedualModal: false,
@@ -678,7 +683,7 @@ class TestAppointmentsInProcessList extends Component {
     };
 
     // this.openPaymentModal =
-    // this.openPaymentModal.bind(this);
+    // this.openPaymentModal.bind(this);        
     this.handleTestAppointmentClick =
       this.handleTestAppointmentClick.bind(this);
     this.toggleReasonModal = this.toggleReasonModal.bind(this);
@@ -689,27 +694,39 @@ class TestAppointmentsInProcessList extends Component {
     this.toggleReshedualModal = this.toggleReshedualModal.bind(this);
     this.toggle = this.toggle.bind(this);
   }
+
   componentDidMount() {
-    const { testAppointments, onAddNewCollectionPointTestAppointment, onGetTestAppointmentsInProcessList } = this.props;
-    onGetTestAppointmentsInProcessList(this.state.user_id);
-    // Assign the value to main_lab_appointments
-    testAppointments.main_lab_appointments = "Main";
+    const { testAppointments, onAddNewCollectionPointTestAppointment, onGetTestAppointmentsInProcessList, onGetLabProfile } = this.props;
+    const user_id = this.state.user_id; // Use state to get user_id
 
-    // Call the function with the updated value
-    onAddNewCollectionPointTestAppointment(testAppointments, this.state.user_id);
-    this.setState({ testAppointments });
+    // Fetch the test appointments
+    onGetTestAppointmentsInProcessList(user_id);
 
-    const { onGetSampleCollectors } = this.props;
-    onGetSampleCollectors(this.state.user_id);
-    this.setState({ sampleCollectors: this.props.sampleCollectors });
+    // Fetch lab profiles
+    onGetLabProfile(user_id);
+  }
+  componentDidUpdate(prevProps) {
+    // Check if labProfiles.type has changed
+    if (prevProps.labProfiles.type !== this.props.labProfiles.type) {
+      // Update the state based on the new labProfiles.type
+      // const newLabType = this.props.labProfiles.type === "Collection Point" ? "Collection" : "Main";
+      // this.setState({ main_lab_appointments: newLabType }, () => {
+        const { onAddNewCollectionPointTestAppointment, onGetTestAppointmentsInProcessList } = this.props;
+        const { start_date, end_date, main_lab_appointments, user_id } = this.state;
+        const updatedTestAppointments = { main_lab_appointments, start_date, end_date };
+        
+        // API call with updated dates and lab type
+        onAddNewCollectionPointTestAppointment(updatedTestAppointments, user_id);
+        setTimeout(() => {
+          onGetTestAppointmentsInProcessList(this.state.user_id);
+        }, 1000);
 
-    const { labProfiles, onGetLabProfile } = this.props;
-    onGetLabProfile(this.state.user_id);
-    this.setState({
-      labProfiles
-    });
+      // });
+    }
   }
 
+
+  
   toggle() {
     this.setState(prevState => ({
       modal: !prevState.modal,
@@ -730,17 +747,6 @@ class TestAppointmentsInProcessList extends Component {
     this.setState({ testAppointment: "", resultFile: "" });
     this.toggle();
   };
-
-  // eslint-disable-next-line no-unused-vars
-  componentDidUpdate(prevProps, prevState, snapshot) {
-    const { testAppointments } = this.props;
-    if (
-      !isEmpty(testAppointments) &&
-      size(prevProps.testAppointments) !== size(testAppointments)
-    ) {
-      this.setState({ testAppointments: {} });
-    }
-  }
 
   onPaginationPageChange = page => {
     if (
@@ -865,24 +871,35 @@ class TestAppointmentsInProcessList extends Component {
   //     PaymentModal: !prevState.PaymentModal,
   //   }));
   // };
+  handleDateChange(date, field) {
+    this.setState({ [field]: moment(date).format('DD MMM YYYY') }, () => {
+      // Make the API call after the state has been updated
+      const { onAddNewCollectionPointTestAppointment, onGetTestAppointmentsInProcessList } = this.props;
+      const { start_date, end_date, main_lab_appointments, user_id } = this.state;
+      const updatedTestAppointments = { main_lab_appointments, start_date, end_date };
+      
+      // API call with updated dates and lab type
+      onAddNewCollectionPointTestAppointment(updatedTestAppointments, user_id);
+      setTimeout(() => {
+        onGetTestAppointmentsInProcessList(this.state.user_id);
+      }, 1000);
+    });
+  }
+
   handleTestAppointmentType = e => {
-    // const { id } = useParams();
-    // console.log("id is",id);
-    this.setState({
-      testAppointments: {
-        main_lab_appointments: e.target.value,
-      },
-    });
+    const { value } = e.target;
+    this.setState({ main_lab_appointments: value }, () => {
+      const { onAddNewCollectionPointTestAppointment, onGetTestAppointmentsInProcessList } = this.props;
+      const { start_date, end_date, main_lab_appointments, user_id } = this.state;
+      const updatedTestAppointments = { main_lab_appointments, start_date, end_date };
+      setTimeout(() => {
+        console.log(onAddNewCollectionPointTestAppointment(updatedTestAppointments, user_id));
+      });
+      setTimeout(() => {
+        onGetTestAppointmentsInProcessList(this.state.user_id);
+      }, 1000);
 
-    // API call to get the checkout items
-
-    const { onAddNewCollectionPointTestAppointment, onGetTestAppointmentsInProcessList } = this.props;
-    setTimeout(() => {
-      console.log(onAddNewCollectionPointTestAppointment(this.state.testAppointments, this.state.user_id));
     });
-    setTimeout(() => {
-      onGetTestAppointmentsInProcessList(this.state.user_id);
-    }, 1000);
   };
 
   render() {
@@ -947,32 +964,70 @@ class TestAppointmentsInProcessList extends Component {
                         >
                           {toolkitprops => (
                             <React.Fragment>
-                              <Row className="mb-2">
+                               <Row className="mb-2">
+                              <Col sm="4">
+                        <FormGroup className="mb-0">
+                          <Label>Start Date</Label>
+                          <Flatpickr
+                            className="form-control d-block"
+                            placeholder="dd M yyyy"
+                            options={{
+                              dateFormat: "d M Y",
+                              defaultDate: this.state.start_date
+                            }}
+                            onChange={date => this.handleDateChange(date[0], 'start_date')}
+                          />
+                        </FormGroup>
+                      </Col>
+
+                      <Col sm="4">
+                        <FormGroup className="mb-0">
+                          <Label>End Date</Label>
+                          <Flatpickr
+                            className="form-control d-block"
+                            placeholder="dd M yyyy"
+                            options={{
+                              dateFormat: "d M Y",
+                              defaultDate: this.state.end_date
+                            }}
+                            onChange={date => this.handleDateChange(date[0], 'end_date')}
+                          />
+                        </FormGroup>
+                      </Col>
                                 <Col sm="4">
-                                  <div className="ms-2 mb-4">
+                                <div className="ms-2 mb-4">
                                     <div className="position-relative">
-                                      {this.props.labProfiles.type === "Main Lab" && (
-                                        <div>
-                                          <Label for="main_lab_appointments" className="form-label">
-                                            <strong>Search By Lab Type</strong>
-                                          </Label>
-                                          <select
-                                            className="form-control select2"
-                                            title="main_lab_appointments"
-                                            name="main_lab_appointments"
-                                            onChange={this.handleTestAppointmentType}
+                                    {this.props.labProfiles.type === "Main Lab" && (
+                                    <div>
+                                      <Label for="main_lab_appointments" className="form-label">
+                                      <strong>Search By Lab Type</strong>
+                                      </Label>
+                                      <select
+                                        className="form-control select2"
+                                        title="main_lab_appointments"
+                                        name="main_lab_appointments"
+                                        onChange={this.handleTestAppointmentType}
+                                        
+                                      >
+                                        <option value="Main">Main</option>
+                                        <option value="Collection">Collection</option>
+                                        <option value="Both">Both</option>
+                                      </select>
+                                      <p className="text-danger font-size-10">Filter all completed appointments at your collection points.</p>
 
-                                          >
-                                            <option value="Main">Main</option>
-                                            <option value="Collection">Collection</option>
-                                            <option value="Both">Both</option>
-                                          </select>
-                                          <p className="text-danger font-size-10">Filter and manage all collection point appointments, and process them.</p>
-
-                                        </div>
-                                      )}
+                                    </div>
+                                  )}
                                     </div>
                                   </div>
+                                  {/* {this.props.labProfiles.type === "Collection Point" && (
+                                  <div className="search-box ms-2 mb-2 d-inline-block">
+                                    <div className="position-relative">
+                                      <SearchBar
+                                        {...toolkitprops.searchProps}
+                                      />
+                                      <i className="bx bx-search-alt search-icon" />
+                                    </div>
+                                  </div>)} */}
                                 </Col>
                               </Row>
                               <Row className="mb-4">

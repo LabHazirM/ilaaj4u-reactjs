@@ -5,7 +5,7 @@ import MetaTags from "react-meta-tags";
 import { withRouter, Link } from "react-router-dom";
 import filterFactory, { textFilter, selectFilter } from 'react-bootstrap-table2-filter';
 import moment from 'moment';
-
+import DatePicker from 'react-datepicker';
 import {
   Card,
   CardBody,
@@ -18,8 +18,9 @@ import {
   ModalHeader,
   ModalBody,
   Label,
+  FormGroup,
 } from "reactstrap";
-
+import Flatpickr from 'react-flatpickr';
 import paginationFactory, {
   PaginationProvider,
   PaginationListStandalone,
@@ -38,7 +39,7 @@ import {
   getTestAppointmentsPendingList,
   updateTestAppointment,
   addNewCollectionPointTestAppointment,
-  getLabProfile
+  getLabProfile,
 } from "store/test-appointments/actions";
 
 import { updatePaymentInfo } from "store/invoices/actions";
@@ -52,16 +53,20 @@ class TestAppointmentsPendingList extends Component {
   constructor(props) {
     super(props);
     this.node = React.createRef();
+    const now = moment();
+
     this.state = {
       testAppointments: [],
       labProfiles: [],
       testAppointment: "",
+      main_lab_appointments: "Main",
+      end_date: now.clone().endOf('month').format('DD MMM YYYY'),
+      start_date: now.clone().startOf('month').format('DD MMM YYYY'),
       modal: false,
       btnText: "Copy",
       confirmModal: false,
       appointmentmodal: false,
       appointmentId: "",
-      main_lab_appointments: "",
       type: "",
       user_id: localStorage.getItem("authUser")
         ? JSON.parse(localStorage.getItem("authUser")).user_id
@@ -82,32 +87,36 @@ class TestAppointmentsPendingList extends Component {
           sort: true,
           formatter: (cellContent, testAppointment) => (
             <>
-              <strong>{testAppointment.order_id}</strong><br></br>
+              <strong>{testAppointment.order_id}</strong>
+              <br></br>
               {/* <strong>
                 {testAppointment.type}{" ("}
                 {testAppointment.address}{")"}
               </strong> */}
             </>
-          ), filter: textFilter(),
+          ),
+          filter: textFilter(),
         },
         {
           dataField: "address",
           text: "Lab Address",
           sort: true,
           formatter: (cellContent, testAppointment) => (
-            <span style={{
-              width: '200px', // Set your desired width here
-              fontSize: '14px',
+            <span
+              style={{
+                width: "200px", // Set your desired width here
+                fontSize: "14px",
 
-              textOverflow: 'ellipsis',
-              whiteSpace: 'prewrap',
-              textAlign: 'left', // Align text to the left
-              display: 'block',
-            }}>
+                textOverflow: "ellipsis",
+                whiteSpace: "prewrap",
+                textAlign: "left", // Align text to the left
+                display: "block",
+              }}
+            >
               {testAppointment.address}
-
             </span>
-          ), filter: textFilter(),
+          ),
+          filter: textFilter(),
         },
         {
           dataField: "patient_name",
@@ -120,15 +129,16 @@ class TestAppointmentsPendingList extends Component {
                   <Link
                     to="#"
                     onClick={e => this.openPatientModal(e, testAppointment)}
-                  // onMouseEnter={e => this.openPatientModal(e, testAppointment)}
-                  // onPointerLeave={this.handleMouseExit()}
+                    // onMouseEnter={e => this.openPatientModal(e, testAppointment)}
+                    // onPointerLeave={this.handleMouseExit()}
                   >
                     {testAppointment.patient_name}
                   </Link>
                 </Tooltip>
               </span>
             </>
-          ), filter: textFilter(),
+          ),
+          filter: textFilter(),
         },
         {
           dataField: "booked_at",
@@ -138,11 +148,13 @@ class TestAppointmentsPendingList extends Component {
             <>
               <span>
                 {/* {new Date(testAppointment.booked_at).toLocaleString("en-US")} */}
-                {moment(testAppointment.booked_at).format("DD MMM YYYY, h:mm A")}
-
+                {moment(testAppointment.booked_at).format(
+                  "DD MMM YYYY, h:mm A"
+                )}
               </span>
             </>
-          ), filter: textFilter(),
+          ),
+          filter: textFilter(),
         },
         {
           dataField: "appointment_requested_at",
@@ -154,10 +166,13 @@ class TestAppointmentsPendingList extends Component {
                 {/* {new Date(
                   testAppointment.appointment_requested_at
                 ).toLocaleString("en-US")} */}
-                {moment(testAppointment.appointment_requested_at).format("DD MMM YYYY, h:mm A")}
+                {moment(testAppointment.appointment_requested_at).format(
+                  "DD MMM YYYY, h:mm A"
+                )}
               </span>
             </>
-          ), filter: textFilter(),
+          ),
+          filter: textFilter(),
         },
         {
           dataField: "is_home_sampling_availed",
@@ -165,7 +180,8 @@ class TestAppointmentsPendingList extends Component {
           sort: true,
           formatter: (cellContent, testAppointment) => (
             <>
-              {testAppointment.is_home_sampling_availed == true || testAppointment.is_state_sampling_availed == true ? (
+              {testAppointment.is_home_sampling_availed == true ||
+              testAppointment.is_state_sampling_availed == true ? (
                 <span>Yes</span>
               ) : (
                 <span>No</span>
@@ -174,11 +190,11 @@ class TestAppointmentsPendingList extends Component {
           ),
           filter: selectFilter({
             options: {
-              '': 'All',
-              'true': 'Yes',
-              'false': 'No',
+              "": "All",
+              true: "Yes",
+              false: "No",
             },
-            defaultValue: 'All',
+            defaultValue: "All",
           }),
         },
         // {
@@ -238,7 +254,8 @@ class TestAppointmentsPendingList extends Component {
                       this.handleTestAppointmentClick(testAppointment)
                     }
                   ></i>
-                </Link></Tooltip>
+                </Link>
+              </Tooltip>
               <Tooltip title="Add Comment">
                 <Link
                   className="fas fa-comment font-size-18"
@@ -258,50 +275,34 @@ class TestAppointmentsPendingList extends Component {
     this.togglePatientModal = this.togglePatientModal.bind(this);
     this.toggleappointmentmodal = this.toggleappointmentmodal.bind(this);
   }
-
+  
   componentDidMount() {
-    const { testAppointments, onAddNewCollectionPointTestAppointment, onGetTestAppointmentsPendingList } = this.props;
-    onGetTestAppointmentsPendingList(this.state.user_id);
+    const { testAppointments, onAddNewCollectionPointTestAppointment, onGetTestAppointmentsPendingList, onGetLabProfile } = this.props;
+    const user_id = this.state.user_id; // Use state to get user_id
 
-    // Assign the value to main_lab_appointments
-    testAppointments.main_lab_appointments = "Main";
+    // Fetch the test appointments
+    onGetTestAppointmentsPendingList(user_id);
 
-    // Call the function with the updated value
-    onAddNewCollectionPointTestAppointment(testAppointments, this.state.user_id);
-
-    this.setState({
-      testAppointments
-      // appointmentmodal: true,
-    });
-
-
-    const { labProfiles, onGetLabProfile } = this.props;
-    onGetLabProfile(this.state.user_id);
-    this.setState({
-      labProfiles
-    });
-    // try {
-    //   setInterval(async () => {
-    //     const prev=this.props.testAppointments.length;
-    //     console.log("pre",prev)
-    //     const res = await fetch(onGetTestAppointmentsPendingList(this.state.user_id));
-    //     // const blocks = await res.json();
-    //     this.setState({
-    //       testAppointments: this.props.testAppointments,
-    //       // appointmentmodal: true,
-    //     })
-    //     const newlen= this.state.testAppointments.length;
-    //     console.log("new",newlen)
-    //     if (newlen != prev){
-    //       this.setState({
-    //         appointmentmodal: true,
-    //       })
-    //     }
-    //   }, 5000);
-    // } catch(e) {
-    //   console.log(e);
-    // }
-    // this.setState({ testAppointments: this.props.testAppointments, appointmentmodal: true });
+    // Fetch lab profiles
+    onGetLabProfile(user_id);
+  }
+  componentDidUpdate(prevProps) {
+    // Check if labProfiles.type has changed
+    if (prevProps.labProfiles.type !== this.props.labProfiles.type) {
+      // Update the state based on the new labProfiles.type
+      // const newLabType = this.props.labProfiles.type === "Collection Point" ? "Collection" : "Main";
+      // this.setState({ main_lab_appointments: newLabType }, () => {
+        const { onAddNewCollectionPointTestAppointment, onGetTestAppointmentsPendingList } = this.props;
+        const { start_date, end_date, main_lab_appointments, user_id } = this.state;
+        const updatedTestAppointments = { main_lab_appointments, start_date, end_date };
+        
+        // API call with updated dates and lab type
+        onAddNewCollectionPointTestAppointment(updatedTestAppointments, user_id);
+        setTimeout(() => {
+          onGetTestAppointmentsPendingList(user_id);
+        }, 1000);
+      // });
+    }
   }
 
   toggle() {
@@ -316,7 +317,7 @@ class TestAppointmentsPendingList extends Component {
   };
   rowStyleFormat = (row, rowIdx) => {
     if (row.is_state_sampling_availed === true) {
-      return { color: 'red' };
+      return { color: "red" };
     }
   };
   toggleConfirmModal = () => {
@@ -374,17 +375,6 @@ class TestAppointmentsPendingList extends Component {
     this.setState({ confirmModal: false });
   };
 
-  // eslint-disable-next-line no-unused-vars
-  componentDidUpdate(prevProps, prevState, snapshot) {
-    const { testAppointments, onGetTestAppointmentsPendingList } = this.props;
-    if (
-      !isEmpty(testAppointments) &&
-      size(prevProps.testAppointments) !== size(testAppointments)
-    ) {
-      this.setState({ testAppointments: {} });
-    }
-  }
-
   onPaginationPageChange = page => {
     if (
       this.node &&
@@ -406,8 +396,7 @@ class TestAppointmentsPendingList extends Component {
         id: testAppointment.id,
         estimated_sample_collection_at:
           testAppointment.estimated_sample_collection_at,
-        appointment_requested_at:
-          testAppointment.appointment_requested_at,
+        appointment_requested_at: testAppointment.appointment_requested_at,
       },
     });
 
@@ -415,37 +404,48 @@ class TestAppointmentsPendingList extends Component {
   };
 
 
+  handleDateChange(date, field) {
+    this.setState({ [field]: moment(date).format('DD MMM YYYY') }, () => {
+      // Make the API call after the state has been updated
+      const { onAddNewCollectionPointTestAppointment, onGetTestAppointmentsPendingList } = this.props;
+      const { start_date, end_date, main_lab_appointments, user_id } = this.state;
+      const updatedTestAppointments = { main_lab_appointments, start_date, end_date };
+      
+      // API call with updated dates and lab type
+      onAddNewCollectionPointTestAppointment(updatedTestAppointments, user_id);
+      setTimeout(() => {
+        onGetTestAppointmentsPendingList(this.state.user_id);
+      }, 1000);
+    });
+  }
+
   handleTestAppointmentType = e => {
-    // const { id } = useParams();
-    // console.log("id is",id);
-    this.setState({
-      testAppointments: {
-        main_lab_appointments: e.target.value,
-      },
-    });
+    const { value } = e.target;
+    this.setState({ main_lab_appointments: value }, () => {
+      const { onAddNewCollectionPointTestAppointment, onGetTestAppointmentsPendingList } = this.props;
+      const { start_date, end_date, main_lab_appointments, user_id } = this.state;
+      const updatedTestAppointments = { main_lab_appointments, start_date, end_date };
+      onAddNewCollectionPointTestAppointment(updatedTestAppointments, user_id);
+      setTimeout(() => {
+        onGetTestAppointmentsPendingList(this.state.user_id);
+      }, 1000);
 
-    // API call to get the checkout items
-
-    const { onAddNewCollectionPointTestAppointment, onGetTestAppointmentsPendingList } = this.props;
-    setTimeout(() => {
-      console.log(onAddNewCollectionPointTestAppointment(this.state.testAppointments, this.state.user_id));
     });
-    setTimeout(() => {
-      onGetTestAppointmentsPendingList(this.state.user_id);
-    }, 1000);
   };
+  
 
   render() {
     const { SearchBar } = Search;
-
-    const { testAppointments } = this.props;
-    const { labProfiles } = this.props;
-
-
+    const { start_date, end_date } = this.state.testAppointments;
+    const { testAppointments, labProfiles } = this.props;
     const { confirmModal } = this.state;
 
-    const { onGetLabProfile, onAddNewCollectionPointTestAppointment, onUpdateTestAppointment, onGetTestAppointmentsPendingList } =
-      this.props;
+    const {
+      onGetLabProfile,
+      onAddNewCollectionPointTestAppointment,
+      onUpdateTestAppointment,
+      onGetTestAppointmentsPendingList,
+    } = this.props;
     const testAppointment = this.state.testAppointment;
     const pageOptions = {
       sizePerPage: 10,
@@ -497,33 +497,73 @@ class TestAppointmentsPendingList extends Component {
                           {toolkitprops => (
                             <React.Fragment>
                               <Row className="mb-2">
-                                <Col sm="3" lg="3">
-                                  <div className="ms-2 mb-4">
+                              <Row>
+                              <Col sm="4">
+                        <FormGroup className="mb-0">
+                          <Label>Start Date</Label>
+                          <Flatpickr
+                            className="form-control d-block"
+                            placeholder="dd M yyyy"
+                            options={{
+                              dateFormat: "d M Y",
+                              defaultDate: this.state.start_date
+                            }}
+                            onChange={date => this.handleDateChange(date[0], 'start_date')}
+                          />
+                        </FormGroup>
+                      </Col>
+
+                      <Col sm="4">
+                        <FormGroup className="mb-0">
+                          <Label>End Date</Label>
+                          <Flatpickr
+                            className="form-control d-block"
+                            placeholder="dd M yyyy"
+                            options={{
+                              dateFormat: "d M Y",
+                              defaultDate: this.state.end_date
+                            }}
+                            onChange={date => this.handleDateChange(date[0], 'end_date')}
+                          />
+                        </FormGroup>
+                      </Col>
+                      <Col sm="4">
+                                <div className="ms-2 mb-4">
                                     <div className="position-relative">
-                                      {this.props.labProfiles.type === "Main Lab" && (
-                                        <div>
-                                          <Label for="main_lab_appointments" className="form-label">
-                                            <strong>Search By Lab Type</strong>
-                                          </Label>
-                                          <select
-                                            className="form-control select2"
-                                            title="main_lab_appointments"
-                                            name="main_lab_appointments"
-                                            onChange={this.handleTestAppointmentType}
+                                    {this.props.labProfiles.type === "Main Lab" && (
+                                    <div>
+                                      <Label for="main_lab_appointments" className="form-label">
+                                      <strong>Search By Lab Type</strong>
+                                      </Label>
+                                      <select
+                                        className="form-control select2"
+                                        title="main_lab_appointments"
+                                        name="main_lab_appointments"
+                                        onChange={this.handleTestAppointmentType}
+                                        
+                                      >
+                                        <option value="Main">Main</option>
+                                        <option value="Collection">Collection</option>
+                                        <option value="Both">Both</option>
+                                      </select>
+                                      <p className="text-danger font-size-10">Filter all completed appointments at your collection points.</p>
 
-                                          >
-                                            <option value="Main">Main</option>
-                                            <option value="Collection">Collection</option>
-                                            <option value="Both">Both</option>
-                                          </select>
-                                          <p className="text-danger font-size-10">Filter and manage all collection point appointments, and confirm them.</p>
-
-                                        </div>
-                                      )}
+                                    </div>
+                                  )}
                                     </div>
                                   </div>
+                                  {/* {this.props.labProfiles.type === "Collection Point" && (
+                                  <div className="search-box ms-2 mb-2 d-inline-block">
+                                    <div className="position-relative">
+                                      <SearchBar
+                                        {...toolkitprops.searchProps}
+                                      />
+                                      <i className="bx bx-search-alt search-icon" />
+                                    </div>
+                                  </div>)} */}
                                 </Col>
-                              </Row>
+      </Row>
+      </Row>
                               <Row className="mb-4">
                                 <Col xl="12">
                                   <div className="table-responsive">
@@ -539,7 +579,6 @@ class TestAppointmentsPendingList extends Component {
                                       rowStyle={this.rowStyleFormat}
                                       ref={this.node}
                                       filter={filterFactory()}
-
                                     />
                                     <Modal
                                       isOpen={this.state.appointmentmodal}
@@ -627,7 +666,9 @@ class TestAppointmentsPendingList extends Component {
                                                     />
                                                   </div>
                                                 </div>
-                                                {this.state.patient_address && this.state.patient_address !== "undefined" ? (
+                                                {this.state.patient_address &&
+                                                this.state.patient_address !==
+                                                  "undefined" ? (
                                                   <div className="mb-3 row">
                                                     <div className="col-md-3">
                                                       <Label className="form-label">
@@ -647,7 +688,6 @@ class TestAppointmentsPendingList extends Component {
                                                     </div>
                                                   </div>
                                                 ) : null}
-
 
                                                 {/* <div className="mb-3 row">
                                                   <div className="col-md-3">
@@ -885,37 +925,46 @@ class TestAppointmentsPendingList extends Component {
                                                     />
                                                   </div> */}
 
-<div className="mb-3">
-  <Label for="estimated_sample_collection_at">
-    Please select date and time for sample collection
-  </Label>
-  <input
-    type="datetime-local"
-    id="estimated_sample_collection_at"
-    name="estimated_sample_collection_at"
-    min={testAppointment.appointment_requested_at ? testAppointment.appointment_requested_at.slice(0, 16) : ""}
-    onChange={(e) => {
-      this.setState({
-        testAppointment: {
-          id: testAppointment.id,
-          estimated_sample_collection_at: e.target.value,
-        },
-      });
-    }}
-    className={
-      "form-control" +
-      (errors.estimated_sample_collection_at && touched.estimated_sample_collection_at
-        ? " is-invalid"
-        : "")
-    }
-  />
-  <ErrorMessage
-    name="estimated_sample_collection_at"
-    component="div"
-    className="invalid-feedback"
-  />
-</div>
-
+                                                  <div className="mb-3">
+                                                    <Label for="estimated_sample_collection_at">
+                                                      Please select date and
+                                                      time for sample collection
+                                                    </Label>
+                                                    <input
+                                                      type="datetime-local"
+                                                      id="estimated_sample_collection_at"
+                                                      name="estimated_sample_collection_at"
+                                                      min={
+                                                        testAppointment.appointment_requested_at
+                                                          ? testAppointment.appointment_requested_at.slice(
+                                                              0,
+                                                              16
+                                                            )
+                                                          : ""
+                                                      }
+                                                      onChange={e => {
+                                                        this.setState({
+                                                          testAppointment: {
+                                                            id: testAppointment.id,
+                                                            estimated_sample_collection_at:
+                                                              e.target.value,
+                                                          },
+                                                        });
+                                                      }}
+                                                      className={
+                                                        "form-control" +
+                                                        (errors.estimated_sample_collection_at &&
+                                                        touched.estimated_sample_collection_at
+                                                          ? " is-invalid"
+                                                          : "")
+                                                      }
+                                                    />
+                                                    <ErrorMessage
+                                                      name="estimated_sample_collection_at"
+                                                      component="div"
+                                                      className="invalid-feedback"
+                                                    />
+                                                  </div>
 
                                                   {/* <div className="mb-3">
                                                     <Label
@@ -1068,13 +1117,11 @@ TestAppointmentsPendingList.propTypes = {
   onUpdatePaymentInfo: PropTypes.func,
   onAddNewCollectionPointTestAppointment: PropTypes.func,
   onGetLabProfile: PropTypes.func,
-
 };
 
 const mapStateToProps = ({ testAppointments }) => ({
   testAppointments: testAppointments.testAppointmentsPendingList,
   labProfiles: testAppointments.labProfiles,
-
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({

@@ -3,12 +3,12 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import MetaTags from "react-meta-tags";
 import { withRouter, Link } from "react-router-dom";
-import { Card, CardBody, Col, Container, Row, Modal, Label, ModalBody, ModalHeader } from "reactstrap";
+import { Card, CardBody, Col, Container, Row, Modal, Label, ModalBody, ModalHeader, FormGroup, } from "reactstrap";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import Tooltip from "@material-ui/core/Tooltip";
 import filterFactory, { textFilter ,selectFilter} from 'react-bootstrap-table2-filter';
 import moment from 'moment';
-
+import Flatpickr from 'react-flatpickr';
 import paginationFactory, {
   PaginationProvider,
   PaginationListStandalone,
@@ -33,11 +33,14 @@ class TestAppointmentsCompletedList extends Component {
   constructor(props) {
     super(props);
     this.node = React.createRef();
+    const now = moment();
     this.state = {
       testAppointments: [],
       labProfiles: [],
       testAppointment: "",
-      main_lab_appointments: "",
+      main_lab_appointments: "Main",
+      end_date: now.clone().endOf('month').format('DD MMM YYYY'),
+      start_date: now.clone().startOf('month').format('DD MMM YYYY'),
       btnText: "Copy",
       user_id: localStorage.getItem("authUser")
         ? JSON.parse(localStorage.getItem("authUser")).user_id
@@ -697,23 +700,34 @@ class TestAppointmentsCompletedList extends Component {
   }
 
   componentDidMount() {
+    const { testAppointments, onAddNewCollectionPointTestAppointment, onGetTestAppointmentsCompletedList, onGetLabProfile } = this.props;
+    const user_id = this.state.user_id; // Use state to get user_id
 
-    const { testAppointments, onAddNewCollectionPointTestAppointment, onGetTestAppointmentsCompletedList } = this.props;
-    onGetTestAppointmentsCompletedList(this.state.user_id);
-    // Assign the value to main_lab_appointments
-    testAppointments.main_lab_appointments = "Main";
+    // Fetch the test appointments
+    onGetTestAppointmentsCompletedList(user_id);
 
-    // Call the function with the updated value
-    onAddNewCollectionPointTestAppointment(testAppointments, this.state.user_id);
-    this.setState({ testAppointments});
-
-    const { labProfiles, onGetLabProfile } = this.props;
-    onGetLabProfile(this.state.user_id);
-    this.setState({
-      labProfiles
-    });
+    // Fetch lab profiles
+    onGetLabProfile(user_id);
   }
+  componentDidUpdate(prevProps) {
+    // Check if labProfiles.type has changed
+    if (prevProps.labProfiles.type !== this.props.labProfiles.type) {
+      // Update the state based on the new labProfiles.type
+      // const newLabType = this.props.labProfiles.type === "Collection Point" ? "Collection" : "Main";
+      // this.setState({ main_lab_appointments: newLabType }, () => {
+        const { onAddNewCollectionPointTestAppointment, onGetTestAppointmentsCompletedList } = this.props;
+        const { start_date, end_date, main_lab_appointments, user_id } = this.state;
+        const updatedTestAppointments = { main_lab_appointments, start_date, end_date };
+        
+        // API call with updated dates and lab type
+        onAddNewCollectionPointTestAppointment(updatedTestAppointments, user_id);
+        setTimeout(() => {
+          onGetTestAppointmentsCompletedList(this.state.user_id);
+        }, 1000);
 
+      // });
+    }
+  }
 
   // toggle() {
   //   this.setState(prevState => ({
@@ -787,25 +801,35 @@ class TestAppointmentsCompletedList extends Component {
       this.node.current.props.pagination.options.onPageChange(page);
     }
   };
+  handleDateChange(date, field) {
+    this.setState({ [field]: moment(date).format('DD MMM YYYY') }, () => {
+      // Make the API call after the state has been updated
+      const { onAddNewCollectionPointTestAppointment, onGetTestAppointmentsCompletedList } = this.props;
+      const { start_date, end_date, main_lab_appointments, user_id } = this.state;
+      const updatedTestAppointments = { main_lab_appointments, start_date, end_date };
+      
+      // API call with updated dates and lab type
+      onAddNewCollectionPointTestAppointment(updatedTestAppointments, user_id);
+      setTimeout(() => {
+        onGetTestAppointmentsCompletedList(this.state.user_id);
+      }, 1000);
+    });
+  }
 
   handleTestAppointmentType = e => {
-    // const { id } = useParams();
-    // console.log("id is",id);
-      this.setState({
-        testAppointments: {
-          main_lab_appointments: e.target.value,
-        },
-      });
-
-      // API call to get the checkout items
-
+    const { value } = e.target;
+    this.setState({ main_lab_appointments: value }, () => {
       const { onAddNewCollectionPointTestAppointment, onGetTestAppointmentsCompletedList } = this.props;
+      const { start_date, end_date, main_lab_appointments, user_id } = this.state;
+      const updatedTestAppointments = { main_lab_appointments, start_date, end_date };
       setTimeout(() => {
-        console.log(onAddNewCollectionPointTestAppointment(this.state.testAppointments, this.state.user_id));
+        console.log(onAddNewCollectionPointTestAppointment(updatedTestAppointments, user_id));
       });
       setTimeout(() => {
         onGetTestAppointmentsCompletedList(this.state.user_id);
       }, 1000);
+
+    });
   };
 
   render() {
@@ -861,6 +885,35 @@ class TestAppointmentsCompletedList extends Component {
                           {toolkitprops => (
                             <React.Fragment>
                               <Row className="mb-2">
+                              <Col sm="4">
+                        <FormGroup className="mb-0">
+                          <Label>Start Date</Label>
+                          <Flatpickr
+                            className="form-control d-block"
+                            placeholder="dd M yyyy"
+                            options={{
+                              dateFormat: "d M Y",
+                              defaultDate: this.state.start_date
+                            }}
+                            onChange={date => this.handleDateChange(date[0], 'start_date')}
+                          />
+                        </FormGroup>
+                      </Col>
+
+                      <Col sm="4">
+                        <FormGroup className="mb-0">
+                          <Label>End Date</Label>
+                          <Flatpickr
+                            className="form-control d-block"
+                            placeholder="dd M yyyy"
+                            options={{
+                              dateFormat: "d M Y",
+                              defaultDate: this.state.end_date
+                            }}
+                            onChange={date => this.handleDateChange(date[0], 'end_date')}
+                          />
+                        </FormGroup>
+                      </Col>
                                 <Col sm="4">
                                 <div className="ms-2 mb-4">
                                     <div className="position-relative">
