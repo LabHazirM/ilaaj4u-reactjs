@@ -32,11 +32,8 @@ import * as XLSX from "xlsx";
 //Import Breadcrumb
 import * as Yup from "yup";
 import Breadcrumbs from "components/Common/Breadcrumb";
-import {
-  getCorporateList,
-} from "store/labs-list/actions";
-
-
+import { getCorporateList } from "store/labs-list/actions";
+import { updateCorporateProfile } from "../../store/actions";
 class LabsLists extends Component {
   constructor(props) {
     super(props);
@@ -136,6 +133,63 @@ class LabsLists extends Component {
           ),filter: textFilter(), // Add a text filter for this column
         },
         {
+          dataField: "payment_terms",
+          text: "Pyment Type",
+          sort: true,
+          formatter: (cellContent, labsList) => (
+            <>
+              <span  style={{
+                width: '180px', // Set your desired width here
+                fontSize: '14px',
+              
+                textOverflow: 'ellipsis',
+                whiteSpace: 'prewrap',
+                textAlign: 'left', // Align text to the left
+                display: 'block',
+              }}>  {(labsList.payment_terms || "--").toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</span >
+            </>
+          ),filter: textFilter(), // Add a text filter for this column
+        },
+        {
+          dataField: "payment_request",
+          text: "Request for Change Payment",
+          sort: true,
+          formatter: (cellContent, labsList) => {
+            const paymentRequest = labsList.payment_request;
+        
+            // Conditionally render based on the value of paymentRequest
+            return (
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                {paymentRequest === 'Approved Payment Method' ? (
+                  <span>{paymentRequest}</span> // Display as plain text
+                ) : (
+                  paymentRequest ? (
+                    <button
+                      className="btn btn-success"
+                      style={{
+                        padding: '5px 10px',
+                        fontSize: '10px',
+                        color: '#fff',
+                        border: 'none',
+                        borderRadius: '4px',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                      }}
+                      onClick={() => this.toggles(labsList)} // Pass the entire labsList
+                    >
+                      Request for Accept
+                    </button>
+                  ) : (
+                    <span>--</span> // Display placeholder if no paymentRequest
+                  )
+                )}
+              </div>
+            );
+          },
+          filter: textFilter(), // Add a text filter for this column
+        },
+        {
           dataField: "phone",
           text: "Phone",
           sort: true,
@@ -178,7 +232,10 @@ class LabsLists extends Component {
 
       ],
     };
+    this.handlePaymentStatusClick =this.handlePaymentStatusClick.bind(this);
+    this.toggles = this.toggles.bind(this);
   }
+
 
   // componentDidMount() {
   //   const { labsList, onGetDonorsList } = this.props;
@@ -191,17 +248,142 @@ class LabsLists extends Component {
     console.log(onGetDonorsList());
     this.setState({ labsList });
   }
+
+  // eslint-disable-next-line no-unused-vars
+  // componentDidUpdate(prevProps, prevState, snapshot) {
+  //   const { banks } = this.props;
+  //   if (
+  //     !isEmpty(banks) &&
+  //     size(prevProps.banks) !== size(banks)
+  //   ) {
+  //     this.setState({ banks: {}, isEdit: false });
+  //   }
+  // }
+
   // componentDidMount() {
   //   const { b2bAllClients, onGetB2bAllClientsList } = this.props;
   //   onGetB2bAllClientsList(this.state.user_id);
   //   this.setState({ b2bAllClients });
   // }
-
+  toggles = (labsList) => {
+    console.log("labsList:", labsList);
+  
+    let city;
+    if (typeof labsList.city_id === 'string') {
+      // Split the city_ids if they are in a comma-separated string format
+      city = labsList.city_id.split(',').map(id => id.trim()).join(', ');
+    } else if (Array.isArray(labsList.city_id)) {
+      // Join array elements if city_ids is already an array
+      city = labsList.city_id.join(', ');
+    } else {
+      // Handle unexpected cases
+      city = labsList.city_id || ''; // Default to an empty string if city_id is undefined or null
+    }
+  
+    console.log("Processed City:", city);
+  
+    this.setState({
+      modal: !this.state.modal,
+      selectedLabId: labsList.account_id,
+      selectedLabName: labsList.name,
+      selectedLabEmail: labsList.email,
+      selectedLabPhone: labsList.phone,
+      selectedLabLandline: labsList.landline,
+      selectedLabAddress: labsList.address,
+      selectedLabCity: city,
+      selectedLabNTN: labsList.national_taxation_no,
+      selectedLablogo: labsList.logo,
+      selectedLabPT: labsList.payment_terms,
+    });
+  };
   toggle() {
     this.setState(prevState => ({
       modal: !prevState.modal,
     }));
   }
+  // The code for converting "image source" (url) to "Base64"
+  toDataURL = url =>
+    fetch(url)
+      .then(response => response.blob())
+      .then(
+        blob =>
+          new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result);
+            reader.onerror = reject;
+            reader.readAsDataURL(blob);
+          })
+      );
+
+  // The code for converting "Base64" to javascript "File Object"
+  dataURLtoFile = (dataurl, filename) => {
+    var arr = dataurl.split(","),
+      mime = arr[0].match(/:(.*?);/)[1],
+      bstr = atob(arr[1]),
+      n = bstr.length,
+      u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new File([u8arr], filename, { type: mime });
+  };
+
+  handlePaymentStatusClick = async () => {
+    const { selectedLabId, selectedLabName, selectedLabEmail, selectedLabPhone, selectedLabLandline, selectedLabAddress, selectedLabCity, selectedLabNTN, selectedLablogo, selectedLabPT } = this.state;
+  
+    // Function to convert image URL to Base64 Data URL
+    const urlToDataURL = async (url) => {
+      const response = await fetch(url);
+      const blob = await response.blob();
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+    };
+  
+    // Check if selectedLablogo is a string (URL) and convert it
+    if (typeof selectedLablogo === 'string') {
+      try {
+        console.log("Converting logo URL to Base64...");
+        const imageUrl = process.env.REACT_APP_BACKENDURL + selectedLablogo;
+        console.log("sdggfhjhdf",imageUrl )
+        const dataUrl = await urlToDataURL(imageUrl);
+        const fileData = this.dataURLtoFile(dataUrl, selectedLablogo.split("/").pop());
+        console.log("File converted from Base64:", fileData);
+  
+        // Prepare form values
+        const values = {
+          payment_request: "Approved Payment Method",
+          limit: "",
+          end_date: "",
+          reason: "",
+          name: selectedLabName,
+          logo: fileData,
+          national_taxation_no: selectedLabNTN,
+          payment_terms: "Payment by Patient to Lab",
+          city_id: selectedLabCity,
+          address: selectedLabAddress,
+          landline: selectedLabLandline,
+          phone: selectedLabPhone,
+          email: selectedLabEmail,
+        };
+  
+        // Call the prop method with the prepared values
+        this.props.updateCorporateProfile(values, selectedLabId);
+        setTimeout(() => {
+          this.props.onGetDonorsList(this.state.user_id);
+        }, 1000);
+        setTimeout(() => {
+          this.setState({ modal: false });
+        }, 1000);
+      } catch (error) {
+        console.error("Error converting logo to Base64:", error);
+      }
+    } 
+  };
+
   openPatientModal = (e, arg) => {
     this.setState({
       PatientModal: true,
@@ -264,7 +446,7 @@ class LabsLists extends Component {
 
   render() {
     const { SearchBar } = Search;
-
+    const { updateCorporateProfile } = this.props;
     const { labsList } = this.props;
     const data = this.state.data;
     const { onGetDonorsList } = this.props;
@@ -342,6 +524,35 @@ class LabsLists extends Component {
                                       ref={this.node}
                                       filter={filterFactory()} // Enable filtering for the entire table
                                     />
+                                  <Modal
+  isOpen={this.state.modal}
+  className={this.props.className}
+>
+  <ModalHeader
+    toggle={this.toggles}
+    tag="h4"
+    className="text-danger"
+  >
+    Alert:
+  </ModalHeader>
+  <ModalBody>
+    <div className="w-100">
+      
+      <div>
+        <ol>
+          <li>First Check all appointemnt which is in process or pending of this corporation</li>
+          <li>After that Corporate payment term will be change from <strong> corporate pament to lab</strong> to <strong>patient to lab</strong></li>
+          <li>After that all employees quota equal to zero </li>
+        </ol>
+      </div>
+    </div>
+    <Row className="mt-4">
+      <Col sm="12" className="d-flex justify-content-end">
+        <Button color="primary" className="me-2" onClick={this.handlePaymentStatusClick}>Accept Request</Button>
+      </Col>
+    </Row>
+  </ModalBody>
+</Modal>
                                       <Modal
                                       isOpen={this.state.PatientModal}
                                       className={this.props.className}
@@ -465,6 +676,7 @@ LabsLists.propTypes = {
   labsList: PropTypes.array,
   className: PropTypes.any,
   onGetDonorsList: PropTypes.func,
+  updateCorporateProfile: PropTypes.func,
 };
 const mapStateToProps = ({ labsList}) => ({
   labsList: labsList.labsList,
@@ -472,6 +684,7 @@ const mapStateToProps = ({ labsList}) => ({
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
   onGetDonorsList: id => dispatch(getCorporateList(id)),
+ updateCorporateProfile: (profile, id) => dispatch(updateCorporateProfile(profile, id)),
 });
 
 export default connect(
