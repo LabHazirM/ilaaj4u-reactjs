@@ -231,7 +231,7 @@ class LabAdvertisementRequestsList extends Component {
                <Tooltip title="Add Comment">
                 <Link
                   className="fas fa-comment font-size-18"
-                  to={`/adv-fadmin-chat-box/${labAdvertisementRequest.id}`}
+                  to={`/adv-madmin-chat-box/${labAdvertisementRequest.id}`}
                 ></Link>
               </Tooltip>
               {/* )} */}

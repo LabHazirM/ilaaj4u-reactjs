@@ -107,7 +107,7 @@ class LabsRating extends Component {
           hidden: true,
           formatter: (cellContent, labsrating) => <>{labsrating.id}</>,
           filter: textFilter(),
-          headerStyle: { backgroundColor: '#DCDCDC' },
+          // headerStyle: { backgroundColor: '#DCDCDC' },
         },
         // {
         //   dataField: "order_id",
@@ -122,11 +122,11 @@ class LabsRating extends Component {
   sort: true,
   filter: textFilter(),
   formatter: (cellContent, labsrating) => (
-        <div className=" text-black fw-bold p-2">
+        <div >
       {cellContent}</div>
   ),
-  headerStyle: { backgroundColor: '#B05450',fontFamily: 'Calibri', fontSize: '16px'  },
-  style: {backgroundColor: '#D3A2A1',fontFamily: 'Calibri', fontSize: '16px'  },
+  // headerStyle: { backgroundColor: '#B05450',fontFamily: 'Calibri', fontSize: '16px'  },
+  // style: {backgroundColor: '#D3A2A1',fontFamily: 'Calibri', fontSize: '16px'  },
 },
 {
   dataField: "city",
@@ -134,12 +134,14 @@ class LabsRating extends Component {
   sort: true,
   filter: textFilter(),
   formatter: (cellContent, labsrating) => (
-    <div className="text-black fw-bold p-2">
+    <div
+    //  className="text-black fw-bold p-2"
+    >
       {cellContent}
     </div>
   ),
-  headerStyle: { backgroundColor: '#B05450',fontFamily: 'Calibri', fontSize: '16px'  },
-  style: {backgroundColor: '#ECB6B3',fontFamily: 'Calibri', fontSize: '16px'  },
+  // headerStyle: { backgroundColor: '#B05450',fontFamily: 'Calibri', fontSize: '16px'  },
+  // style: {backgroundColor: '#ECB6B3',fontFamily: 'Calibri', fontSize: '16px'  },
 },
 {
   dataField: "rating",
@@ -156,8 +158,8 @@ class LabsRating extends Component {
         starSpacing="3px"
       />
   ),
-  headerStyle: { backgroundColor: '#B05450',fontFamily: 'Calibri', fontSize: '16px'  },
-  style: {backgroundColor: '#C57E7C',fontFamily: 'Calibri', fontSize: '16px'  },
+  // headerStyle: { backgroundColor: '#B05450',fontFamily: 'Calibri', fontSize: '16px'  },
+  // style: {backgroundColor: '#C57E7C',fontFamily: 'Calibri', fontSize: '16px'  },
   filter: textFilter(),
 },
         
@@ -257,11 +259,11 @@ class LabsRating extends Component {
                                       {...toolkitprops.baseProps}
                                       {...paginationTableProps}
                                       defaultSorted={defaultSorted}
-                                      classes={"table align-middle table-hover"}
+                                      classes={"table align-middle  table-condensed table-hover"}
                                       bordered={false}
                                       columns={columns}
                                   
-                                      headerWrapperClasses={"table-dark"}
+                                      headerWrapperClasses={"table-light"}
                                       responsive
                                       ref={this.node}
                                       filter={ filterFactory() }

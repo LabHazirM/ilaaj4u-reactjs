@@ -711,7 +711,8 @@ class SidebarContent extends Component {
                   <li>
                     <Link to={"/labs-rating"}>
                       <i className="mdi mdi-hospital-building" />
-                      {this.props.t("Labs Rating")}
+                      <span>{this.props.t("Labs Rating")}</span>
+                      
                     </Link>
                   </li>
 

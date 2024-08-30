@@ -55,7 +55,7 @@ import {
 import { isEmpty, size } from "lodash";
 import "assets/scss/table.scss";
 import { Tooltip } from "@material-ui/core";
-
+import moment from 'moment';
 class AdvertisementsList extends Component {
   constructor(props) {
     super(props);
@@ -212,7 +212,7 @@ class AdvertisementsList extends Component {
           formatter: (cellContent, labAdvertisement) => (
             <div>
               
-              {labAdvertisement.payment_status !== "Cleared" && labAdvertisement.payment_status !== "Created" && labAdvertisement.payment_status !== "Bounced" && labAdvertisement.request_status === "Pending" && ( 
+              {labAdvertisement.payment_status !== "Cleared" && labAdvertisement.payment_status !== "Created" && labAdvertisement.payment_status !== "Bounced" &&  (labAdvertisement.request_status === "Pending" || labAdvertisement.request_status === "Recreated") && (
                 <Tooltip title="Update"> 
                   <Link className="text-success" to="#">
                     <i
@@ -223,7 +223,7 @@ class AdvertisementsList extends Component {
                   </Link>
                 </Tooltip>
               )}
-              {labAdvertisement.payment_status !== "Cleared" && labAdvertisement.payment_status !== "Created" && labAdvertisement.payment_status !== "Bounced"  && labAdvertisement.request_status === "Pending" && ( 
+              {labAdvertisement.payment_status !== "Cleared" && labAdvertisement.payment_status !== "Created" && labAdvertisement.payment_status !== "Bounced"  && (labAdvertisement.request_status === "Pending" || labAdvertisement.request_status === "Recreated") && (
                 <Tooltip title="Delete"> 
                   <Link className="text-danger" to="#">
                     <i
@@ -375,24 +375,25 @@ class AdvertisementsList extends Component {
 
   handleAdvertisementClick = (e, arg) => {
     const labAdvertisement = arg;
-
+    const formatDateForInput = (dateString) => {
+      return moment(dateString).format('YYYY-MM-DDTHH:mm'); // 'YYYY-MM-DDTHH:mm'
+    };
     this.setState({
       labAdvertisement: {
         id: labAdvertisement.id,
         title: labAdvertisement.title,
         poster: process.env.REACT_APP_BACKENDURL + labAdvertisement.poster,
-        posted_at: labAdvertisement.posted_at,
-        posted_till: labAdvertisement.posted_till,
+        posted_at: formatDateForInput(labAdvertisement.posted_at),
+        posted_till: formatDateForInput(labAdvertisement.posted_till),
         km: labAdvertisement.km,
         request_status: labAdvertisement.request_status,
-        payment_status: labAdvertisement.payment_status
-        // number_of_days: labAdvertisement.number_of_days,
+        payment_status: labAdvertisement.payment_status,
       },
       advertisementImg: "",
       isEdit: true,
+    }, () => {
+      this.toggle();
     });
-
-    this.toggle();
   };
 
   render() {
@@ -772,7 +773,7 @@ class AdvertisementsList extends Component {
                                             this.toggle();
                                           }}
                                         >
-                                          {({ errors, status, touched }) => (
+                                          {({ values, errors, status, touched }) => (
                                             <Form>
                                               <Row>
                                                 <Col className="col-12">
@@ -901,9 +902,12 @@ class AdvertisementsList extends Component {
                                                       <Input
                                                         id="formFile"
                                                         name="poster"
-                                                        required="true"
+                                                        // required="true"
                                                         placeholder="Choose image"
                                                         type="file"
+                                                        // value={
+                                                        //   this.state.labAdvertisement.poster
+                                                        // }
                                                         multiple={false}
                                                         accept=".jpg,.jpeg,.png,.pdf"
                                                         onChange={(e) =>
@@ -937,12 +941,15 @@ class AdvertisementsList extends Component {
 
                                                   <div className="mb-3">
                                                     <Label className="form-label">
-                                                      Posted Date
+                                                      Posted At
                                                     </Label>
                                                     <input
                                                       name="posted_at"
                                                       required="true"
                                                       type="datetime-local"
+                                                      // value={
+                                                      //   this.state.labAdvertisement.posted_till
+                                                      // }
                                                       min={new Date(
                                                         new Date().toString().split("GMT")[0] +
                                                         " UTC"
@@ -968,6 +975,9 @@ class AdvertisementsList extends Component {
                                                       name="posted_till"
                                                       required="true"
                                                       type="datetime-local"
+                                                      // value={
+                                                      //   this.state.labAdvertisement.posted_till
+                                                      // }
                                                       min={new Date(
                                                         new Date().toString().split("GMT")[0] +
                                                         " UTC"

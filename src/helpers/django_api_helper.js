@@ -1464,10 +1464,19 @@ export const getHandledComplaints = id =>
     });
   };
 
-export const getCsrComplaints = id =>
-  get(`${url.GET_CSR_COMPLAINTS}/${id}`, {
-    headers: getHeader(authHeader()),
-  });
+  export const getCsrComplaints = ({ id, startDate, endDate }) => {
+    // Log the payload to the console
+    console.log("API helper data:", { id, startDate, endDate });
+  
+    // Return the API call with query parameters
+    return get(`${url.GET_CSR_COMPLAINTS}/${id}`, {
+      headers: getHeader(authHeader()),
+      params: {
+        start_date: startDate,
+        end_date: endDate
+      },
+    });
+  };
 
   export const updateCsrComplaints = csrcomplaint => {
     let formData = new FormData();
