@@ -486,6 +486,9 @@ class LabSettings extends Component {
                             Bank Al Habib Limited
                           </option>
                           <option value="Bank Alfalah">Bank Alfalah</option>
+                          <option value="Faysal Bank">
+                            Faysal Bank
+                          </option>
                           <option value="MCB Bank Limited">
                             MCB Bank Limited
                           </option>
