@@ -54,7 +54,7 @@ class Login extends Component {
     console.log('Longitude:', longitudeFromUrl);
     if (latitudeFromUrl && longitudeFromUrl) {
 
-      const url = `https://www.labhazir.com/nearby-labs/&lat=${latitudeFromUrl}&lon=${longitudeFromUrl}`;
+      const url = `http://localhost:3000/nearby-labs/&lat=${latitudeFromUrl}&lon=${longitudeFromUrl}`;
       const queryString = url.substring(url.indexOf("&") + 1);
       const finalUrl = ("&") + queryString; // Remove the leading question mark ('?')        
       this.setState({ finalUrl: finalUrl });
@@ -299,13 +299,6 @@ class Login extends Component {
                                       console.log("finalUrl in mobile app else case", this.state.finalUrl);
                                       if (success.account_type === "samplecollector") {
                                         this.props.history.push("/dashboard-samplecollector");
-                                      } else if (success.account_type === "patient") {
-                                        this.props.history.push(
-                                          this.state.finalUrl
-                                            ? `/nearby-labs/${this.state.finalUrl}`
-                                            : `/nearby-labs`
-                                        );
-                                        console.log("yaha pr aya nahi",this.state.finalUrl);
                                       }
                                     }
                                     else if (
@@ -374,7 +367,7 @@ class Login extends Component {
                                     } else if (success.account_type === "csr-admin") {
                                       this.props.history.push("/pending-complaints-lab");
                                     } else if (success.account_type === "auditor-admin") {
-                                      this.props.history.push("/pending-audits");
+                                      this.props.history.push("/lab-list");
                                     } else if (success.account_type === "hr-admin") {
                                       this.props.history.push("/add-staff");
                                     } else if (success.account_type === "donor") {

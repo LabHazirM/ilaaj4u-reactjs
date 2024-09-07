@@ -182,7 +182,7 @@ class LabsRating extends Component {
     // const labprofile=this.state.labprofile;
 
     const pageOptions = {
-      sizePerPage: 3,
+      sizePerPage: 10,
       totalSize: labsRating.length, // replace later with size(labsRating),
       custom: true,
     };

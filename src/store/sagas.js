@@ -106,11 +106,13 @@ import RegistrationAdminSaga from "./registration-admin/saga";
 import FinanceAdminSaga from "./finance-admin/saga";
 import CSRAdminSaga from "./csr-admin/saga";
 import AuditorAdminSaga from "./auditor-admin/saga";
+import activitylogauditorSaga from "./activtylogAuditor/saga"
 
 
 export default function* rootSaga() {
   yield all([
     //public
+    fork(activitylogauditorSaga),
     fork(DonorsAccountStatementsSaga),
     fork(dashboardSaga),
     fork(LayoutSaga),

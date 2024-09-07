@@ -120,6 +120,11 @@ class AssignedAudits extends Component {
                 <i className="mdi mdi-check-circle font-size-14"></i>
               </Link>
               </Tooltip>
+              <Tooltip title="Comments">
+              <Link
+                  className="fas fa-comment font-size-18"
+                  to={`/audit-activity-auditor/${audit.id}`}
+                  ></Link></Tooltip>
             </>
           ),
         },

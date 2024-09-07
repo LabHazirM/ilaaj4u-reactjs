@@ -14,6 +14,9 @@ import {
   ASSIGN_AUDIT,
   ASSIGN_AUDIT_SUCCESS,
   ASSIGN_AUDIT_FAIL,
+  ADD_LABS_AUDIT,
+  ADD_LABS_AUDIT_SUCCESS,
+  ADD_LABS_AUDIT_FAIL
 } from "./actionTypes";
 
 export const getPendingAudits = () => ({
@@ -86,5 +89,20 @@ export const assignAuditSuccess = success => ({
 
 export const assignAuditFail = error => ({
   type: ASSIGN_AUDIT_FAIL,
+  payload: error,
+});
+
+export const AddAllLabsAudit = data => ({
+  type: ADD_LABS_AUDIT,
+  payload: { data },
+});
+
+export const AddAllLabsAuditSuccess = success => ({
+  type: ADD_LABS_AUDIT_SUCCESS,
+  payload: success,
+});
+
+export const AddAllLabsAuditFail = error => ({
+  type: ADD_LABS_AUDIT_FAIL,
   payload: error,
 });

@@ -131,7 +131,34 @@ class PassedAudits extends Component {
               >
                 View Report
               </Link>
+
             </>
+          ),
+        },
+        {
+          dataField: "audit_status",
+          text: "Audit Status",
+          sort: true,
+          formatter: (cellContent, audit) => (
+            <>
+              <span>{audit.audit_status}</span>
+            </>
+          ),filter: textFilter(),
+        },
+        {
+          dataField: "data",
+          text: "id",
+          isDummyField: true,
+          editable: false,
+          text: "Action",
+          formatter: (cellContent, audit) => (
+            <>
+              <Link
+                  className="fas fa-comment font-size-18"
+                  to={`/audit-activity-admin/${audit.id}`}
+                  ></Link>
+            </>
+            
           ),
         },
       ],

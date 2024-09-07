@@ -475,14 +475,19 @@ export const GET_INPROCESS_AUDITS = `${API_ENDPOINT}/api/auditor-admin/inprocess
 export const GET_PASSED_AUDITS = `${API_ENDPOINT}/api/auditor-admin/passed-audits`;
 export const GET_FAILED_AUDITS = `${API_ENDPOINT}/api/auditor-admin/failed-audits`;
 export const ASSIGN_AUDIT = `${API_ENDPOINT}/api/auditor-admin/pending-audits`;
+export const ADD_LABS_AUDIT = `${API_ENDPOINT}/api/auditor-admin/pending-audits`;
+export const GET_LABS_AUDIT_LIST = `${API_ENDPOINT}/api/auditor-admin/labs-list`;
+export const GET_LABS_ALL_AUDIT_LIST = `${API_ENDPOINT}/api/auditor-admin/labs-audit-list`;
 
 // AUDITS
 export const GET_ASSIGNED_AUDITS = `${API_ENDPOINT}/api/auditor/assigned-audits`;
+export const GET_ACTIVITY_LOG_AUDITOR = `${API_ENDPOINT}/api/auditor/activitylog-audits`;
 export const UPDATE_ASSIGNED_AUDITS = `${API_ENDPOINT}/api/auditor/assigned-audits`;
 export const GET_AUDITORS_COMPLETED_AUDITS = `${API_ENDPOINT}/api/auditor/completed-audits`;
 
 export const GET_LAB_AUDITS = `${API_ENDPOINT}/api/lab/audits`;
 export const ADD_NEW_AUDIT = `${API_ENDPOINT}/api/lab/audits`;
+export const UPDATE_AUDIT_STATUS = `${API_ENDPOINT}/api/lab/reaudits-labs`;
 // -------------- TEMPLATES URLS --------------
 
 //REGISTER

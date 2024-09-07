@@ -193,11 +193,14 @@ import bankAccount from "./bankaccount/reducer";
 
 // Corporate
 import cemployeeData from "./corporatedata/reducer";
+import activitylogauditor from "./activtylogAuditor/reducer";
+
 
 
 const rootReducer = combineReducers({
   // public
   Dashboard,
+  activitylogauditor,
   donorsaccountStatements,
   referrelFeeLabs,
   Layout,

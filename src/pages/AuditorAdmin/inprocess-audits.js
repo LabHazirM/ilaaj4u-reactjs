@@ -157,7 +157,12 @@ class InProcessAudits extends Component {
               >
                 Reassign
               </Link>{" "}
+              <Link
+                  className="fas fa-comment font-size-18"
+                  to={`/audit-activity-admin/${inProcessAudit.id}`}
+                  ></Link>
             </>
+            
           ),
         },
       ],

@@ -51,6 +51,7 @@ export * from "./marketernotification/actions";
 export * from "./csradminnotification/actions";
 export * from "./regadminnotification/actions";
 export * from "./csrofficernotification/actions";
+export * from "./activtylogAuditor/actions";
 
 // carts
 export * from "./carts/actions";

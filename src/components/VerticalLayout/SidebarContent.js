@@ -711,8 +711,7 @@ class SidebarContent extends Component {
                   <li>
                     <Link to={"/labs-rating"}>
                       <i className="mdi mdi-hospital-building" />
-                      <span>{this.props.t("Labs Rating")}</span>
-                      
+                      <span>{this.props.t("Labs Rating")}</span> 
                     </Link>
                   </li>
 
@@ -924,7 +923,7 @@ class SidebarContent extends Component {
                     <span>{this.props.t("Audits")}</span>
                   </Link>
                   <ul className="sub-menu" aria-expanded="false">
-                    <li>
+                    {/* <li>
                       <Link to={"/pending-audits"}>
                         {this.props.t("Pending")}
                       </Link>
@@ -935,10 +934,12 @@ class SidebarContent extends Component {
                       </Link>
                     </li>
                     <li>
-                      <Link to="/#" className="has-arrow">
+                      <Link to="/completed-audits" 
+                      // className="has-arrow"
+                      >
                         <span>{this.props.t("Completed")}</span>
-                      </Link>
-                      <ul>
+                      </Link> */}
+                      {/* <ul>
                         <li>
                           <Link to={"/passed-audits"}>
                             {this.props.t("Pass")}
@@ -949,7 +950,12 @@ class SidebarContent extends Component {
                             {this.props.t("Fail")}
                           </Link>
                         </li>
-                      </ul>
+                      </ul> */}
+                    {/* </li> */}
+                    <li>
+                      <Link to={"/lab-list"}>
+                        {this.props.t("Lab List")}
+                      </Link>
                     </li>
                   </ul>
                 </li>

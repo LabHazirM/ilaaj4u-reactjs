@@ -9,6 +9,8 @@ import {
   GET_FAILED_AUDITS_FAIL,
   ASSIGN_AUDIT_SUCCESS,
   ASSIGN_AUDIT_FAIL,
+  ADD_LABS_AUDIT_SUCCESS,
+  ADD_LABS_AUDIT_FAIL
 } from "./actionTypes";
 
 const INIT_STATE = {
@@ -80,7 +82,17 @@ const auditorAdmin = (state = INIT_STATE, action) => {
         ...state,
         error: action.payload,
       };
+    case ADD_LABS_AUDIT_SUCCESS:
+      return {
+        ...state,
+        success: [...state.success, action.payload],
+      };
 
+    case ADD_LABS_AUDIT_FAIL:
+      return {
+        ...state,
+        error: action.payload,
+      };
     default:
       return state;
   }

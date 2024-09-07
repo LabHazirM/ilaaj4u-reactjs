@@ -21,7 +21,9 @@ import { Link, withRouter } from "react-router-dom";
 
 //Import Breadcrumb
 import Breadcrumb from "../../components/Common/Breadcrumb";
-
+import {
+  getBanks,
+} from "store/createbank/actions";
 // actions
 import { updateLabSettings, getLabSettings } from "../../store/actions";
 
@@ -486,11 +488,11 @@ class LabSettings extends Component {
                             Bank Al Habib Limited
                           </option>
                           <option value="Bank Alfalah">Bank Alfalah</option>
-                          <option value="Faysal Bank">
-                            Faysal Bank
-                          </option>
                           <option value="MCB Bank Limited">
                             MCB Bank Limited
+                          </option>
+                          <option value="Faysal Bank">
+                            Faysal Bank
                           </option>
                           <option value="HBL / Konnect">HBL / Konnect</option>
                           <option value="MCB Islamic">MCB Islamic</option>
@@ -1054,12 +1056,14 @@ LabSettings.propTypes = {
   updateLabSettings: PropTypes.func,
   error: PropTypes.any,
   success: PropTypes.any,
+  banks: PropTypes.any,
   getLabSettings: PropTypes.func,
 };
 
 const mapStateToProps = state => {
   const { error, success } = state.LabSettings;
-  return { error, success };
+  const {banks} = state.banks
+  return { error, success, banks };
 };
 
 export default withRouter(

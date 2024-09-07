@@ -806,6 +806,7 @@ export const getLcList = ()=>
 get( `${url.GET_CORPORATE_LIST}`, {
   headers: getHeader(authHeader()),
 });
+
 // ------------- Corporate START Activity Log-------------
 
 export const getCorporateCommit = id =>
@@ -1478,8 +1479,7 @@ export const getHandledComplaints = id =>
         end_date: endDate
       },
     });
-  };
-
+  }; 
   export const updateCsrComplaints = csrcomplaint => {
     let formData = new FormData();
     // formData.append("comment", data.comment);
@@ -2364,6 +2364,13 @@ export const assignAudit = data => {
   });
 };
 
+export const AddAllLabsAudit = data => {
+  let formData = new FormData();
+  return axios.post(`${url.ADD_LABS_AUDIT}`, formData, {
+    headers: getHeader(authHeader()),
+  });
+};
+
 // ------------- Advertisements Requests START -------------
 export const getAdvertisements = () =>
   get(`${url.GET_ADVERTISEMENTS}`, {
@@ -2461,6 +2468,16 @@ export const getLabsList = ()=>
 get(`${url.GET_LABS_LIST}`, {
   headers: getHeader(authHeader()),
 });
+
+export const getLabsAuditList = ()=>
+  get(`${url.GET_LABS_AUDIT_LIST}`, {
+    headers: getHeader(authHeader()),
+  });
+export const getLabsAllAuditList = id =>
+  get(`${url.GET_LABS_ALL_AUDIT_LIST}/${id}`, {
+    headers: getHeader(authHeader()),
+  });
+
 export const getDonorsList = ()=>
 get(`${url.GET_DONORS_LIST}`, {
   headers: getHeader(authHeader()),
@@ -2606,6 +2623,14 @@ export const updateDiscountAllLab = data => {
   });
 };
 
+// ------------- Auditor START Activity Log-------------
+
+export const getActivityLogAuditor = id =>
+  get(`${url.GET_ACTIVITY_LOG_AUDITOR}/${id}`, {
+    headers: getHeader(authHeader()),
+  });
+
+
 // ------------- Assigned Audits Requests START -------------
 export const getAssignedAudits = id =>
   get(`${url.GET_ASSIGNED_AUDITS}/${id}`, {
@@ -2630,7 +2655,7 @@ export const getLabAudits = id =>
 
   export const addNewAudit = (audit, id) => {
     let formData = new FormData();
-    formData.append("lab_id", audit.lab_id);
+    formData.append("lab_id", audit.id);
     formData.append("reason_of_reaudit", audit.reason_of_reaudit);
 
     return axios.post(`${url.ADD_NEW_AUDIT}/${id}`, formData, {
@@ -2638,6 +2663,15 @@ export const getLabAudits = id =>
     });
   };
 
+  export const UpdateAuditStatus = audit => {
+    let formData = new FormData();
+    formData.append("lab_id", audit.lab_id);
+    formData.append("reason_of_reaudit", audit.reason_of_reaudit);
+    formData.append("audit_status", audit.audit_status);
+    return axios.put(`${url.UPDATE_AUDIT_STATUS}/${audit.id}`, formData, {
+      headers: getHeader(authHeader()),
+    });
+  };
 export const getAuditorsCompletedAudits = id =>
   get(`${url.GET_AUDITORS_COMPLETED_AUDITS}/${id}`, {
     headers: getHeader(authHeader()),

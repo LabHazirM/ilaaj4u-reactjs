@@ -7,6 +7,7 @@ import {
   ADD_NEW_AUDIT,
   UPDATE_ASSIGNED_AUDITS,
   GET_AUDITORS_COMPLETED_AUDITS,
+  UPDATE_AUDITS_STATUS
 } from "./actionTypes";
 
 import {
@@ -20,6 +21,8 @@ import {
   getAuditorsCompletedAuditsFail,
   updateAssignedAuditsSuccess,
   updateAssignedAuditsFail,
+  UpdateAuditStatusSuccess,
+  UpdateAuditStatusFail
 } from "./actions";
 
 //Include Both Helper File with needed methods
@@ -29,6 +32,8 @@ import {
   getLabAudits,
   getAuditorsCompletedAudits,
   updateAssignedAudits,
+  UpdateAuditStatus,
+ 
 } from "../../helpers/django_api_helper";
 
 function* fetchAssignedAudits(object) {
@@ -39,7 +44,17 @@ function* fetchAssignedAudits(object) {
     yield put(getAssignedAuditsFail(error));
   }
 }
+function* onUpdateAuditStatus({ payload: audit }) {
+  try {
+    const response = yield call(UpdateAuditStatus, audit);
+    yield put(UpdateAuditStatusSuccess(response));
+  } catch (error) {
+    yield put(UpdateAuditStatusFail(error));
+  }
+}
+
 function* onAddNewAudit(object) {
+  console.log("data in saga is", object.payload.audit,object.payload.id )
   try {
     const response = yield call(
       addNewAudit,
@@ -49,6 +64,7 @@ function* onAddNewAudit(object) {
     yield put(addAuditSuccess(response));
   } catch (error) {
     yield put(addAuditFail(error));
+  
   }
 }
 function* fetchLabAudits(object) {
@@ -82,6 +98,7 @@ function* fetchAuditorsCompletedAudits(object) {
   }
 }
 function* auditsSaga() {
+  yield takeEvery(UPDATE_AUDITS_STATUS, onUpdateAuditStatus);
   yield takeEvery(GET_ASSIGNED_AUDITS, fetchAssignedAudits);
   yield takeEvery(ADD_NEW_AUDIT, onAddNewAudit);
   yield takeEvery(GET_LAB_AUDITS, fetchLabAudits);
