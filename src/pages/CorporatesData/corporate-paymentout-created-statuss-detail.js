@@ -19,7 +19,7 @@ const PaymentStatussList = (props) => {
   useEffect(() => {
     const fetchPaymentStatuss = async () => {
       try {
-        const response = await axios.get(`http://labhazirapi.com/api/corporate/corporate-payment-detail/${id}`);
+        const response = await axios.get(`https://labhazirapi.com/api/corporate/corporate-payment-detail/${id}`);
         setPaymentStatuss(response.data);
       } catch (error) {
         console.error("Error fetching payment details:", error);
