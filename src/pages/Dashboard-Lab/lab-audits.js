@@ -134,7 +134,7 @@ class LabAudits extends Component {
                 <Button
                   color="primary"
                   className="font-12 btn-block btn btn-primary"
-                  onClick={this.onClickAuditedEvent}
+                  onClick ={e=>this.onClickAuditedEvent(e,audit)}
                 >
                   <i className="mdi mdi-plus-circle-outline me-1" />
                   Request Reaudit
@@ -297,6 +297,9 @@ class LabAudits extends Component {
                                             onUpdateAuditStatus(
                                               Updateauditstatus
                                             );
+                                            this.setState({
+                                              auditModal: false,
+                                            });
                                             setTimeout(() => {
                                               onGetLabAudits(this.state.user_id);
                                             }, 1000);

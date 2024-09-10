@@ -138,29 +138,31 @@ class AuditHistory extends Component {
                     <Col xl="3" md="3" sm="6" key={"_col_" + key}>
                       <Card className="mb-2" style={{ backgroundColor: "#f2f2f2" }}>
                         <CardBody className="p-3">
-                          {activitylogauditor.actions === "Added" &&(
+                          {activitylogauditor.actions === "Request" &&(
                             <div>
-                              <b>{`${activitylogauditor.added_by}`}</b> Added{" "}
-                              <b>{activitylogauditor.new_value}</b> 
-                              {/* on{" "}
-                              {moment(activitylogauditor.created_at).format("DD MMM YYYY, h:mm A")}{" "} */}
-                              {" "}
-                              at{" "}
+                              <b>{`${activitylogauditor.added_by}`}</b> Requested for reaudit at {" "}
+                              {moment(activitylogauditor.updated_at).format("DD MMM YYYY, h:mm A")}
+                                                            .
+                            </div>
+                          )}
+                           {activitylogauditor.actions === "Added" &&(
+                            <div>
+                              <b>{`${activitylogauditor.added_by}`}</b> Generated a new Audit {" "}
                               {moment(activitylogauditor.generated_at).format("DD MMM YYYY, h:mm A")}
                                                             .
                             </div>
                           )}
+                          
 {activitylogauditor.actions === "Updated" && (
   <div>
     <b>{`${activitylogauditor.added_by}`}</b> Updated{" "}
 
     {/* Filter out "None" values from old_value */}
-    <b>
       {activitylogauditor.old_value
         .split(", ") // Split the old_value into individual key-value pairs
         .filter((pair) => !pair.includes("None")) // Filter out pairs with "None"
         .join(", ")} {/* Join the filtered pairs back */}
-    </b>{" "}
+    {" "}
     to{" "}
     <b>{activitylogauditor.new_value}</b>
     {" "}

@@ -265,8 +265,12 @@ class PendingAudits extends Component {
               </div>
               ) :
                (
-                "---"
+                ""
               )}
+              <Link
+                  className="fas fa-comment font-size-18"
+                  to={`/audit-activity-admin/${labsList.id}`}
+                  ></Link>
               
               </>
               
@@ -390,26 +394,20 @@ class PendingAudits extends Component {
     };
     render() {
       const { labaudit } = this.props;
-      // Ensure labaudit is an array and has data
-      if (!Array.isArray(labaudit) || labaudit.length === 0) {
-        return <div>No audits available</div>; // Handle empty state
-      }
+      // // Ensure labaudit is an array and has data
+      // if (!Array.isArray(labaudit) || labaudit.length === 0) {
+      //   return <div>No audits available</div>; // Handle empty state
+      // }
     
       // Check if all audits have `register_at` >= `frequency`
       const allAuditsValid = labaudit.every(audit => audit.register_at >= audit.frequency);
       const isButtonDisabled = !allAuditsValid;
     
-      console.log("All Audits Valid:", allAuditsValid);
-      console.log("Is Button Disabled:", isButtonDisabled);
       const { SearchBar } = Search;
       const {
         onGetDiscountLabHazirToLabs,
         // onUpdateDiscountLabHazirToLab,
-      } = this.props;
-      const { onAddNewAudit } = this.props;
-      
-      console.log("data get on the page is ", this.props.labaudit)
-      const data = this.state.data;
+      } = this.props;;
       const { onAssignAudit } = this.props;
   
       const pageOptions = {
@@ -420,8 +418,8 @@ class PendingAudits extends Component {
   
       const defaultSorted = [
         {
-          dataField: "id", // if dataField is not match to any column you defined, it will be ignored.
-          order: "desc", // desc or asc
+          dataField: "id",
+          order: "desc",
         },
       ];
   
@@ -468,12 +466,12 @@ class PendingAudits extends Component {
         <React.Fragment>
           <div className="page-content">
             <MetaTags>
-              <title>Pending Audits | Audit Hazir</title>
+              <title>Audits list | Audits</title>
             </MetaTags>
   
             <Container fluid>
               {/* Render Breadcrumbs */}
-              <Breadcrumbs title="Audits" breadcrumbItem="Pending" />
+              <Breadcrumbs title="Audits" breadcrumbItem="Audit List" />
               <Row>
                 <Col lg="12">
                   <Card>
@@ -493,17 +491,18 @@ class PendingAudits extends Component {
                           >
                             {toolkitprops => (
                               <React.Fragment>
-                                <Row className="mb-2">
-                                  {/* <Col sm="4">
-                                    <div className="search-box ms-2 mb-2 d-inline-block">
+           
+                                <Row className="mb-4">
+                                <Col sm="4">
+                                 {/*   <div className="search-box ms-2 mb-2 d-inline-block">
                                       <div className="position-relative">
                                         <SearchBar
                                           {...toolkitprops.searchProps}
                                         />
                                         <i className="bx bx-search-alt search-icon" />
                                       </div>
-                                    </div>
-                                  </Col> */}
+                                    </div>*/}
+                                  </Col> 
                                   <Col sm="8">
                                   <div className="text-sm-end">
                                     <Button
@@ -517,8 +516,6 @@ class PendingAudits extends Component {
                                   </div>
                                 </Col>
                                 </Row>
-                                <Row className="mb-4">
-                            
                                   <Col xl="12">
                                     <div className="table-responsive">
                                       <BootstrapTable
@@ -1041,7 +1038,7 @@ class PendingAudits extends Component {
                                       </Modal>
                                     </div>
                                   </Col>
-                                </Row>
+                              
                                 <Row className="align-items-md-center mt-30">
                                   <Col className="pagination pagination-rounded justify-content-end mb-2">
                                     <PaginationListStandalone

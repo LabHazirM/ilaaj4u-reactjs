@@ -127,7 +127,11 @@ class LabsLists extends Component {
                 <span className="w-100 pr-4 pl-4 badge rounded-pill badge-soft-danger font-size-12 badge-soft-danger">
                   {labsList.last_audit_status}
                 </span>
-              ) : (
+              ): labsList.last_audit_status === "Revisit" ? (
+                <span className="w-100 pr-4 pl-4 badge rounded-pill badge-soft-danger font-size-12 badge-soft-danger">
+                  {labsList.last_audit_status}
+                </span>
+              )  : (
                 <span>--</span>
               )}
             </>
