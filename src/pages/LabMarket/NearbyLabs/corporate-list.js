@@ -562,7 +562,7 @@ class TestsList extends Component {
                                                     htmlFor="name"
                                                     className="col-form-label"
                                                   >
-                                                    Collaction Points are allowed to handel this corporate patients.
+                                                    Collection Points are allowed to handle this corporate patients.
                                                     <span
                                                       style={{ color: "#f46a6a" }}
                                                       className="font-size-18"

@@ -681,8 +681,8 @@ class QualityCertificatesList extends Component {
                                                       <option value="EQA Certificate">
                                                         EQA Certificate
                                                       </option>
-                                                      <option value="Weste Management">
-                                                        Weste Management
+                                                      <option value="Waste Management">
+                                                        Waste Management
                                                       </option>
                                                       <option value="NTN Certificate">
                                                         NTN Certificate
@@ -1025,7 +1025,7 @@ class QualityCertificatesList extends Component {
                                                         </Label>
                                                         <Field
                                                           name="start_date"
-                                                          type="date"
+                                                          type="datetime-local"
                                                           max={new Date(
                                                             new Date().toString().split("GMT")[0] +
                                                             " UTC"
