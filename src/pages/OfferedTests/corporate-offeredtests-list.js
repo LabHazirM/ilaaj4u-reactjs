@@ -335,6 +335,7 @@ class OfferedTestsList extends Component {
       offeredTest: {
         id: offeredTest.id,
         test_name: offeredTest.test_name,
+        average_price: offeredTest.average_price,
         test_id: offeredTest.test_id,
         price: offeredTest.price,
         start_date: offeredTest.start_date,
@@ -771,6 +772,34 @@ class OfferedTestsList extends Component {
                                                       className="invalid-feedback"
                                                     />
                                                   </div>
+                                                  <div className="mb-3">
+                                                      <Label className="form-label">
+                                                       Average Price
+                                                      </Label>
+                                                      <Field
+                                                        name="test_id"
+                                                        as="select"
+                                                        defaultValue={
+                                                          offeredTest.test_id
+                                                        }
+                                                        className="form-control"
+                                                        readOnly={true}
+                                                        multiple={false}
+                                                      >
+                                                        <option
+                                                          key={
+                                                            offeredTest.test_id
+                                                          }
+                                                          value={
+                                                            offeredTest.test_id
+                                                          }
+                                                        >
+                                                          {
+                                                            offeredTest.average_price
+                                                          }
+                                                        </option>
+                                                      </Field>
+                                                    </div>
 
                                                 </Col>
                                               </Row>
