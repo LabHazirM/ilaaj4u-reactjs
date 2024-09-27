@@ -394,11 +394,29 @@ class OutPaymentsForm extends Component {
     // }
     let DonationAppointmentList = listDonation
       .filter(
-        donation =>
-          donation.payment_status === "Allocate" &&
-          donation.corporation != null &&
-          donation.dues !== undefined &&
-          donation.lab_name === (selectedLab ? selectedLab.label1 : null) || donation.mainbranch === (selectedLab ? selectedLab.label2 : null)
+        donation => {
+          const corporationId = String(donation.corporation);
+          const profileId = String(this.props.corporateProfiles.id);
+      
+          // Check conditions
+          const isFeesValid = donation.plateform_fees > 0 && donation.plateform_fees !== undefined;
+          const isCorporationValid = corporationId === profileId;
+          const isPaymentStatusValid = donation.payment_status === "Allocate";
+          const hasDues = donation.dues !== undefined;
+          const hasValidLabNameOrBranch = donation.lab_name === (selectedLab ? selectedLab.label1 : null) || 
+                                           donation.mainbranch === (selectedLab ? selectedLab.label2 : null);
+      
+      
+          // Perform filtering based on all conditions
+          return (
+            isFeesValid &&
+            isCorporationValid &&
+            isPaymentStatusValid &&
+            donation.corporation != null &&
+            hasDues &&
+            hasValidLabNameOrBranch
+          );
+        }
       )
       .map(donation => ({
         label: `(Appointment ID: ${donation.order_id}) - (Amount: ${donation.dues})`,
@@ -429,14 +447,14 @@ class OutPaymentsForm extends Component {
     // }
     const CardAppointmentList = listDonation
       .filter(
-        donation =>
-          // donation.payment_method === "Donation" &&
-          // donation.payment_status === "Allocate" &&
-          donation.plateform_fees > 0 &&
-          console.log("corporate donation", donation.corporation) === console.log("corporate hhh", this.props.corporateProfiles.id) &&
-          donation.plateform_fees !== undefined
-        // donation.lab_name === (selectedLab ? selectedLab.label1 : null) // Compare with the selected lab's lab_name
+        donation =>{
+          const corporationId = String(donation.corporation);
+          const profileId = String(this.props.corporateProfiles.id);
 
+          const isFeesValid = donation.plateform_fees > 0 && donation.plateform_fees !== undefined;
+          const isCorporationValid = corporationId === profileId;
+          return isFeesValid && isCorporationValid;
+  }
       )
       .map(donation => ({
         label: `(Appointment ID: ${donation.order_id}) - (Plateform charges: ${donation.plateform_fees})`,
@@ -463,9 +481,6 @@ class OutPaymentsForm extends Component {
     //     }
     //  }
     // }
-
-
-
 
     return (
       <React.Fragment>

@@ -383,9 +383,9 @@ class AccountStatements extends Component {
                                     </td>
                                     <td>
                                       {b2baccountStatement.plateform_fees == 0 ? (
-                                        <p className="d-none">
-                                          {b2baccountStatement.plateform_fees.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-                                        </p>
+                                         <p className="float-end">
+                                         ---
+                                       </p>
 
                                       ) : (
                                         <p className="float-end">
