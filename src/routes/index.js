@@ -266,6 +266,7 @@ import DashboardCsr from "pages/Dashboard-Csr";
 import UnhandledComplaints from "pages/Complaints/unhandled-complaints";
 import HandledComplaints from "pages/Complaints/handled-complaints";
 import csrComplaints from "pages/Complaints/csr-complaints";
+import reduceTests from "pages/Complaints/reduce-tests";
 import NotesList from "pages/Complaints/notes-list";
 import NotesLists from "pages/Complaints/notes-list";
 import PatientCsrNotesList from "pages/Complaints/notes-list";
@@ -294,7 +295,8 @@ import PassedAudits from "pages/AuditorAdmin/passed-audits";
 import FailedAudits from "pages/AuditorAdmin/failed-audits";
 import lablist from "pages/AuditorAdmin/lab-list";
 import AuditorsList from "pages/AuditorAdmin/auditors-list";
-import LabAudit from "pages/AuditorAdmin/lab-audit-list";import AuditorHistory from "pages/AuditorAdmin/auditor-history";
+import LabAudit from "pages/AuditorAdmin/lab-audit-list";
+import AuditorHistory from "pages/AuditorAdmin/auditor-history";
 import AuditorHistoryLab from "pages/AuditorAdmin/auditor-history";
 import AuditorAdminHistory from "pages/AuditorAdmin/auditor-history";
 
@@ -786,6 +788,7 @@ const csrAuthProtectedRoutes = [
   { path: "/handled-complaints", component: HandledComplaints },
   { path: "/unhandled-complaints", component: UnhandledComplaints },
   { path: "/csr-pending-appointments", component: csrComplaints },
+  { path: "/reduce-tests/:id", component: reduceTests },
   { path: "/csr-notes-list/:id", component: NotesList },
   { path: "/csr-notes-complains/:id", component: NotesComplains },
 

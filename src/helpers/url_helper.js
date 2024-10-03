@@ -275,7 +275,7 @@ export const UPDATE_CORPORATE_STATUS = `${API_ENDPOINT}/api/lab/accepted-corpora
 export const ADD_NEW_CORPORATE = `${API_ENDPOINT}/api/lab/corporatelist`;
 export const ADD_NEW_CEMPLOYEE_FILE = `${API_ENDPOINT}/api/corporate/employee-data-file`;
 export const DELETE_CEDATA = `${API_ENDPOINT}/api/corporate/employee-data`;
-
+export const DELETE_TESTS_IN_APPOINTMENTS = `${API_ENDPOINT}/api/patient/reduce-tests`;
 // About All Finance
 export const GET_BANK_ACCOUNTS = `${API_ENDPOINT}/api/finance-admin/bankaccount-list`;
 export const GET_BANKS = `${API_ENDPOINT}/api/finance-admin/bank-list`;
@@ -381,6 +381,9 @@ export const ADD_CHECKOUT_DATA = `${API_ENDPOINT}/api/patient/checkout`;
 
 // INVOICES
 export const GET_INVOICE_DETAIL = `${API_ENDPOINT}/api/patient/invoice-detail`;
+/////////get tests
+
+export const GET_TESTS_IN_APPOINTMENTS = `${API_ENDPOINT}/api/patient/tests-in-appointments`;
 
 // ADVERTISEMENT INVOICES
 export const GET_ADV_INVOICE = `${API_ENDPOINT}/api/lab/lab-advertisement-invoice`;

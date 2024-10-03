@@ -1621,6 +1621,12 @@ export const getInvoiceDetail = id =>
     headers: getHeader(authHeader()),
   });
 
+
+  export const getTestsInAppointment = id =>
+    get(`${url.GET_TESTS_IN_APPOINTMENTS}/${id}`, {
+      headers: getHeader(authHeader()),
+    });
+
 // FEEDBACK
 export const getFeedbacks = id =>
   get(`${url.GET_FEEDBACKS}/${id}`, {
@@ -1963,6 +1969,13 @@ export const getDonorAccountStatements = id =>
       }
     );
   };
+
+
+  export const deleteTestsInAppointment = cemployee =>
+    del(`${url.DELETE_TESTS_IN_APPOINTMENTS}/${cemployee.id}`, {
+      headers: getHeader(authHeader()),
+    });
+
 
   // List of Banks
   export const getBanks = () =>

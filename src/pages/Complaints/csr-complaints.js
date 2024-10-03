@@ -238,6 +238,15 @@ class csrComplaints extends Component {
                   to={`/csr-notes-list/${csrComplaint.id}`}
                 ></Link>
               </Tooltip>
+              {csrComplaint.payment_method == "Cash" &&
+              csrComplaint.payment_status == "Not Paid" ? (
+              <Tooltip title="Edit Appointments">
+                <Link
+                  className="mdi mdi-pencil font-size-18"
+                  to={`/reduce-tests/${csrComplaint.id}`}
+                ></Link>
+              </Tooltip>
+               ) : null}
             </div>
           ),
         },
