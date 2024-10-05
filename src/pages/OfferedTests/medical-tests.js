@@ -621,7 +621,7 @@ class TestsList extends Component {
                                                         this.state
                                                           .offeredTest
                                                           .duration_required
-                                                      }
+                                                     }
                                                       // onChange={e => {
                                                       //   this.setState({
                                                       //     offeredTest: {
@@ -671,7 +671,10 @@ class TestsList extends Component {
                                                           multiple={false}
                                                         >
                                                           <option value="">
-                                                            ---- Days/Hours ----
+                                                            ---- Week/Days/Hours ----
+                                                          </option>
+                                                          <option value="week">
+                                                            Week
                                                           </option>
                                                           <option value="days">
                                                             days
