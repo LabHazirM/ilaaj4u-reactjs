@@ -302,7 +302,7 @@ class Login extends Component {
                                       } else if (success.account_type === "patient") {
                                         this.props.history.push(
                                           this.props.match.params.uuid
-                                            ? `/nearby-labs/${this.state.finalUrl}`
+                                            ? `/nearby-labs/${this.props.match.params.guest_id}`
                                             : `/nearby-labs`
                                         );
                                       }
