@@ -7,13 +7,13 @@ import * as Yup from "yup";
 import MetaTags from "react-meta-tags";
 import { connect } from "react-redux";
 import { Redirect, Link, withRouter } from "react-router-dom";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 import { Collapse } from "reactstrap";
 import classname from "classnames";
 import logo from "../../../assets/images/logo.svg";
 import logoLight from "../../../assets/images/logo-light.png";
 import logoLightSvg from "../../../assets/images/logo-light.svg";
-import Select, { components } from 'react-select';
+import Select, { components } from "react-select";
 import Tooltip from "@material-ui/core/Tooltip";
 
 //i18n
@@ -65,20 +65,19 @@ import { getLabNamesList } from "store/lab-names/actions";
 import offeredTestsList from "pages/OfferedTests/offered-tests-list";
 
 function formatTime(timeString) {
-  const [hours, minutes] = timeString.split(':');
+  const [hours, minutes] = timeString.split(":");
   const date = new Date(2000, 0, 1, parseInt(hours), parseInt(minutes), 0);
-  
+
   // Convert to 12-hour format with AM/PM
-  const formattedTime = date.toLocaleString('en-US', {
-    hour: 'numeric',
-    minute: 'numeric',
+  const formattedTime = date.toLocaleString("en-US", {
+    hour: "numeric",
+    minute: "numeric",
     hour12: true,
-    timeZone: 'Asia/Karachi', // Adjust to the desired time zone (Islamabad)
+    timeZone: "Asia/Karachi", // Adjust to the desired time zone (Islamabad)
   });
 
   return formattedTime;
 }
-
 
 class NearbyLabs extends Component {
   constructor(props) {
@@ -104,7 +103,7 @@ class NearbyLabs extends Component {
       labNamesList: [],
       selectedLabName: "", // State to store the selected lab name
       filteredLabs: [], // State to store the filtered labs
-      labNameInput: '',      // Store the lab name input by the user
+      labNameInput: "", // Store the lab name input by the user
       filteredLabNames: [],
       name: "",
       advLive: "",
@@ -131,32 +130,43 @@ class NearbyLabs extends Component {
     this.toggleTab = this.toggleTab.bind(this);
     this.onSelectRating = this.onSelectRating.bind(this);
     this.togglePatientModal = this.togglePatientModal.bind(this);
-    console.log("yaha ani chahi hai uuid", this.props.match.params.uuid, this.props.match.params.guest_id, this.props.match.params.filnalurl)
-    console.log(this.state.user_type)
+    console.log(
+      "yaha ani chahi hai uuid",
+      this.props.match.params.uuid,
+      this.props.match.params.guest_id,
+      this.props.match.params.filnalurl
+    );
+    console.log(this.state.user_type);
   }
 
   componentDidMount() {
     // Load nearbyLabs data from local storage when the component mounts
-    const nearbyLabsData = localStorage.getItem('nearbyLabs');
+    const nearbyLabsData = localStorage.getItem("nearbyLabs");
     if (nearbyLabsData) {
-      this.setState({ nearbyLabs: JSON.parse(nearbyLabsData) });
+      try {
+        const parsedData = JSON.parse(nearbyLabsData);
+        this.setState({ nearbyLabs: parsedData });
+      } catch (error) {
+        console.error("Failed to parse nearbyLabs data from local storage", error);
+      }
     }
 
     // Add event listener to save nearbyLabs data to local storage before the window unloads
-    window.addEventListener('beforeunload', () => {
-      localStorage.setItem('nearbyLabs', JSON.stringify(this.state.nearbyLabs));
+    window.addEventListener("beforeunload", () => {
+      localStorage.setItem("nearbyLabs", JSON.stringify(this.state.nearbyLabs));
     });
 
     const { onGetPatientProfile } = this.props;
 
     // Assuming onGetPatientProfile is synchronous
-    console.log("this is patient profile",onGetPatientProfile(this.state.user_id));
+    console.log(
+      "this is patient profile",
+      onGetPatientProfile(this.state.user_id)
+    );
 
     // Now you can safely access patientProfile from props
     const { patientProfile } = this.props;
-    const {
-      onGetNearbyLabs,
-    } = this.props;
+    const { onGetNearbyLabs } = this.props;
     const { territoriesList, onGetTerritoriesList } = this.props;
     if (territoriesList && !territoriesList.length) {
       console.log(onGetTerritoriesList(this.state.user_id));
@@ -179,31 +189,29 @@ class NearbyLabs extends Component {
       this.activateParentDropdown(matchingMenuItem);
     }
 
+    let latitude;
+    let longitude;
 
+    const url = window.location.href;
+    const queryString = url.substring(url.indexOf("&") + 1);
+    const params = new URLSearchParams(queryString);
+    console.log("print params in app", url, queryString, params);
 
-      let latitude;
-      let longitude;
+    const latitudeFromUrl = params.get("lat");
+    const longitudeFromUrl = params.get("lon");
 
-      const url = window.location.href;
-      const queryString = url.substring(url.indexOf('&') + 1);
-      const params = new URLSearchParams(queryString);
-      console.log("print params in app", url, queryString, params)
+    console.log("Latitude:", latitudeFromUrl);
+    console.log("Longitude:", longitudeFromUrl);
 
-      const latitudeFromUrl = params.get('lat');
-      const longitudeFromUrl = params.get('lon');
+    if (latitudeFromUrl && longitudeFromUrl) {
+      // Use latitude and longitude from URL
+      latitude = parseFloat(latitudeFromUrl);
+      longitude = parseFloat(longitudeFromUrl);
+      console.log("print lat log in app", latitude, longitude);
 
-      console.log('Latitude:', latitudeFromUrl);
-      console.log('Longitude:', longitudeFromUrl);
-
-      if (latitudeFromUrl && longitudeFromUrl) {
-        // Use latitude and longitude from URL
-        latitude = parseFloat(latitudeFromUrl);
-        longitude = parseFloat(longitudeFromUrl);
-        console.log("print lat log in app", latitude, longitude);
-
-        // Call the dependent code here or pass the latitude and longitude values as arguments
-        this.handleLocationUpdate(latitude, longitude);
-      } else {
+      // Call the dependent code here or pass the latitude and longitude values as arguments
+      this.handleLocationUpdate(latitude, longitude);
+    } else {
       if (navigator.geolocation) {
         // const nearbyLabsLocationDetails = {
         //   latitude,
@@ -222,230 +230,258 @@ class NearbyLabs extends Component {
         // setTimeout(() => {
         //   this.setState({ nearbyLabs: this.props.nearbyLabs });
         // }, 500);
-        navigator.geolocation.getCurrentPosition((position) => {
-          latitude = position.coords.latitude;
-          longitude = position.coords.longitude;
-          console.log("web", latitude, longitude);
+        navigator.geolocation.getCurrentPosition(
+          position => {
+            latitude = position.coords.latitude;
+            longitude = position.coords.longitude;
+            console.log("web", latitude, longitude);
 
-          this.setState({ currentLatitude: latitude });
-          this.setState({ currentLongitude: longitude });
-          this.setState({ locationAccessAllowed: true });
-          this.setState({ search_type: "Current Location" });
-          this.setState({ LabType: "Main" });
+            this.setState({ currentLatitude: latitude });
+            this.setState({ currentLongitude: longitude });
+            this.setState({ locationAccessAllowed: true });
+            this.setState({ search_type: "Current Location" });
+            this.setState({ LabType: "Main" });
 
+            // near by labs
+            if (this.state.user_id || this.state.user_type === "CSR") {
+              const nearbyLabsLocationDetails = {
+                latitude,
+                longitude,
+                search_type: this.state.search_type,
+                address: this.state.address,
+                city: this.state.city,
+                km: this.state.km,
+                LabType: this.state.LabType,
+                name: this.state.name,
+                locationAccessAllowed: this.state.locationAccessAllowed,
+                corporatepatient: this.props.patientProfile
+                  ? this.props.patientProfile.corporate_id
+                  : undefined,
+              };
+              console.log(window.location.href);
+              if (latitude && longitude) {
+                onGetNearbyLabs(nearbyLabsLocationDetails);
 
-          // near by labs
-          if ((this.state.user_id || this.state.user_type === "CSR")) {
-            const nearbyLabsLocationDetails = {
-              latitude,
-              longitude,
-              search_type: this.state.search_type,
-              address: this.state.address,
-              city: this.state.city,
-              km: this.state.km,
-              LabType: this.state.LabType,
-              name: this.state.name,
-              locationAccessAllowed: this.state.locationAccessAllowed,
-              corporatepatient: this.props.patientProfile ? this.props.patientProfile.corporate_id : undefined,
+                this.setState({ nearbyLabs: [] });
+                setTimeout(() => {
+                  this.setState({ nearbyLabs: this.props.nearbyLabs });
+                }, 500);
+              }
+            }
+            // near by labs
+            if (this.state.user_id || this.state.user_type === "b2bclient") {
+              const nearbyLabsLocationDetails = {
+                latitude,
+                longitude,
+                search_type: this.state.search_type,
+                address: this.state.address,
+                city: this.state.city,
+                km: this.state.km,
+                LabType: this.state.LabType,
+                name: this.state.name,
+                locationAccessAllowed: this.state.locationAccessAllowed,
+                corporatepatient: this.props.patientProfile
+                  ? this.props.patientProfile.corporate_id
+                  : undefined,
+              };
+              if (latitude && longitude) {
+                onGetNearbyLabs(nearbyLabsLocationDetails);
+                this.setState({ nearbyLabs: [] });
 
-            };
-            console.log(window.location.href);
-            if (latitude && longitude) {
+                setTimeout(() => {
+                  this.setState({ nearbyLabs: this.props.nearbyLabs });
+                }, 500);
+              }
+            }
+
+            if (!this.state.user_id || this.props.match.params.guest_id) {
+              const nearbyLabsLocationDetails = {
+                latitude,
+                longitude,
+                search_type: this.state.search_type,
+                address: this.state.address,
+                city: this.state.city,
+                km: this.state.km,
+                LabType: this.state.LabType,
+                name: this.state.name,
+                locationAccessAllowed: this.state.locationAccessAllowed,
+                corporatepatient: this.props.patientProfile
+                  ? this.props.patientProfile.corporate_id
+                  : undefined,
+              };
+              console.log(window.location.href);
+              if (latitude && longitude) {
+                onGetNearbyLabs(nearbyLabsLocationDetails);
+                this.setState({ nearbyLabs: [] });
+
+                setTimeout(() => {
+                  this.setState({ nearbyLabs: this.props.nearbyLabs });
+                }, 500);
+              }
+            }
+            if (
+              this.state.user_id &&
+              this.props.patientProfile &&
+              this.props.patientProfile.is_assosiatewith_anycorporate &&
+              this.props.patientProfile.employee_id_card
+            ) {
+              const nearbyLabsLocationDetails = {
+                latitude,
+                longitude,
+                search_type: this.state.search_type,
+                address: this.state.address,
+                city: this.state.city,
+                km: this.state.km,
+                LabType: this.state.LabType,
+                locationAccessAllowed: this.state.locationAccessAllowed,
+                corporatepatient: this.props.patientProfile
+                  ? this.props.patientProfile.corporate_id
+                  : undefined,
+                name: this.state.name,
+              };
+              if (latitude && longitude) {
+                onGetNearbyLabs(nearbyLabsLocationDetails);
+                this.setState({ nearbyLabs: [] });
+
+                setTimeout(() => {
+                  this.setState({ nearbyLabs: this.props.nearbyLabs });
+                }, 500);
+              }
+            }
+            if (
+              this.state.user_id &&
+              this.props.patientProfile &&
+              !this.props.patientProfile.is_assosiatewith_anycorporate &&
+              !this.props.patientProfile.employee_id_card
+            ) {
+              const nearbyLabsLocationDetails = {
+                latitude,
+                longitude,
+                search_type: this.state.search_type,
+                address: this.state.address,
+                city: this.state.city,
+                km: this.state.km,
+                LabType: this.state.LabType,
+                locationAccessAllowed: this.state.locationAccessAllowed,
+                corporatepatient: this.props.patientProfile
+                  ? this.props.patientProfile.corporate_id
+                  : undefined,
+                name: this.state.name,
+              };
+              if (latitude && longitude) {
+                onGetNearbyLabs(nearbyLabsLocationDetails);
+                this.setState({ nearbyLabs: [] });
+
+                setTimeout(() => {
+                  this.setState({ nearbyLabs: this.props.nearbyLabs });
+                }, 500);
+              }
+            }
+          },
+          () => {
+            this.setState({ latitude: null, longitude: null });
+            // near by labs
+            if (
+              (this.state.user_id || this.state.user_type === "CSR") &&
+              this.props.match.params.guest_id
+            ) {
+              const nearbyLabsLocationDetails = {
+                latitude,
+                longitude,
+                search_type: this.state.search_type,
+                address: this.state.address,
+                city: this.state.city,
+                km: this.state.km,
+                LabType: this.state.LabType,
+                name: this.state.name,
+                locationAccessAllowed: this.state.locationAccessAllowed,
+                corporatepatient: this.props.patientProfile
+                  ? this.props.patientProfile.corporate_id
+                  : undefined,
+              };
+              console.log(window.location.href);
+              if (latitude && longitude) {
+                onGetNearbyLabs(nearbyLabsLocationDetails);
+                this.setState({ nearbyLabs: [] });
+
+                setTimeout(() => {
+                  this.setState({ nearbyLabs: this.props.nearbyLabs });
+                }, 500);
+              }
+            }
+
+            // near by labs
+            if (this.state.user_id || this.state.user_type === "b2bclient") {
+              const nearbyLabsLocationDetails = {
+                latitude,
+                longitude,
+                search_type: this.state.search_type,
+                address: this.state.address,
+                city: this.state.city,
+                km: this.state.km,
+                LabType: this.state.LabType,
+                locationAccessAllowed: this.state.locationAccessAllowed,
+                corporatepatient: this.props.patientProfile
+                  ? this.props.patientProfile.corporate_id
+                  : undefined,
+                name: this.state.name,
+              };
+              if (latitude && longitude) {
+                onGetNearbyLabs(nearbyLabsLocationDetails);
+                this.setState({ nearbyLabs: [] });
+
+                setTimeout(() => {
+                  this.setState({ nearbyLabs: this.props.nearbyLabs });
+                }, 500);
+              }
+            }
+
+            if (!this.state.user_id && this.props.match.params.guest_id) {
+              const nearbyLabsLocationDetails = {
+                latitude,
+                longitude,
+                search_type: this.state.search_type,
+                address: this.state.address,
+                city: this.state.city,
+                km: this.state.km,
+                LabType: this.state.LabType,
+                name: this.state.name,
+                locationAccessAllowed: this.state.locationAccessAllowed,
+                corporatepatient: this.props.patientProfile
+                  ? this.props.patientProfile.corporate_id
+                  : undefined,
+              };
+              console.log(window.location.href);
               onGetNearbyLabs(nearbyLabsLocationDetails);
-
               this.setState({ nearbyLabs: [] });
+
+              setTimeout(() => {
+                this.setState({ nearbyLabs: this.props.nearbyLabs });
+              }, 500);
+            }
+            if (this.state.user_id) {
+              const nearbyLabsLocationDetails = {
+                latitude,
+                longitude,
+                search_type: this.state.search_type,
+                address: this.state.address,
+                city: this.state.city,
+                km: this.state.km,
+                LabType: this.state.LabType,
+                locationAccessAllowed: this.state.locationAccessAllowed,
+                corporatepatient: this.props.patientProfile
+                  ? this.props.patientProfile.corporate_id
+                  : undefined,
+                name: this.state.name,
+              };
+              onGetNearbyLabs(nearbyLabsLocationDetails);
+              this.setState({ nearbyLabs: [] });
+
               setTimeout(() => {
                 this.setState({ nearbyLabs: this.props.nearbyLabs });
               }, 500);
             }
           }
-          // near by labs
-          if (this.state.user_id || this.state.user_type === "b2bclient") {
-            const nearbyLabsLocationDetails = {
-              latitude,
-              longitude,
-              search_type: this.state.search_type,
-              address: this.state.address,
-              city: this.state.city,
-              km: this.state.km,
-              LabType: this.state.LabType,
-              name: this.state.name,
-              locationAccessAllowed: this.state.locationAccessAllowed,
-              corporatepatient: this.props.patientProfile ? this.props.patientProfile.corporate_id : undefined,
-
-            };
-            if (latitude && longitude) {
-              onGetNearbyLabs(nearbyLabsLocationDetails);
-              this.setState({ nearbyLabs: [] });
-
-              setTimeout(() => {
-                this.setState({ nearbyLabs: this.props.nearbyLabs });
-              }, 500);
-            }
-          }
-
-          if ((!this.state.user_id) || this.props.match.params.guest_id) {
-            const nearbyLabsLocationDetails = {
-              latitude,
-              longitude,
-              search_type: this.state.search_type,
-              address: this.state.address,
-              city: this.state.city,
-              km: this.state.km,
-              LabType: this.state.LabType,
-              name: this.state.name,
-              locationAccessAllowed: this.state.locationAccessAllowed,
-              corporatepatient: this.props.patientProfile ? this.props.patientProfile.corporate_id : undefined,
-
-            };
-            console.log(window.location.href);
-            if (latitude && longitude) {
-              onGetNearbyLabs(nearbyLabsLocationDetails);
-              this.setState({ nearbyLabs: [] });
-
-              setTimeout(() => {
-                this.setState({ nearbyLabs: this.props.nearbyLabs });
-              }, 500);
-            }
-          }
-          if ((this.state.user_id) && this.props.patientProfile && this.props.patientProfile.is_assosiatewith_anycorporate && this.props.patientProfile.employee_id_card) {
-            const nearbyLabsLocationDetails = {
-              latitude,
-              longitude,
-              search_type: this.state.search_type,
-              address: this.state.address,
-              city: this.state.city,
-              km: this.state.km,
-              LabType: this.state.LabType,
-              locationAccessAllowed: this.state.locationAccessAllowed,
-              corporatepatient: this.props.patientProfile ? this.props.patientProfile.corporate_id : undefined,
-              name: this.state.name,
-            };
-            if (latitude && longitude) {
-              onGetNearbyLabs(nearbyLabsLocationDetails);
-              this.setState({ nearbyLabs: [] });
-
-              setTimeout(() => {
-                this.setState({ nearbyLabs: this.props.nearbyLabs });
-              }, 500);
-            }
-          }
-          if (this.state.user_id && this.props.patientProfile && !this.props.patientProfile.is_assosiatewith_anycorporate && !this.props.patientProfile.employee_id_card) {
-            const nearbyLabsLocationDetails = {
-              latitude,
-              longitude,
-              search_type: this.state.search_type,
-              address: this.state.address,
-              city: this.state.city,
-              km: this.state.km,
-              LabType: this.state.LabType,
-              locationAccessAllowed: this.state.locationAccessAllowed,
-              corporatepatient: this.props.patientProfile ? this.props.patientProfile.corporate_id : undefined,
-              name: this.state.name,
-            };
-            if (latitude && longitude) {
-              onGetNearbyLabs(nearbyLabsLocationDetails);
-              this.setState({ nearbyLabs: [] });
-          
-              setTimeout(() => {
-                this.setState({ nearbyLabs: this.props.nearbyLabs });
-              }, 500);
-            }
-          }          
-        }, () => {
-          this.setState({ latitude: null, longitude: null });
-          // near by labs
-          if ((this.state.user_id || this.state.user_type === "CSR") && this.props.match.params.guest_id) {
-            const nearbyLabsLocationDetails = {
-              latitude,
-              longitude,
-              search_type: this.state.search_type,
-              address: this.state.address,
-              city: this.state.city,
-              km: this.state.km,
-              LabType: this.state.LabType,
-              name: this.state.name,
-              locationAccessAllowed: this.state.locationAccessAllowed,
-              corporatepatient: this.props.patientProfile ? this.props.patientProfile.corporate_id : undefined,
-            };
-            console.log(window.location.href);
-            if (latitude && longitude) {
-              onGetNearbyLabs(nearbyLabsLocationDetails);
-              this.setState({ nearbyLabs: [] });
-
-              setTimeout(() => {
-                this.setState({ nearbyLabs: this.props.nearbyLabs });
-              }, 500);
-            }
-          }
-
-          // near by labs
-          if (this.state.user_id || this.state.user_type === "b2bclient") {
-            const nearbyLabsLocationDetails = {
-              latitude,
-              longitude,
-              search_type: this.state.search_type,
-              address: this.state.address,
-              city: this.state.city,
-              km: this.state.km,
-              LabType: this.state.LabType,
-              locationAccessAllowed: this.state.locationAccessAllowed,
-              corporatepatient: this.props.patientProfile ? this.props.patientProfile.corporate_id : undefined,
-              name: this.state.name,
-            };
-            if (latitude && longitude) {
-              onGetNearbyLabs(nearbyLabsLocationDetails);
-              this.setState({ nearbyLabs: [] });
-
-              setTimeout(() => {
-                this.setState({ nearbyLabs: this.props.nearbyLabs });
-              }, 500);
-            }
-          }
-
-          if ((!this.state.user_id) && this.props.match.params.guest_id) {
-
-            const nearbyLabsLocationDetails = {
-              latitude,
-              longitude,
-              search_type: this.state.search_type,
-              address: this.state.address,
-              city: this.state.city,
-              km: this.state.km,
-              LabType: this.state.LabType,
-              name: this.state.name,
-              locationAccessAllowed: this.state.locationAccessAllowed,
-              corporatepatient: this.props.patientProfile ? this.props.patientProfile.corporate_id : undefined,
-            };
-            console.log(window.location.href);
-            onGetNearbyLabs(nearbyLabsLocationDetails);
-            this.setState({ nearbyLabs: [] });
-
-            setTimeout(() => {
-              this.setState({ nearbyLabs: this.props.nearbyLabs });
-            }, 500);
-          }
-          if (this.state.user_id) {
-            const nearbyLabsLocationDetails = {
-              latitude,
-              longitude,
-              search_type: this.state.search_type,
-              address: this.state.address,
-              city: this.state.city,
-              km: this.state.km,
-              LabType: this.state.LabType,
-              locationAccessAllowed: this.state.locationAccessAllowed,
-              corporatepatient: this.props.patientProfile ? this.props.patientProfile.corporate_id : undefined,
-              name: this.state.name,
-            };
-            onGetNearbyLabs(nearbyLabsLocationDetails);
-            this.setState({ nearbyLabs: [] });
-
-            setTimeout(() => {
-              this.setState({ nearbyLabs: this.props.nearbyLabs });
-            }, 500);
-          }
-        }
         );
       } else {
         // Geolocation is not supported by the browser
@@ -460,11 +496,11 @@ class NearbyLabs extends Component {
 
   componentWillUnmount() {
     // Remove the event listener before the component unmounts
-    window.removeEventListener('beforeunload', () => {
-      localStorage.setItem('nearbyLabs', JSON.stringify(this.state.nearbyLabs));
+    window.removeEventListener("beforeunload", () => {
+      localStorage.setItem("nearbyLabs", JSON.stringify(this.state.nearbyLabs));
     });
   }
-  
+
   handleLocationUpdate(latitude, longitude) {
     const { onGetNearbyLabs } = this.props;
     // const guest_id = uuidv4();
@@ -484,8 +520,9 @@ class NearbyLabs extends Component {
         LabType: this.state.LabType,
         name: this.state.name,
         locationAccessAllowed: this.state.locationAccessAllowed,
-        corporatepatient: this.props.patientProfile ? this.props.patientProfile.corporate_id : undefined,
-
+        corporatepatient: this.props.patientProfile
+          ? this.props.patientProfile.corporate_id
+          : undefined,
       };
       if (this.state.currentLatitude && this.state.currentLongitude) {
         onGetNearbyLabs(locationDetails);
@@ -494,7 +531,6 @@ class NearbyLabs extends Component {
         setTimeout(() => {
           this.setState({ nearbyLabs: this.props.nearbyLabs });
           // console.log("guest id in near by labs and backend;", { nearbyLabs: this.props.nearbyLabs, guest_id })
-
         }, 1000);
       }
     }, 1000);
@@ -576,7 +612,6 @@ class NearbyLabs extends Component {
     });
   };
 
-
   /*
   on change rating checkbox method
   */
@@ -623,116 +658,92 @@ class NearbyLabs extends Component {
   };
 
   onChangeAddress = e => {
+    const { onGetNearbyLabs } = this.props;
+
     // Apply that city's latitude and longitude as city bound so that we see addresses of that city only
     var cityBounds = new google.maps.LatLngBounds(
       new google.maps.LatLng(this.state.latitude, this.state.longitude)
     );
 
-    const options = {
-      bounds: cityBounds,
-      types: ["establishment"],
-      componentRestrictions: { country: "pk" },
-    };
+    // Initialize AutocompleteService
+    const autocompleteService = new google.maps.places.AutocompleteService();
 
-    var searchBox = new window.google.maps.places.SearchBox(e.target, options);
+    // Call AutocompleteService to get place predictions
+    autocompleteService.getPlacePredictions(
+      {
+        input: e.target.value,
+        bounds: cityBounds,
+        types: ["geocode", "establishment"],
+      },
+      (predictions, status) => {
+        if (status === google.maps.places.PlacesServiceStatus.OK) {
+          // Filter predictions to include only those inside Pakistan
+          const pakistanPredictions = predictions.filter(prediction => {
+            return (
+              prediction.structured_formatting.main_text_matched_substrings.some(
+                match => match.offset === 0
+              ) && prediction.terms.some(term => term.value === "Pakistan")
+            );
+          });
 
-    searchBox.addListener("places_changed", () => {
-      const newAddress = e.target.value;
-      this.handleAddressChange(newAddress);
+          // Handle predictions, e.g., update the state or perform further actions
+          const locationDetails = {
+            // Extract relevant details from the first prediction
+            latitude:
+              pakistanPredictions.length > 0
+                ? pakistanPredictions[0].geometry.location.lat()
+                : "",
+            longitude:
+              pakistanPredictions.length > 0
+                ? pakistanPredictions[0].geometry.location.lng()
+                : "",
+            search_type: this.state.search_type,
+            address: e.target.value,
+            city: this.state.city,
+            LabType: this.state.LabType,
+            km: this.state.km,
+            name: this.state.name,
+            locationAccessAllowed: this.state.locationAccessAllowed,
+            corporatepatient: this.props.patientProfile
+              ? this.props.patientProfile.corporate_id
+              : undefined,
+          };
 
-      // // Find and adjust the z-index of the suggestion list
-      // const suggestionList = document.querySelector(".pac-container");
-      // if (suggestionList) {
-      //   suggestionList.style.zIndex = "9999"; // Adjust the z-index value as needed
-      // }
-    });
-  };
-
-  // onChangeAddress = e => {
-  //   const { onGetNearbyLabs } = this.props;
-  
-  //   // Apply that city's latitude and longitude as city bound so that we see addresses of that city only
-  //   var cityBounds = new google.maps.LatLngBounds(
-  //     new google.maps.LatLng(this.state.latitude, this.state.longitude)
-  //   );
-  
-  //   // Initialize AutocompleteService
-  //   const autocompleteService = new google.maps.places.AutocompleteService();
-  
-  //   // Call AutocompleteService to get place predictions
-  //   autocompleteService.getPlacePredictions(
-  //     {
-  //       input: e.target.value,
-  //       bounds: cityBounds,
-  //       types: ["geocode", "establishment"],
-  //     },
-  //     (predictions, status) => {
-  //       if (status === google.maps.places.PlacesServiceStatus.OK) {
-  //         // Filter predictions to include only those inside Pakistan
-  //         const pakistanPredictions = predictions.filter(prediction => {
-  //           return (
-  //             prediction.structured_formatting.main_text_matched_substrings.some(
-  //               match => match.offset === 0
-  //             ) &&
-  //             prediction.terms.some(term => term.value === "Pakistan")
-  //           );
-  //         });
-  
-  //         // Handle predictions, e.g., update the state or perform further actions
-  //         const locationDetails = {
-  //           // Extract relevant details from the first prediction
-  //           latitude:
-  //             pakistanPredictions.length > 0
-  //               ? pakistanPredictions[0].geometry.location.lat()
-  //               : "",
-  //           longitude:
-  //             pakistanPredictions.length > 0
-  //               ? pakistanPredictions[0].geometry.location.lng()
-  //               : "",
-  //           search_type: this.state.search_type,
-  //           address: e.target.value,
-  //           city: this.state.city,
-  //           LabType: this.state.LabType,
-  //           km: this.state.km,
-  //           name: this.state.name,
-  //           locationAccessAllowed: this.state.locationAccessAllowed,
-  //           corporatepatient: this.props.patientProfile ? this.props.patientProfile.corporate_id : undefined,
-
-  //         };
-  
-  //         // Call the action to get nearby labs
-  //         onGetNearbyLabs(locationDetails);
+          // Call the action to get nearby labs
+          onGetNearbyLabs(locationDetails);
 
   //         this.setState({ nearbyLabs: [] });
 
-  
-  //         // Update state after a delay (if needed)
-  //         setTimeout(() => {
-  //           this.setState({ nearbyLabs: this.props.nearbyLabs });
-  //         }, 1000);
-  //       } else {
-  //         console.error("AutocompleteService failed with status:", status);
-  //       }
-  //     }
-  //   );
-  // };
-  
-  
+          // Update state after a delay (if needed)
+          setTimeout(() => {
+            this.setState({ nearbyLabs: this.props.nearbyLabs });
+          }, 1000);
+        } else {
+          console.error("AutocompleteService failed with status:", status);
+        }
+      }
+    );
+  };
 
   onChangeSearchType = async e => {
     this.setState({ search_type: e.target.value });
-  
+
     // Call nearby tests API only if the search type changes to current location
     if (e.target.value === "Current Location") {
       this.setState({ city: "" });
       this.setState({ address: "" });
-  
+
       // Check if the geolocation API is supported
       if ("geolocation" in navigator) {
         try {
-          const locationPermission = await navigator.permissions.query({ name: 'geolocation' });
-  
-          if (locationPermission.state === 'denied' && !this.state.locationAccessAllowed) {
+          const locationPermission = await navigator.permissions.query({
+            name: "geolocation",
+          });
+
+          if (
+            locationPermission.state === "denied" &&
+            !this.state.locationAccessAllowed
+          ) {
             // Location access is denied
             // Show the PatientModal only when the user explicitly clicks on "Current Location"
             this.setState({ PatientModal: true });
@@ -741,7 +752,7 @@ class NearbyLabs extends Component {
             const position = await new Promise((resolve, reject) => {
               navigator.geolocation.getCurrentPosition(resolve, reject);
             });
-  
+
             var data = {
               latitude: position.coords.latitude,
               longitude: position.coords.longitude,
@@ -754,21 +765,25 @@ class NearbyLabs extends Component {
               page: this.state.page,
               name: this.state.name,
               locationAccessAllowed: this.state.locationAccessAllowed,
-              corporatepatient: this.props.patientProfile ? this.props.patientProfile.corporate_id : undefined,
-
+              corporatepatient: this.props.patientProfile
+                ? this.props.patientProfile.corporate_id
+                : undefined,
             };
-  
+
             const { onGetNearbyLabs } = this.props;
             onGetNearbyLabs(data);
 
             this.setState({ nearbyLabs: [] });
-  
+
             setTimeout(() => {
-              this.setState({ nearbyLabs: this.props.nearbyLabs, locationAccessAllowed: true });
+              this.setState({
+                nearbyLabs: this.props.nearbyLabs,
+                locationAccessAllowed: true,
+              });
             }, 1000);
           }
         } catch (error) {
-          console.error('Error checking location permission:', error);
+          console.error("Error checking location permission:", error);
         }
       } else {
         // Geolocation API is not supported, show an error message
@@ -776,7 +791,7 @@ class NearbyLabs extends Component {
       }
     }
   };
-  
+
   onChangeKm = e => {
     this.setState({ km: e.target.value });
 
@@ -796,8 +811,9 @@ class NearbyLabs extends Component {
       city: this.state.city,
       name: this.state.name,
       locationAccessAllowed: this.state.locationAccessAllowed,
-      corporatepatient: this.props.patientProfile ? this.props.patientProfile.corporate_id : undefined,
-
+      corporatepatient: this.props.patientProfile
+        ? this.props.patientProfile.corporate_id
+        : undefined,
     };
     // region wise advertisement
     onGetNearbyLabs(locationDetails);
@@ -816,13 +832,13 @@ class NearbyLabs extends Component {
     });
   };
 
-  onChangeLabName = (selectedOption) => {
+  onChangeLabName = selectedOption => {
     // Check if selectedOption is not null before accessing its properties
     if (selectedOption && selectedOption.value) {
       this.setState({ name: selectedOption.value });
     } else {
       // Handle the case where selectedOption is null or doesn't have a value property
-      this.setState({ name: '' }); // Set the name to an appropriate default value or leave it empty
+      this.setState({ name: "" }); // Set the name to an appropriate default value or leave it empty
     }
 
     // Call nearby labs API only if the search type changes to current location
@@ -835,14 +851,15 @@ class NearbyLabs extends Component {
       latitude: this.state.currentLatitude,
       longitude: this.state.currentLongitude,
       search_type: this.state.search_type,
-      name: selectedOption && selectedOption.value ? selectedOption.value : '', // Check if selectedOption is not null and has a value property
+      name: selectedOption && selectedOption.value ? selectedOption.value : "", // Check if selectedOption is not null and has a value property
       LabType: this.state.LabType,
       km: this.state.km,
       address: this.state.address,
       city: this.state.city,
       locationAccessAllowed: this.state.locationAccessAllowed,
-      corporatepatient: this.props.patientProfile ? this.props.patientProfile.corporate_id : undefined,
-
+      corporatepatient: this.props.patientProfile
+        ? this.props.patientProfile.corporate_id
+        : undefined,
     };
     // region wise advertisement
     onGetNearbyLabs(locationDetails);
@@ -873,8 +890,9 @@ class NearbyLabs extends Component {
       city: this.state.city,
       name: this.state.name,
       locationAccessAllowed: this.state.locationAccessAllowed,
-      corporatepatient: this.props.patientProfile ? this.props.patientProfile.corporate_id : undefined,
-
+      corporatepatient: this.props.patientProfile
+        ? this.props.patientProfile.corporate_id
+        : undefined,
     };
     // region wise advertisement
     onGetNearbyLabs(locationDetails);
@@ -886,7 +904,6 @@ class NearbyLabs extends Component {
       this.setState({ nearbyLabs: this.props.nearbyLabs });
     }, 1000);
   };
-
 
   onChangeCity = selectedGroup => {
     this.setState({ city: selectedGroup.value });
@@ -903,8 +920,9 @@ class NearbyLabs extends Component {
       km: this.state.km,
       name: this.state.name,
       locationAccessAllowed: this.state.locationAccessAllowed,
-      corporatepatient: this.props.patientProfile ? this.props.patientProfile.corporate_id : undefined,
-
+      corporatepatient: this.props.patientProfile
+        ? this.props.patientProfile.corporate_id
+        : undefined,
     };
 
     onGetNearbyLabs(locationDetails);
@@ -972,29 +990,32 @@ class NearbyLabs extends Component {
     const currentURL = location.pathname;
 
     // Check if the URL contains "nearby-test"
-    return currentURL.includes('/labs');
+    return currentURL.includes("/labs");
   }
-  
+
   render() {
     const isSmallScreen = window.innerWidth < 490;
     const { patientProfile } = this.props;
-    console.log("there is patient profile and yes and not", this.props.patientProfile)
+    console.log(
+      "there is patient profile and yes and not",
+      this.props.patientProfile
+    );
 
     const { search_type } = this.state;
-    let borderColor = '2px solid blue'; // Default border color
+    let borderColor = "2px solid blue"; // Default border color
 
     // Check the selected option and update border color accordingly
-    if (search_type === 'Current Location') {
-      borderColor = '2px solid red'; // Change to the desired color
+    if (search_type === "Current Location") {
+      borderColor = "2px solid red"; // Change to the desired color
     }
-    if (search_type === 'City') {
-      borderColor = '2px solid green'; // Change to the desired color
+    if (search_type === "City") {
+      borderColor = "2px solid green"; // Change to the desired color
     }
-    if (search_type === 'Custom Address') {
-      borderColor = '2px solid yellow'; // Change to the desired color
+    if (search_type === "Custom Address") {
+      borderColor = "2px solid yellow"; // Change to the desired color
     }
 
-    const ClearIndicator = (props) => {
+    const ClearIndicator = props => {
       return (
         <components.ClearIndicator {...props}>
           <span onClick={props.clearValue}>X</span>
@@ -1005,9 +1026,9 @@ class NearbyLabs extends Component {
     const isTestsLinkHighlighted = this.shouldHighlightTestsLink();
 
     const linkStyles = {
-      color: isTestsLinkHighlighted ? 'black' : 'black', // Text color
+      color: isTestsLinkHighlighted ? "black" : "black", // Text color
       // backgroundColor: isTestsLinkHighlighted ? '#ffcc00' : 'transparent', // Background color
-      fontWeight: isTestsLinkHighlighted ? 'bold' : 'normal',
+      fontWeight: isTestsLinkHighlighted ? "bold" : "normal",
     };
 
     const { labNameInput, filteredLabNames } = this.state;
@@ -1032,36 +1053,30 @@ class NearbyLabs extends Component {
     const closeModal = () => {
       this.setState({ PatientModal: false });
       this.setState({ AddressModal: false });
-
-
     };
     const { loading } = this.state;
 
-
-
-
     return (
       <React.Fragment>
-        {/* {this.props.patientProfile && !this.props.patientProfile.corporate_id && this.props.patientProfile.is_assosiatewith_anycorporate == false ? (
-         
-        ) : (
-          null
-        )} */}
-         <div className="topnav">
-          <div className="container-fluid left-space">
-            <nav
-              className="navbar navbar-light navbar-expand-lg topnav-menu"
-              id="navigation"
-            >
-              {this.state.user_id && this.state.user_type === "CSR" && this.state.user_type !== "b2bclient"
-                ? (
+        {this.props.patientProfile &&
+        !this.props.patientProfile.corporate_id &&
+        this.props.patientProfile.is_assosiatewith_anycorporate == false ? (
+          <div className="topnav">
+            <div className="container-fluid left-space">
+              <nav
+                className="navbar navbar-light navbar-expand-lg topnav-menu"
+                id="navigation"
+              >
+                {this.state.user_id &&
+                this.state.user_type === "CSR" &&
+                this.state.user_type !== "b2bclient" ? (
                   <Collapse
                     isOpen={this.state.isMenuOpened}
                     className="navbar-collapse"
                     id="topnav-menu-content"
                   >
                     <ul className="navbar-nav">
-                    <li className="nav-item">
+                      <li className="nav-item">
                         <Link
                           to={
                             this.props.match.params.guest_id
@@ -1083,8 +1098,12 @@ class NearbyLabs extends Component {
                           }
                           className="dropdown-item"
                         >
-                          <span className="pt-4 font-size-12" style={linkStyles}>Labs</span>
-
+                          <span
+                            className="pt-4 font-size-12"
+                            style={linkStyles}
+                          >
+                            Labs
+                          </span>
                         </Link>
                       </li>
 
@@ -1142,29 +1161,33 @@ class NearbyLabs extends Component {
                       </li> */}
                       {this.state.user_id && this.state.user_type == "patient" && (
                         <li className="nav-item">
-                          <Link to={
-                            this.props.match.params.guest_id
-                              ? `/test-appointments/${this.props.match.params.guest_id}`
-                              : `/test-appointments`
-                          } className="dropdown-item">
+                          <Link
+                            to={
+                              this.props.match.params.guest_id
+                                ? `/test-appointments/${this.props.match.params.guest_id}`
+                                : `/test-appointments`
+                            }
+                            className="dropdown-item"
+                          >
                             {/* {this.props.t("My Appointments")} */}
-                            <span className="pt-4 font-size-12">My Appointments</span>
-
+                            <span className="pt-4 font-size-12">
+                              My Appointments
+                            </span>
                           </Link>
                         </li>
                       )}
                     </ul>
                   </Collapse>
                 ) : null}
-              {!this.state.user_id
-                ? (
+                {!this.state.user_id ? (
                   <Collapse
                     isOpen={this.props.menuOpen}
                     className="navbar-collapse"
                     id="topnav-menu-content"
                   >
                     <ul className="navbar-nav">
-                    {this.props.match.params.filnalurl && this.props.match.params.guest_id ? (
+                      {this.props.match.params.filnalurl &&
+                      this.props.match.params.guest_id ? (
                         <li className="nav-item">
                           <Link
                             to={
@@ -1174,10 +1197,13 @@ class NearbyLabs extends Component {
                             }
                             className="dropdown-item"
                           >
-                            <span className="pt-4 font-size-12">Book a Test</span>
+                            <span className="pt-4 font-size-12">
+                              Book a Test
+                            </span>
                           </Link>
                         </li>
-                      ) : !this.props.match.params.filnalurl && this.props.match.params.guest_id ? (
+                      ) : !this.props.match.params.filnalurl &&
+                        this.props.match.params.guest_id ? (
                         <li className="nav-item">
                           <Link
                             to={
@@ -1187,11 +1213,14 @@ class NearbyLabs extends Component {
                             }
                             className="dropdown-item"
                           >
-                            <span className="pt-4 font-size-12">Book a Test</span>
+                            <span className="pt-4 font-size-12">
+                              Book a Test
+                            </span>
                           </Link>
                         </li>
                       ) : null}
-                      {this.props.match.params.filnalurl && this.props.match.params.guest_id ? (
+                      {this.props.match.params.filnalurl &&
+                      this.props.match.params.guest_id ? (
                         <li className="nav-item">
                           <Link
                             to={
@@ -1201,11 +1230,16 @@ class NearbyLabs extends Component {
                             }
                             className="dropdown-item"
                           >
-                            <span className="pt-4 font-size-12" style={linkStyles}>Labs</span>
-
+                            <span
+                              className="pt-4 font-size-12"
+                              style={linkStyles}
+                            >
+                              Labs
+                            </span>
                           </Link>
                         </li>
-                      ) : !this.props.match.params.filnalurl && this.props.match.params.guest_id ? (
+                      ) : !this.props.match.params.filnalurl &&
+                        this.props.match.params.guest_id ? (
                         <li className="nav-item">
                           <Link
                             to={
@@ -1215,12 +1249,17 @@ class NearbyLabs extends Component {
                             }
                             className="dropdown-item"
                           >
-                            <span className="pt-4 font-size-12" style={linkStyles}>Labs</span>
-
+                            <span
+                              className="pt-4 font-size-12"
+                              style={linkStyles}
+                            >
+                              Labs
+                            </span>
                           </Link>
                         </li>
                       ) : null}
-                      {this.props.match.params.filnalurl && this.props.match.params.guest_id ? (
+                      {this.props.match.params.filnalurl &&
+                      this.props.match.params.guest_id ? (
                         <li className="nav-item">
                           <Link
                             to={
@@ -1233,7 +1272,8 @@ class NearbyLabs extends Component {
                             <span className="pt-4 font-size-12">Tests</span>
                           </Link>
                         </li>
-                      ) : !this.props.match.params.filnalurl && this.props.match.params.guest_id ? (
+                      ) : !this.props.match.params.filnalurl &&
+                        this.props.match.params.guest_id ? (
                         <li className="nav-item">
                           <Link
                             to={
@@ -1247,7 +1287,8 @@ class NearbyLabs extends Component {
                           </Link>
                         </li>
                       ) : null}
-                      {this.props.match.params.filnalurl && this.props.match.params.guest_id ? (
+                      {this.props.match.params.filnalurl &&
+                      this.props.match.params.guest_id ? (
                         <li className="nav-item">
                           <Link
                             to={
@@ -1260,7 +1301,8 @@ class NearbyLabs extends Component {
                             <span className="pt-4 font-size-12">Profiles</span>
                           </Link>
                         </li>
-                      ) : !this.props.match.params.filnalurl && this.props.match.params.guest_id ? (
+                      ) : !this.props.match.params.filnalurl &&
+                        this.props.match.params.guest_id ? (
                         <li className="nav-item">
                           <Link
                             to={
@@ -1275,7 +1317,8 @@ class NearbyLabs extends Component {
                         </li>
                       ) : null}
 
-                      {this.props.match.params.filnalurl && this.props.match.params.guest_id ? (
+                      {this.props.match.params.filnalurl &&
+                      this.props.match.params.guest_id ? (
                         <li className="nav-item">
                           <Link
                             to={
@@ -1288,7 +1331,8 @@ class NearbyLabs extends Component {
                             <span className="pt-4 font-size-12">Packages</span>
                           </Link>
                         </li>
-                      ) : !this.props.match.params.filnalurl && this.props.match.params.guest_id ? (
+                      ) : !this.props.match.params.filnalurl &&
+                        this.props.match.params.guest_id ? (
                         <li className="nav-item">
                           <Link
                             to={
@@ -1303,7 +1347,8 @@ class NearbyLabs extends Component {
                         </li>
                       ) : null}
 
-                      {this.props.match.params.filnalurl && this.props.match.params.guest_id ? (
+                      {this.props.match.params.filnalurl &&
+                      this.props.match.params.guest_id ? (
                         <li className="nav-item">
                           <Link
                             to={
@@ -1316,7 +1361,8 @@ class NearbyLabs extends Component {
                             <span className="pt-4 font-size-12">Radiology</span>
                           </Link>
                         </li>
-                      ) : !this.props.match.params.filnalurl && this.props.match.params.guest_id ? (
+                      ) : !this.props.match.params.filnalurl &&
+                        this.props.match.params.guest_id ? (
                         <li className="nav-item">
                           <Link
                             to={
@@ -1330,7 +1376,6 @@ class NearbyLabs extends Component {
                           </Link>
                         </li>
                       ) : null}
-                      
 
                       {/* <li className="nav-item dropdown">
                      <Link
@@ -1361,14 +1406,18 @@ class NearbyLabs extends Component {
 
                       {this.state.user_id && this.state.user_type == "patient" && (
                         <li className="nav-item">
-                          <Link to={
-                            this.props.match.params.guest_id
-                              ? `/test-appointments/${this.props.match.params.guest_id}`
-                              : `/test-appointments`
-                          } className="dropdown-item">
+                          <Link
+                            to={
+                              this.props.match.params.guest_id
+                                ? `/test-appointments/${this.props.match.params.guest_id}`
+                                : `/test-appointments`
+                            }
+                            className="dropdown-item"
+                          >
                             {/* {this.props.t("My Appointments")} */}
-                            <span className="pt-4 font-size-12">My Appointments</span>
-
+                            <span className="pt-4 font-size-12">
+                              My Appointments
+                            </span>
                           </Link>
                         </li>
                         /* <li className="nav-item dropdown">
@@ -1400,16 +1449,16 @@ class NearbyLabs extends Component {
                       )}
                     </ul>
                   </Collapse>
-
-                ) :
-                this.state.user_id && this.state.user_type !== "CSR" && this.state.user_type !== "b2bclient" ? (
+                ) : this.state.user_id &&
+                  this.state.user_type !== "CSR" &&
+                  this.state.user_type !== "b2bclient" ? (
                   <Collapse
                     isOpen={this.props.menuOpen}
                     className="navbar-collapse"
                     id="topnav-menu-content"
                   >
                     <ul className="navbar-nav">
-                    <li className="nav-item">
+                      <li className="nav-item">
                         <Link
                           to={
                             this.props.match.params.guest_id
@@ -1430,7 +1479,12 @@ class NearbyLabs extends Component {
                           }
                           className="dropdown-item"
                         >
-                          <span className="pt-4 font-size-12" style={linkStyles}>Labs</span>
+                          <span
+                            className="pt-4 font-size-12"
+                            style={linkStyles}
+                          >
+                            Labs
+                          </span>
 
                           {/* {this.props.t("Labs")} */}
                         </Link>
@@ -1490,7 +1544,7 @@ class NearbyLabs extends Component {
                           <span className="pt-4 font-size-12">Radiology</span>
                         </Link>
                       </li>
-                      
+
                       {/* <li className="nav-item dropdown">
                     <Link
                       to="/#"
@@ -1520,14 +1574,18 @@ class NearbyLabs extends Component {
 
                       {this.state.user_id && this.state.user_type == "patient" && (
                         <li className="nav-item">
-                          <Link to={
-                            this.props.match.params.guest_id
-                              ? `/test-appointments/${this.props.match.params.guest_id}`
-                              : `/test-appointments`
-                          } className="dropdown-item">
+                          <Link
+                            to={
+                              this.props.match.params.guest_id
+                                ? `/test-appointments/${this.props.match.params.guest_id}`
+                                : `/test-appointments`
+                            }
+                            className="dropdown-item"
+                          >
                             {/* {this.props.t("My Appointments")} */}
-                            <span className="pt-4 font-size-12">My Appointments</span>
-
+                            <span className="pt-4 font-size-12">
+                              My Appointments
+                            </span>
                           </Link>
                         </li>
                         /* <li className="nav-item dropdown">
@@ -1557,118 +1615,125 @@ class NearbyLabs extends Component {
                           </div>
                           </li> */
                       )}
-
                     </ul>
                   </Collapse>
-                ) :
-                  this.state.user_id && this.state.user_type !== "CSR" && this.state.user_type === "b2bclient" ? (
-                    <Collapse
-                      isOpen={this.state.isMenuOpened}
-                      className="navbar-collapse"
-                      id="topnav-menu-content"
-                    >
-                      <ul className="navbar-nav">
+                ) : this.state.user_id &&
+                  this.state.user_type !== "CSR" &&
+                  this.state.user_type === "b2bclient" ? (
+                  <Collapse
+                    isOpen={this.state.isMenuOpened}
+                    className="navbar-collapse"
+                    id="topnav-menu-content"
+                  >
+                    <ul className="navbar-nav">
                       <li className="nav-item">
-                          <Link
-                            to={
-                              this.props.match.params.guest_id
-                                ? `/tests-offered-labhazir/${this.props.match.params.guest_id}/${this.props.match.params.uuid}`
-                                : `/tests-offered-labhazir`
-                            }
-                            className="dropdown-item"
+                        <Link
+                          to={
+                            this.props.match.params.guest_id
+                              ? `/tests-offered-labhazir/${this.props.match.params.guest_id}/${this.props.match.params.uuid}`
+                              : `/tests-offered-labhazir`
+                          }
+                          className="dropdown-item"
+                        >
+                          <span className="pt-4 font-size-12">Book a Test</span>
+                          {/* {this.props.t("Packages")} */}
+                        </Link>
+                      </li>
+                      <li className="nav-item">
+                        <Link
+                          to={
+                            this.props.match.params.guest_id
+                              ? `/labs/${this.props.match.params.guest_id}/${this.props.match.params.uuid}`
+                              : `/labs`
+                          }
+                          className="dropdown-item"
+                        >
+                          <span
+                            className="pt-4 font-size-12"
+                            style={linkStyles}
                           >
-                            <span className="pt-4 font-size-12">Book a Test</span>
-                            {/* {this.props.t("Packages")} */}
-                          </Link>
-                        </li>
-                        <li className="nav-item">
-                          <Link
-                            to={
-                              this.props.match.params.guest_id
-                                ? `/labs/${this.props.match.params.guest_id}/${this.props.match.params.uuid}`
-                                : `/labs`
-                            }
-                            className="dropdown-item"
-                          >
-                            <span className="pt-4 font-size-12" style={linkStyles}>Labs</span>
+                            Labs
+                          </span>
+                        </Link>
+                      </li>
 
-                          </Link>
-                        </li>
+                      <li className="nav-item">
+                        <Link
+                          to={
+                            this.props.match.params.guest_id
+                              ? `/nearby-test/${this.props.match.params.guest_id}/${this.props.match.params.uuid}`
+                              : `/nearby-test`
+                          }
+                          className="dropdown-item"
+                        >
+                          <span className="pt-4 font-size-12">Tests</span>
+                          {/* {this.props.t("Tests")} */}
+                        </Link>
+                      </li>
+                      <li className="nav-item">
+                        <Link
+                          to={
+                            this.props.match.params.guest_id
+                              ? `/nearby-profiles/${this.props.match.params.guest_id}/${this.props.match.params.uuid}`
+                              : `/nearby-profiles`
+                          }
+                          className="dropdown-item"
+                        >
+                          <span className="pt-4 font-size-12">Profiles</span>
+                          {/* {this.props.t("Profiles")} */}
+                        </Link>
+                      </li>
+                      <li className="nav-item">
+                        <Link
+                          to={
+                            this.props.match.params.guest_id
+                              ? `/nearby-packages/${this.props.match.params.guest_id}/${this.props.match.params.uuid}`
+                              : `/nearby-packages`
+                          }
+                          className="dropdown-item"
+                        >
+                          <span className="pt-4 font-size-12">Packages</span>
+                          {/* {this.props.t("Packages")} */}
+                        </Link>
+                      </li>
+                      <li className="nav-item">
+                        <Link
+                          to={
+                            this.props.match.params.guest_id
+                              ? `/nearby-radiology/${this.props.match.params.guest_id}/${this.props.match.params.uuid}`
+                              : `/nearby-radiology`
+                          }
+                          className="dropdown-item"
+                        >
+                          <span className="pt-4 font-size-12">Radiology</span>
+                          {/* {this.props.t("Packages")} */}
+                        </Link>
+                      </li>
 
+                      {this.state.user_id && this.state.user_type == "patient" && (
                         <li className="nav-item">
                           <Link
                             to={
-                              this.props.match.params.guest_id
-                                ? `/nearby-test/${this.props.match.params.guest_id}/${this.props.match.params.uuid}`
-                                : `/nearby-test`
-                            }
-                            className="dropdown-item"
-                          >
-                            <span className="pt-4 font-size-12">Tests</span>
-                            {/* {this.props.t("Tests")} */}
-                          </Link>
-                        </li>
-                        <li className="nav-item">
-                          <Link
-                            to={
-                              this.props.match.params.guest_id
-                                ? `/nearby-profiles/${this.props.match.params.guest_id}/${this.props.match.params.uuid}`
-                                : `/nearby-profiles`
-                            }
-                            className="dropdown-item"
-                          >
-                            <span className="pt-4 font-size-12">Profiles</span>
-                            {/* {this.props.t("Profiles")} */}
-                          </Link>
-                        </li>
-                        <li className="nav-item">
-                          <Link
-                            to={
-                              this.props.match.params.guest_id
-                                ? `/nearby-packages/${this.props.match.params.guest_id}/${this.props.match.params.uuid}`
-                                : `/nearby-packages`
-                            }
-                            className="dropdown-item"
-                          >
-                            <span className="pt-4 font-size-12">Packages</span>
-                            {/* {this.props.t("Packages")} */}
-                          </Link>
-                        </li>
-                        <li className="nav-item">
-                          <Link
-                            to={
-                              this.props.match.params.guest_id
-                                ? `/nearby-radiology/${this.props.match.params.guest_id}/${this.props.match.params.uuid}`
-                                : `/nearby-radiology`
-                            }
-                            className="dropdown-item"
-                          >
-                            <span className="pt-4 font-size-12">Radiology</span>
-                            {/* {this.props.t("Packages")} */}
-                          </Link>
-                        </li>
-                        
-                        {this.state.user_id && this.state.user_type == "patient" && (
-                          <li className="nav-item">
-                            <Link to={
                               this.props.match.params.guest_id
                                 ? `/test-appointments/${this.props.match.params.guest_id}`
                                 : `/test-appointments`
-                            } className="dropdown-item">
-                              {/* {this.props.t("My Appointments")} */}
-                              <span className="pt-4 font-size-12">My Appointments</span>
-
-                            </Link>
-                          </li>
-                        )}
-                      </ul>
-                    </Collapse>
-                  ) : null}
-
-            </nav>
+                            }
+                            className="dropdown-item"
+                          >
+                            {/* {this.props.t("My Appointments")} */}
+                            <span className="pt-4 font-size-12">
+                              My Appointments
+                            </span>
+                          </Link>
+                        </li>
+                      )}
+                    </ul>
+                  </Collapse>
+                ) : null}
+              </nav>
+            </div>
           </div>
-          </div>
-        
+        ) : null}
 
         <div className="page-content">
           <MetaTags>
@@ -1801,56 +1866,75 @@ class NearbyLabs extends Component {
                 </Card>
               </Col>  */}
 
-            <Modal
-              isOpen={this.state.PatientModal}
-              className={this.props.className}
-            >
-              <ModalHeader toggle={this.togglePatientModal}>
-                <h2 style={{ fontSize: "16px" }}>How to enable location access on your browser</h2>
-              </ModalHeader>
-              <ModalBody>
-                <Formik>
-                  <Form>
-                    <Row>
-                      <Col className="col-12">
-                        <p className="font-size-15 font-weight-bold">On your Chrome browser</p>
-                        <p style={{ fontSize: "14px", marginLeft: "15px" }}>
-                          <stront className="font-size-16 font-weight-bold">1.</stront>   To the left of the address bar, click the Padlock icon <i className="fas fa-lock" style={{ fontSize: '14px' }}></i> {" "}<br></br>
-                          <span style={{ fontSize: "14px", marginLeft: "15px" }}>then select &ldquo;Site Settings.&rdquo;</span>
-                        </p>
-                        <p style={{ fontSize: "14px", marginLeft: "15px" }}>
-                          <stront className="font-size-16 font-weight-bold">2.</stront>   Under Permissions, find Location and change it to
-                          Allow.
-                        </p>
-                      </Col>
-                      <div className="modal-footer">
-                        <button
-                          type="button"
-                          className="btn btn-primary"
-                          onClick={closeModal}
-                        >
-                          Got It!
-                        </button>
-                      </div>
-                    </Row>
-                  </Form>
-                </Formik>
-              </ModalBody>
-            </Modal>
+              <Modal
+                isOpen={this.state.PatientModal}
+                className={this.props.className}
+              >
+                <ModalHeader toggle={this.togglePatientModal}>
+                  <h2 style={{ fontSize: "16px" }}>
+                    How to enable location access on your browser
+                  </h2>
+                </ModalHeader>
+                <ModalBody>
+                  <Formik>
+                    <Form>
+                      <Row>
+                        <Col className="col-12">
+                          <p className="font-size-15 font-weight-bold">
+                            On your Chrome browser
+                          </p>
+                          <p style={{ fontSize: "14px", marginLeft: "15px" }}>
+                            <stront className="font-size-16 font-weight-bold">
+                              1.
+                            </stront>{" "}
+                            To the left of the address bar, click the Padlock
+                            icon{" "}
+                            <i
+                              className="fas fa-lock"
+                              style={{ fontSize: "14px" }}
+                            ></i>{" "}
+                            <br></br>
+                            <span
+                              style={{ fontSize: "14px", marginLeft: "15px" }}
+                            >
+                              then select &ldquo;Site Settings.&rdquo;
+                            </span>
+                          </p>
+                          <p style={{ fontSize: "14px", marginLeft: "15px" }}>
+                            <stront className="font-size-16 font-weight-bold">
+                              2.
+                            </stront>{" "}
+                            Under Permissions, find Location and change it to
+                            Allow.
+                          </p>
+                        </Col>
+                        <div className="modal-footer">
+                          <button
+                            type="button"
+                            className="btn btn-primary"
+                            onClick={closeModal}
+                          >
+                            Got It!
+                          </button>
+                        </div>
+                      </Row>
+                    </Form>
+                  </Formik>
+                </ModalBody>
+              </Modal>
 
               {/* <Col lg="9"> */}
               {!isSmallScreen ? (
                 <Row className="mb-3">
                   <Formik
-                    innerRef={(formik) => (this.formik = formik)} 
+                    innerRef={formik => (this.formik = formik)}
                     enableReinitialize={true}
                     initialValues={{
                       // search_type:
                       //   (this.state && this.state.search_type) ||
                       //   "Current Location",
                       city: (this.state && this.state.city) || "",
-                      name: (this.state && this.state.name) ||
-                        "",
+                      name: (this.state && this.state.name) || "",
                       location: (this.state && this.state.location) || "",
                     }}
                     validationSchema={Yup.object().shape({
@@ -1860,7 +1944,9 @@ class NearbyLabs extends Component {
                       }),
                       location: Yup.string().when("city", {
                         is: val => val != "",
-                        then: Yup.string().required("Please enter your Location"),
+                        then: Yup.string().required(
+                          "Please enter your Location"
+                        ),
                       }),
                     })}
                   >
@@ -1868,87 +1954,98 @@ class NearbyLabs extends Component {
                       <Form className="form-horizontal">
                         {/* Type field */}
                         <Row>
-                        {this.state.locationAccessAllowed === true ? (
-                        <Col xs="3" sm="3" md="2" lg="2">
-                          <div className="mb-3">
-                            <Label
-                                    for="LabType2"
-                                    className="form-label"
-                                    style={{
-                                      fontSize: window.innerWidth <= 576 ? '7px' : '12px',
-                                      color: 'black',
-                                      fontWeight: 'bold',
-                                    }}
-                                  >
-                                    Search Types
-                                  </Label>
-                            <Field
-                              name="search_type"
-                              component="select"
-                              onChange={e => this.onChangeSearchType(e)}
-                              value={search_type}
-                              className="form-select"
-                              style={{
-                                border: borderColor,
-                                borderRadius: '5px',
-                                // Add more style overrides as needed
-                              }}
-                            >
-                              <option value="Current Location">Current Location</option>
-                              <option value="City">Search By City</option>
-                              <option value="Custom Address">Custom Address</option>
-                            </Field>
-                          </div>
-                        </Col>
-                      ) : (
-                        <Col xs="3" sm="3" md="2" lg="2">
-                          <div className="mb-3">
-                            <Label
-                                for="LabType2"
-                                className="form-label"
-                                style={{
-                                  fontSize: window.innerWidth <= 576 ? '7px' : '12px',
-                                  color: 'black',
-                                  fontWeight: "bold",
-                                }}
-                              >
-                                Search Types
-                              </Label>
-                            <Field
-                              name="search_type"
-                              component="select"
-                              onChange={e => this.onChangeSearchType(e)}
-                              value={search_type}
-                              className="form-select"
-                              style={{
-                                border: borderColor,
-                                borderRadius: '5px',
-                                // Add more style overrides as needed
-                              }}
-                            >
-                              <option value="">Choose an option</option>
-                              <option value="Current Location">
-                                Current Location
-                              </option>
-                              <option value="City">Search By City</option>
-                              <option value="Custom Address">Custom Address</option>
-                            </Field>
-                          </div>
-                        </Col>
-                      )}
-                          {this.state.search_type === 'City' && (
+                          {this.state.locationAccessAllowed === true ? (
+                            <Col xs="3" sm="3" md="2" lg="2">
+                              <div className="mb-3">
+                                <Label
+                                  for="LabType2"
+                                  className="form-label"
+                                  style={{
+                                    fontSize:
+                                      window.innerWidth <= 576 ? "7px" : "12px",
+                                    color: "black",
+                                    fontWeight: "bold",
+                                  }}
+                                >
+                                  Search Types
+                                </Label>
+                                <Field
+                                  name="search_type"
+                                  component="select"
+                                  onChange={e => this.onChangeSearchType(e)}
+                                  value={search_type}
+                                  className="form-select"
+                                  style={{
+                                    border: borderColor,
+                                    borderRadius: "5px",
+                                    // Add more style overrides as needed
+                                  }}
+                                >
+                                  <option value="Current Location">
+                                    Current Location
+                                  </option>
+                                  <option value="City">Search By City</option>
+                                  <option value="Custom Address">
+                                    Custom Address
+                                  </option>
+                                </Field>
+                              </div>
+                            </Col>
+                          ) : (
+                            <Col xs="3" sm="3" md="2" lg="2">
+                              <div className="mb-3">
+                                <Label
+                                  for="LabType2"
+                                  className="form-label"
+                                  style={{
+                                    fontSize:
+                                      window.innerWidth <= 576 ? "7px" : "12px",
+                                    color: "black",
+                                    fontWeight: "bold",
+                                  }}
+                                >
+                                  Search Types
+                                </Label>
+                                <Field
+                                  name="search_type"
+                                  component="select"
+                                  onChange={e => this.onChangeSearchType(e)}
+                                  value={search_type}
+                                  className="form-select"
+                                  style={{
+                                    border: borderColor,
+                                    borderRadius: "5px",
+                                    // Add more style overrides as needed
+                                  }}
+                                >
+                                  <option value="">Choose an option</option>
+                                  <option value="Current Location">
+                                    Current Location
+                                  </option>
+                                  <option value="City">Search By City</option>
+                                  <option value="Custom Address">
+                                    Custom Address
+                                  </option>
+                                </Field>
+                              </div>
+                            </Col>
+                          )}
+                          {this.state.search_type === "City" && (
                             <Col xs="3" sm="3" md="2" lg="2">
                               <div className="mb-3">
                                 <Label
                                   for="LabType1"
                                   className="form-label"
                                   style={{
-                                    fontSize: window.innerWidth <= 576 ? '8px' : '12px',
-                                    color: 'black',
-                                  fontWeight: "bold",
+                                    fontSize:
+                                      window.innerWidth <= 576 ? "8px" : "12px",
+                                    color: "black",
+                                    fontWeight: "bold",
                                   }}
                                 >
-                                  <span style={{ fontSize: '12px' }}>By City </span>
+                                  <span style={{ fontSize: "12px" }}>
+                                    By City{" "}
+                                  </span>
                                 </Label>
                                 <Select
                                   name="city"
@@ -1960,8 +2057,8 @@ class NearbyLabs extends Component {
                                   styles={{
                                     control: (provided, state) => ({
                                       ...provided,
-                                      border: '2px solid green',
-                                      borderRadius: '5px',
+                                      border: "2px solid green",
+                                      borderRadius: "5px",
                                     }),
                                     // Add more style overrides as needed
                                   }}
@@ -1969,110 +2066,119 @@ class NearbyLabs extends Component {
                               </div>
                             </Col>
                           )}
-                          {this.state.search_type === 'Custom Address' && (
+                          {this.state.search_type === "Custom Address" && (
                             <Col xs="3" sm="3" md="2" lg="2">
                               <div className="mb-3">
                                 <Label
                                   for="LabType1"
                                   className="form-label"
                                   style={{
-                                    fontSize: window.innerWidth <= 576 ? '8px' : '12px',
-                                    color: 'black',
-                                  fontWeight: "bold",
+                                    fontSize:
+                                      window.innerWidth <= 576 ? "8px" : "12px",
+                                    color: "black",
+                                    fontWeight: "bold",
                                   }}
                                 >
-                                  <span style={{ fontSize: '12px', }}>Custom Address </span>
+                                  <span style={{ fontSize: "12px" }}>
+                                    Custom Address{" "}
+                                  </span>
                                 </Label>
                                 <Input
                                   defaultValue={this.state.address}
-                                  onChange={(e) => this.onChangeAddress(e)}
+                                  onChange={e => this.onChangeAddress(e)}
                                   id="pac-input"
                                   type="text"
                                   className="form-control"
                                   placeholder="Address.."
                                   style={{
-                                    border: '2px solid yellow',
-                                    borderRadius: '5px',
+                                    border: "2px solid yellow",
+                                    borderRadius: "5px",
                                     // Add more style overrides as needed
                                   }}
                                 />
                               </div>
                             </Col>
                           )}
-                          {this.state.search_type === 'Custom Address' ? (
-                        <Col xs="1" sm="2" md="1" lg="1">
-                          <div className="mb-3">
-                          <Label
-                                for="LabType2"
-                                className="form-label"
-                                style={{
-                                  fontSize: window.innerWidth <= 576 ? '7px' : '12px',
-                                  color: 'black',
-                                  fontWeight: "bold",
-                                }}
-                              >
-                                Km
-                              </Label>
-                            <div className="input-group">
-                              <Input
-                                defaultValue={this.state.km}
-                                onChange={(e) => this.onChangeKm(e)}
-                                id="pac-input"
-                                type="number"
-                                className="form-control"
-                                placeholder="km.."
-                                style={{
-                                  border: '2px solid yellow',
-                                  borderRadius: '5px',
-                                  fontSize: '14px'
-                                  // Add more style overrides as needed
-                                }}
-                              />
-                            </div>
-                          </div>
-                        </Col>
-                      ) : (this.state.search_type === 'Current Location' && (
-                        <Col xs="1" sm="2" md="1" lg="1">
-                          <div className="mb-3">
-                          <Label
-                                for="LabType2"
-                                className="form-label"
-                                style={{
-                                  fontSize: window.innerWidth <= 576 ? '7px' : '12px',
-                                  color: 'black',
-                                  fontWeight: "bold",
-                                }}
-                              >
-                                Km
-                              </Label>
-                            <div className="input-group">
-                              <Input
-                                defaultValue={this.state.km}
-                                onChange={(e) => this.onChangeKm(e)}
-                                id="pac-input"
-                                type="number"
-                                className="form-control"
-                                placeholder="km.."
-                                style={{
-                                  border: '2px solid red',
-                                  borderRadius: '5px',
-                                  fontSize: '14px'
-                                  // Add more style overrides as needed
-                                }}
-                              />
-                            </div>
-                          </div>
-                        </Col>
-                      )
-                      )}
+                          {this.state.search_type === "Custom Address" ? (
+                            <Col xs="1" sm="2" md="1" lg="1">
+                              <div className="mb-3">
+                                <Label
+                                  for="LabType2"
+                                  className="form-label"
+                                  style={{
+                                    fontSize:
+                                      window.innerWidth <= 576 ? "7px" : "12px",
+                                    color: "black",
+                                    fontWeight: "bold",
+                                  }}
+                                >
+                                  Km
+                                </Label>
+                                <div className="input-group">
+                                  <Input
+                                    defaultValue={this.state.km}
+                                    onChange={e => this.onChangeKm(e)}
+                                    id="pac-input"
+                                    type="number"
+                                    className="form-control"
+                                    placeholder="km.."
+                                    style={{
+                                      border: "2px solid yellow",
+                                      borderRadius: "5px",
+                                      fontSize: "14px",
+                                      // Add more style overrides as needed
+                                    }}
+                                  />
+                                </div>
+                              </div>
+                            </Col>
+                          ) : (
+                            this.state.search_type === "Current Location" && (
+                              <Col xs="1" sm="2" md="1" lg="1">
+                                <div className="mb-3">
+                                  <Label
+                                    for="LabType2"
+                                    className="form-label"
+                                    style={{
+                                      fontSize:
+                                        window.innerWidth <= 576
+                                          ? "7px"
+                                          : "12px",
+                                      color: "black",
+                                      fontWeight: "bold",
+                                    }}
+                                  >
+                                    Km
+                                  </Label>
+                                  <div className="input-group">
+                                    <Input
+                                      defaultValue={this.state.km}
+                                      onChange={e => this.onChangeKm(e)}
+                                      id="pac-input"
+                                      type="number"
+                                      className="form-control"
+                                      placeholder="km.."
+                                      style={{
+                                        border: "2px solid red",
+                                        borderRadius: "5px",
+                                        fontSize: "14px",
+                                        // Add more style overrides as needed
+                                      }}
+                                    />
+                                  </div>
+                                </div>
+                              </Col>
+                            )
+                          )}
                           <Col xs="4" sm="4" md="3" lg="3">
                             <div className="mb-3">
                               <Label
                                 for="LabType"
                                 className="form-label"
                                 style={{
-                                  fontSize: window.innerWidth <= 576 ? '7px' : '12px',
-                                  color: 'black',
+                                  fontSize:
+                                    window.innerWidth <= 576 ? "7px" : "12px",
+                                  color: "black",
                                   fontWeight: "bold",
                                 }}
                               >
@@ -2092,8 +2198,8 @@ class NearbyLabs extends Component {
                                 styles={{
                                   control: (provided, state) => ({
                                     ...provided,
-                                    border: '2px solid blue',
-                                    borderRadius: '5px',
+                                    border: "2px solid blue",
+                                    borderRadius: "5px",
                                   }),
                                   // Add more style overrides as needed
                                 }}
@@ -2131,138 +2237,152 @@ class NearbyLabs extends Component {
                               </Field>
                             </div>
                           </Col> */}
-                           {this.state.locationAccessAllowed === true ? (
-                            <Col xs="3" sm="3" md="2" lg="2">
-                              <div className="mb-3">
-                                <Label
-                                for="LabType2"
-                                className="form-label"
-                                style={{
-                                  fontSize: window.innerWidth <= 576 ? '7px' : '12px',
-                                  color: 'black',
-                                  fontWeight: "bold",
-                                }}
-                              >
-                                Search By Labs Type
-                              </Label>
-                                <Field
-                                  name="LabType"
-                                  component="select"
-                                  onChange={(e) => this.onChangeType(e)}
-                                  value={this.state.LabType}
-                                  className="form-select"
+                          {
+                            this.state.locationAccessAllowed === true ? (
+                              <Col xs="3" sm="3" md="2" lg="2">
+                                <div className="mb-3">
+                                  <Label
+                                    for="LabType2"
+                                    className="form-label"
+                                    style={{
+                                      fontSize:
+                                        window.innerWidth <= 576
+                                          ? "7px"
+                                          : "12px",
+                                      color: "black",
+                                      fontWeight: "bold",
+                                    }}
+                                  >
+                                    Search By Labs Type
+                                  </Label>
+                                  <Field
+                                    name="LabType"
+                                    component="select"
+                                    onChange={e => this.onChangeType(e)}
+                                    value={this.state.LabType}
+                                    className="form-select"
+                                    style={{
+                                      border: "2px solid blue",
+                                      borderRadius: "5px",
+                                      // Add more style overrides as needed
+                                    }}
+                                  >
+                                    <option value="Main">Main Labs</option>
+                                    <option value="Collection">
+                                      Collection Points
+                                    </option>
+                                    <option value="Others">Both</option>
+                                  </Field>
+                                </div>
+                              </Col>
+                            ) : 
+                            (
+                              <Col xs="3" sm="3" md="2" lg="2">
+                                <div className="mb-3">
+                                  <Label
+                                  for="LabType2"
+                                  className="form-label"
                                   style={{
-                                    border: '2px solid blue',
-                                    borderRadius: '5px',
-                                    // Add more style overrides as needed
+                                    fontSize: window.innerWidth <= 576 ? '7px' : '12px',
+                                    color: 'black',
+                                    fontWeight: "bold",
                                   }}
                                 >
-                                  <option value="Main">Main Labs</option>
-                                  <option value="Collection">Collection Points</option>
-                                  <option value="Others">Both</option>
-                                </Field>
-                              </div>
-                            </Col>
-                          ) : null
-                          // (
-                          //   <Col xs="3" sm="3" md="2" lg="2">
-                          //     <div className="mb-3">
-                          //       <Label
-                          //       for="LabType2"
-                          //       className="form-label"
-                          //       style={{
-                          //         fontSize: window.innerWidth <= 576 ? '7px' : '12px',
-                          //         color: 'black',
-                          //         fontWeight: "bold",
-                          //       }}
-                          //     >
-                          //       Search By Labs Type
-                          //     </Label>
-                          //       <Field
-                          //         name="LabType"
-                          //         component="select"
-                          //         onChange={(e) => this.onChangeType(e)}
-                          //         value={this.state.LabType}
-                          //         className="form-select"
-                          //         style={{
-                          //           border: '2px solid blue',
-                          //           borderRadius: '5px',
-                          //           // Add more style overrides as needed
-                          //         }}
-                          //       >
-                          //         <option value="Others">Both</option>
-                          //         <option value="Main">Main Labs</option>
-                          //         <option value="Collection">Collection Points</option>
-                          //       </Field>
-                          //     </div>
-                          //   </Col>
-                          // )
+                                  Search By Labs Type
+                                </Label>
+                                  <Field
+                                    name="LabType"
+                                    component="select"
+                                    onChange={(e) => this.onChangeType(e)}
+                                    value={this.state.LabType}
+                                    className="form-select"
+                                    style={{
+                                      border: '2px solid blue',
+                                      borderRadius: '5px',
+                                      // Add more style overrides as needed
+                                    }}
+                                  >
+                                    <option value="Others">Both</option>
+                                    <option value="Main">Main Labs</option>
+                                    <option value="Collection">Collection Points</option>
+                                  </Field>
+                                </div>
+                              </Col>
+                            )
                           }
                         </Row>
                       </Form>
                     )}
                   </Formik>
                 </Row>
-              ) : <Row>
-                <Formik
-                  enableReinitialize={true}
-                  initialValues={{
-                    // search_type:
-                    //   (this.state && this.state.search_type) ||
-                    //   "Current Location",
-                    city: (this.state && this.state.city) || "",
-                    location: (this.state && this.state.location) || "",
-                    LabType: (this.state && this.state.LabType) || "Main",
-                    km: (this.state && this.state.km) || "30",
-                  }}
-                  validationSchema={Yup.object().shape({
-                    city: Yup.string().when("search_type", {
-                      is: val => val === "Custom Address",
-                      then: Yup.string().required("Please enter your City"),
-                    }),
-                    location: Yup.string().when("city", {
-                      is: val => val != "",
-                      then: Yup.string().required(
-                        "Please enter your Location"
-                      ),
-                    }),
-                  })}
-                >
-                  {({ errors, status, touched }) => (
-                    <Form className="form-horizontal">
-                    {/* Type field */}
-                    {/* Type field */}
-                    <h4 style={{ background: "#3B71CA", color: "white", fontWeight: "bold" }}> Search Labs for more result in Pakistan!</h4>
-                    <Row className="g-0">
-                      <Col>
-                        <div>
-                          <Select
-                            type="text"
-
-                            onChange={this.onChangeLabName}
-                            options={labNames}
-                            placeholder="Lab Name..."
-                            styles={{
-                              control: (provided, state) => ({
-                                ...provided,
-                                border: '2px solid blue',
-                                borderRadius: '5px',
-                              }),
-                              // Add more style overrides as needed
-                            }}
-                            isSearchable={true}
-                            isClearable={true}
-                            components={{
-                              ClearIndicator,
-                            }}
-                          />
-
-                        </div>
-                      </Col>
-                      {this.state.locationAccessAllowed === true ? (
-                        <Col xs="4" sm="4" md="3" lg="3">
-                          <div className="mb-3">
-                            {/* <Label
+              ) : (
+                <Row>
+                  <Formik
+                    enableReinitialize={true}
+                    initialValues={{
+                      // search_type:
+                      //   (this.state && this.state.search_type) ||
+                      //   "Current Location",
+                      city: (this.state && this.state.city) || "",
+                      location: (this.state && this.state.location) || "",
+                      LabType: (this.state && this.state.LabType) || "Main",
+                      km: (this.state && this.state.km) || "30",
+                    }}
+                    validationSchema={Yup.object().shape({
+                      city: Yup.string().when("search_type", {
+                        is: val => val === "Custom Address",
+                        then: Yup.string().required("Please enter your City"),
+                      }),
+                      location: Yup.string().when("city", {
+                        is: val => val != "",
+                        then: Yup.string().required(
+                          "Please enter your Location"
+                        ),
+                      }),
+                    })}
+                  >
+                    {({ errors, status, touched }) => (
+                      <Form className="form-horizontal">
+                        {/* Type field */}
+                        {/* Type field */}
+                        <h4
+                          style={{
+                            background: "#3B71CA",
+                            color: "white",
+                            fontWeight: "bold",
+                          }}
+                        >
+                          {" "}
+                          Search Labs for more result in Pakistan!
+                        </h4>
+                        <Row className="g-0">
+                          <Col>
+                            <div>
+                              <Select
+                                type="text"
+                                onChange={this.onChangeLabName}
+                                options={labNames}
+                                placeholder="Lab Name..."
+                                styles={{
+                                  control: (provided, state) => ({
+                                    ...provided,
+                                    border: "2px solid blue",
+                                    borderRadius: "5px",
+                                  }),
+                                  // Add more style overrides as needed
+                                }}
+                                isSearchable={true}
+                                isClearable={true}
+                                components={{
+                                  ClearIndicator,
+                                }}
+                              />
+                            </div>
+                          </Col>
+                          {this.state.locationAccessAllowed === true ? (
+                            <Col xs="4" sm="4" md="3" lg="3">
+                              <div className="mb-3">
+                                {/* <Label
                             for="LabType2"
                             className="form-label"
                             style={{
@@ -2273,32 +2393,33 @@ class NearbyLabs extends Component {
                           >
                             Search By Labs Type
                           </Label> */}
-                            <Field
-                              name="LabType"
-                              component="select"
-                              onChange={(e) => this.onChangeType(e)}
-                              value={this.state.LabType}
-                              className="form-select"
-                              style={{
-                                border: '2px solid blue',
-                                borderRadius: '5px',
-                                // Add more style overrides as needed
-                              }}
-                            >
-                              <option value="Main">Main Labs</option>
-                              <option value="Collection">Collection Points</option>
-                              <option value="Others">Both</option>
-                            </Field>
-                          </div>
-                        </Col>
-                      ) : null}
-
-                    </Row>
-                    <Row className="g-0">
-                      {this.state.locationAccessAllowed === true ? (
-                        <Col xs="6" sm="6" md="3" lg="3">
-                          <div className="mb-3">
-                            {/* <Label
+                                <Field
+                                  name="LabType"
+                                  component="select"
+                                  onChange={e => this.onChangeType(e)}
+                                  value={this.state.LabType}
+                                  className="form-select"
+                                  style={{
+                                    border: "2px solid blue",
+                                    borderRadius: "5px",
+                                    // Add more style overrides as needed
+                                  }}
+                                >
+                                  <option value="Main">Main Labs</option>
+                                  <option value="Collection">
+                                    Collection Points
+                                  </option>
+                                  <option value="Others">Both</option>
+                                </Field>
+                              </div>
+                            </Col>
+                          ) : null}
+                        </Row>
+                        <Row className="g-0">
+                          {this.state.locationAccessAllowed === true ? (
+                            <Col xs="6" sm="6" md="3" lg="3">
+                              <div className="mb-3">
+                                {/* <Label
                                 for="LabType2"
                                 className="form-label"
                                 style={{
@@ -2309,28 +2430,32 @@ class NearbyLabs extends Component {
                               >
                                 Search Types
                               </Label> */}
-                            <Field
-                              name="search_type"
-                              component="select"
-                              onChange={e => this.onChangeSearchType(e)}
-                              value={search_type}
-                              className="form-select"
-                              style={{
-                                border: borderColor,
-                                borderRadius: '5px',
-                                // Add more style overrides as needed
-                              }}
-                            >
-                              <option value="Current Location">Current Location</option>
-                              <option value="City">Search By City</option>
-                              <option value="Custom Address">Custom Address</option>
-                            </Field>
-                          </div>
-                        </Col>
-                      ) : (
-                        <Col xs="6" sm="6" md="3" lg="3">
-                          <div className="mb-3">
-                            {/* <Label
+                                <Field
+                                  name="search_type"
+                                  component="select"
+                                  onChange={e => this.onChangeSearchType(e)}
+                                  value={search_type}
+                                  className="form-select"
+                                  style={{
+                                    border: borderColor,
+                                    borderRadius: "5px",
+                                    // Add more style overrides as needed
+                                  }}
+                                >
+                                  <option value="Current Location">
+                                    Current Location
+                                  </option>
+                                  <option value="City">Search By City</option>
+                                  <option value="Custom Address">
+                                    Custom Address
+                                  </option>
+                                </Field>
+                              </div>
+                            </Col>
+                          ) : (
+                            <Col xs="6" sm="6" md="3" lg="3">
+                              <div className="mb-3">
+                                {/* <Label
                             for="LabType2"
                             className="form-label"
                             style={{
@@ -2341,29 +2466,31 @@ class NearbyLabs extends Component {
                           >
                             Search Types
                           </Label> */}
-                            <Field
-                              name="search_type"
-                              component="select"
-                              onChange={e => this.onChangeSearchType(e)}
-                              value={search_type}
-                              className="form-select"
-                              style={{
-                                border: borderColor,
-                                borderRadius: '5px',
-                                // Add more style overrides as needed
-                              }}
-                            >
-                              <option value="">Choose an option</option>
-                              <option value="Current Location">
-                                Current Location
-                              </option>
-                              <option value="City">Search By City</option>
-                              <option value="Custom Address">Custom Address</option>
-                            </Field>
-                          </div>
-                        </Col>
-                      )}
-                      {/* <Col xs="6" sm="6" md="3" lg="3">
+                                <Field
+                                  name="search_type"
+                                  component="select"
+                                  onChange={e => this.onChangeSearchType(e)}
+                                  value={search_type}
+                                  className="form-select"
+                                  style={{
+                                    border: borderColor,
+                                    borderRadius: "5px",
+                                    // Add more style overrides as needed
+                                  }}
+                                >
+                                  <option value="">Choose an option</option>
+                                  <option value="Current Location">
+                                    Current Location
+                                  </option>
+                                  <option value="City">Search By City</option>
+                                  <option value="Custom Address">
+                                    Custom Address
+                                  </option>
+                                </Field>
+                              </div>
+                            </Col>
+                          )}
+                          {/* <Col xs="6" sm="6" md="3" lg="3">
                         <div className="mb-3">
                           <Field
                             name="search_type"
@@ -2384,103 +2511,105 @@ class NearbyLabs extends Component {
                         </div>
                       </Col> */}
 
-                      {this.state.search_type === "Current Location" && (
-                        <Col xs="2" sm="2" md="2" lg="2">
-                          <div className="mb-3">
-                            <div className="input-group">
-                              <Input
-                                defaultValue={this.state.km}
-                                onChange={e => this.onChangeKm(e)}
-                                id="pac-input"
-                                type="number"  // Change "numbers" to "number"
-                                className="form-control"
-                                placeholder="Search By Km..."
-                                style={{
-                                  border: '2px solid red',
-                                  borderRadius: '5px',
-                                  fontSize: '14px'
-                                  // Add more style overrides as needed
-                                }}
-                              />
-                            </div>
-                          </div>
-                        </Col>
-                      )}
-                      {this.state.search_type === "Custom Address" && (
-                        <Col xs="2" sm="2" md="2" lg="2">
-                          <div className="mb-3">
-                            <div className="input-group">
-                              <Input
-                                defaultValue={this.state.km}
-                                onChange={e => this.onChangeKm(e)}
-                                id="pac-input"
-                                type="number"  // Change "numbers" to "number"
-                                className="form-control"
-                                placeholder="Search By Km..."
-                                style={{
-                                  border: '2px solid yellow',
-                                  borderRadius: '5px',
-                                  fontSize: '14px'
-                                  // Add more style overrides as needed
-                                }}
-                              />
-                            </div>
-                          </div>
-                        </Col>
-                      )}
-                      {/* City field */}
-                      {this.state.search_type === "City" && (
-                        <Col xs="4" sm="4" md="3" lg="3">
-                          <div className="mb-3">
-                            <Select
-                              name="city"
-                              component="Select"
-                              onChange={this.onChangeCity}
-                              className="defautSelectParent is-invalid"
-                              options={cityList}
-                              placeholder="City..."
-                              styles={{
-                                control: (provided, state) => ({
-                                  ...provided,
-                                  border: '2px solid green',
-                                  borderRadius: '5px',
-                                }),
-                                // Add more style overrides as needed
-                              }}
-                            />
-                          </div>
-                        </Col>
-                      )}
-                      {/* Custom Address field */}
-                      {this.state.search_type === "Custom Address" && (
-                        <Col xs="4" sm="4" md="3" lg="3">
-                          <div className="mb-3">
-                            <Input
-                              defaultValue={this.state.address}
-                              onChange={e => this.onChangeAddress(e)}
-                              id="pac-input"
-                              type="text"
-                              className="form-control"
-                              placeholder="Search Location..."
-                              style={{
-                                border: '2px solid yellow',
-                                borderRadius: '5px',
-                                // Add more style overrides as needed
-                              }}
-                            />
-                          </div>
-                        </Col>
-                      )}
-                    </Row>
-                  </Form>
-                  )}
-                </Formik>
-              </Row>}
-
+                          {this.state.search_type === "Current Location" && (
+                            <Col xs="2" sm="2" md="2" lg="2">
+                              <div className="mb-3">
+                                <div className="input-group">
+                                  <Input
+                                    defaultValue={this.state.km}
+                                    onChange={e => this.onChangeKm(e)}
+                                    id="pac-input"
+                                    type="number" // Change "numbers" to "number"
+                                    className="form-control"
+                                    placeholder="Search By Km..."
+                                    style={{
+                                      border: "2px solid red",
+                                      borderRadius: "5px",
+                                      fontSize: "14px",
+                                      // Add more style overrides as needed
+                                    }}
+                                  />
+                                </div>
+                              </div>
+                            </Col>
+                          )}
+                          {this.state.search_type === "Custom Address" && (
+                            <Col xs="2" sm="2" md="2" lg="2">
+                              <div className="mb-3">
+                                <div className="input-group">
+                                  <Input
+                                    defaultValue={this.state.km}
+                                    onChange={e => this.onChangeKm(e)}
+                                    id="pac-input"
+                                    type="number" // Change "numbers" to "number"
+                                    className="form-control"
+                                    placeholder="Search By Km..."
+                                    style={{
+                                      border: "2px solid yellow",
+                                      borderRadius: "5px",
+                                      fontSize: "14px",
+                                      // Add more style overrides as needed
+                                    }}
+                                  />
+                                </div>
+                              </div>
+                            </Col>
+                          )}
+                          {/* City field */}
+                          {this.state.search_type === "City" && (
+                            <Col xs="4" sm="4" md="3" lg="3">
+                              <div className="mb-3">
+                                <Select
+                                  name="city"
+                                  component="Select"
+                                  onChange={this.onChangeCity}
+                                  className="defautSelectParent is-invalid"
+                                  options={cityList}
+                                  placeholder="City..."
+                                  styles={{
+                                    control: (provided, state) => ({
+                                      ...provided,
+                                      border: "2px solid green",
+                                      borderRadius: "5px",
+                                    }),
+                                    // Add more style overrides as needed
+                                  }}
+                                />
+                              </div>
+                            </Col>
+                          )}
+                          {/* Custom Address field */}
+                          {this.state.search_type === "Custom Address" && (
+                            <Col xs="4" sm="4" md="3" lg="3">
+                              <div className="mb-3">
+                                <Input
+                                  defaultValue={this.state.address}
+                                  onChange={e => this.onChangeAddress(e)}
+                                  id="pac-input"
+                                  type="text"
+                                  className="form-control"
+                                  placeholder="Search Location..."
+                                  style={{
+                                    border: "2px solid yellow",
+                                    borderRadius: "5px",
+                                    // Add more style overrides as needed
+                                  }}
+                                />
+                              </div>
+                            </Col>
+                          )}
+                        </Row>
+                      </Form>
+                    )}
+                  </Formik>
+                </Row>
+              )}
 
               {/* ROW FOR ADVERTISEMENT */}
               {/* <Row> */}
-              {!isEmpty(nearbyLabs) && (!this.state.user_id) && (this.props.match.params.guest_id) &&
+              {!isEmpty(nearbyLabs) &&
+                !this.state.user_id &&
+                this.props.match.params.guest_id &&
                 nearbyLabs.map((nearbyLab, key) => (
                   <Col xl="4" sm="6" key={"_col_" + key}>
                     <Card
@@ -2490,7 +2619,8 @@ class NearbyLabs extends Component {
                             ? `/nearby-lab-detail/${nearbyLab.account_id}/${this.props.match.params.guest_id}/${this.props.match.params.uuid}`
                             : `/nearby-lab-detail/${nearbyLab.account_id}/${this.props.match.params.guest_id}`
                         )
-                      } style={{ height: "95%" }}
+                      }
+                      style={{ height: "95%" }}
                     >
                       <CardBody>
                         <Link
@@ -2557,24 +2687,24 @@ class NearbyLabs extends Component {
                             </Tooltip>
                           </div>
 
-                          {!nearbyLab.is_247_opened &&
-                              nearbyLab.opening_time && (
-                                <div className="my-0">
-                                  <span className="text-muted me-2">
-                                    <i className="mdi mdi-timer"></i>{" "}
-                                    {formatTime(nearbyLab.opening_time)} to {formatTime(nearbyLab.closing_time)}
-                                  </span>
-                                </div>
-                              )}
-                            {!nearbyLab.is_247_opened && nearbyLab.opening_day && (
-                              <div className="my-0">
-                                <span className="text-muted me-2">
-                                  <i className="mdi mdi-calendar"></i>{" "}
-                                  {nearbyLab.opening_day} to{" "}
-                                  {nearbyLab.closing_day}
-                                </span>
-                              </div>
-                            )}
+                          {!nearbyLab.is_247_opened && nearbyLab.opening_time && (
+                            <div className="my-0">
+                              <span className="text-muted me-2">
+                                <i className="mdi mdi-timer"></i>{" "}
+                                {formatTime(nearbyLab.opening_time)} to{" "}
+                                {formatTime(nearbyLab.closing_time)}
+                              </span>
+                            </div>
+                          )}
+                          {!nearbyLab.is_247_opened && nearbyLab.opening_day && (
+                            <div className="my-0">
+                              <span className="text-muted me-2">
+                                <i className="mdi mdi-calendar"></i>{" "}
+                                {nearbyLab.opening_day} to{" "}
+                                {nearbyLab.closing_day}
+                              </span>
+                            </div>
+                          )}
                           {/* <div className="my-0">
                                 <span className="text-muted me-2">
                                   <i className="mdi mdi-email"></i>{" "}
@@ -2594,60 +2724,81 @@ class NearbyLabs extends Component {
                                 <i className="mdi mdi-phone"></i>{" "}
                                 {nearbyLab.landline}
                               </span>
-                            </div>) : null}
+                            </div>
+                          ) : null}
                           {nearbyLab.female_collectors == "Yes" && (
                             <div className="my-0">
-                              <span className="text-danger" >
-                                <i className="mdi mdi-account-question"></i>{" "}
-                                Lab has female sample collectors
+                              <span className="text-danger">
+                                <i className="mdi mdi-account-question"></i> Lab
+                                has female sample collectors
                               </span>
                             </div>
                           )}
-                  
-                  <Row style={{ display: "flex", justifyContent: "center", marginLeft: "40px" }}>
-  <Col className="d-flex justify-content-end" style={{ paddingRight: "0" }}>
-    <StarRatings
-      rating={nearbyLab.rating}
-      starRatedColor="#F1B44C"
-      starEmptyColor="#2D363F"
-      numberOfStars={5}
-      name="rating"
-      starDimension="12px"
-      starSpacing="3px"
-    />
-  </Col>
-  <Col className="d-flex justify-content-start" style={{ paddingLeft: "0" }}>
-    <span style={{ fontSize: "14px", marginLeft: "7px"}}>
-      {nearbyLab && nearbyLab.rating && (
-        <p>{nearbyLab.rating.toFixed(1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
-      )}
-    </span>
-  </Col>
-</Row>
 
-
+                          <Row
+                            style={{
+                              display: "flex",
+                              justifyContent: "center",
+                              marginLeft: "40px",
+                            }}
+                          >
+                            <Col
+                              className="d-flex justify-content-end"
+                              style={{ paddingRight: "0" }}
+                            >
+                              <StarRatings
+                                rating={nearbyLab.rating}
+                                starRatedColor="#F1B44C"
+                                starEmptyColor="#2D363F"
+                                numberOfStars={5}
+                                name="rating"
+                                starDimension="12px"
+                                starSpacing="3px"
+                              />
+                            </Col>
+                            <Col
+                              className="d-flex justify-content-start"
+                              style={{ paddingLeft: "0" }}
+                            >
+                              <span
+                                style={{ fontSize: "14px", marginLeft: "7px" }}
+                              >
+                                {nearbyLab && nearbyLab.rating && (
+                                  <p>
+                                    {nearbyLab.rating
+                                      .toFixed(1)
+                                      .toString()
+                                      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                                  </p>
+                                )}
+                              </span>
+                            </Col>
+                          </Row>
 
                           <Link
-  to={
-    this.props.match.params.uuid
-      ? `/nearby-lab-detail/${nearbyLab.account_id}/${this.props.match.params.guest_id}/${this.props.match.params.uuid}`
-      : `/nearby-lab-detail/${nearbyLab.account_id}/${this.props.match.params.guest_id}`
-  }
->
-  <div className="my-0 mt-3">
-    <span className="me-2" style={{ color: 'blue' }}>
-      See Details
-      <i className="mdi mdi-chevron-double-down"></i>{" "}
-    </span>
-  </div>
-</Link>
-
+                            to={
+                              this.props.match.params.uuid
+                                ? `/nearby-lab-detail/${nearbyLab.account_id}/${this.props.match.params.guest_id}/${this.props.match.params.uuid}`
+                                : `/nearby-lab-detail/${nearbyLab.account_id}/${this.props.match.params.guest_id}`
+                            }
+                          >
+                            <div className="my-0 mt-3">
+                              <span className="me-2" style={{ color: "blue" }}>
+                                See Details
+                                <i className="mdi mdi-chevron-double-down"></i>{" "}
+                              </span>
+                             
+                            </div>
+                          </Link>
                         </div>
                       </CardBody>
                     </Card>
                   </Col>
                 ))}
-              {!isEmpty(nearbyLabs) && (this.state.user_id) && (this.state.user_type !== "CSR") && (this.state.user_type !== "b2bclient") &&
+              {!isEmpty(nearbyLabs) &&
+                this.state.user_id &&
+                this.state.user_type !== "CSR" &&
+                this.state.user_type !== "b2bclient" &&
                 nearbyLabs.map((nearbyLab, key) => (
                   <Col xl="4" sm="6" key={"_col_" + key}>
                     <Card
@@ -2657,7 +2808,8 @@ class NearbyLabs extends Component {
                             ? `/nearby-lab-detail/${nearbyLab.account_id}/${this.props.match.params.uuid}`
                             : `/nearby-lab-detail/${nearbyLab.account_id}`
                         )
-                      } style={{ height: "95%" }}
+                      }
+                      style={{ height: "95%" }}
                     >
                       <CardBody>
                         <Link
@@ -2724,26 +2876,24 @@ class NearbyLabs extends Component {
                             </Tooltip>
                           </div>
 
-                          {!nearbyLab.is_247_opened &&
-                              nearbyLab.opening_time && (
-                                <div className="my-0">
-                                  <span className="text-muted me-2">
-                                    <i className="mdi mdi-timer"></i>{" "}
-                                    {formatTime(nearbyLab.opening_time)} to {formatTime(nearbyLab.closing_time)}
-
-
-                                  </span>
-                                </div>
-                              )}
-                            {!nearbyLab.is_247_opened && nearbyLab.opening_day && (
-                              <div className="my-0">
-                                <span className="text-muted me-2">
-                                  <i className="mdi mdi-calendar"></i>{" "}
-                                  {nearbyLab.opening_day} to{" "}
-                                  {nearbyLab.closing_day}
-                                </span>
-                              </div>
-                            )}
+                          {!nearbyLab.is_247_opened && nearbyLab.opening_time && (
+                            <div className="my-0">
+                              <span className="text-muted me-2">
+                                <i className="mdi mdi-timer"></i>{" "}
+                                {formatTime(nearbyLab.opening_time)} to{" "}
+                                {formatTime(nearbyLab.closing_time)}
+                              </span>
+                            </div>
+                          )}
+                          {!nearbyLab.is_247_opened && nearbyLab.opening_day && (
+                            <div className="my-0">
+                              <span className="text-muted me-2">
+                                <i className="mdi mdi-calendar"></i>{" "}
+                                {nearbyLab.opening_day} to{" "}
+                                {nearbyLab.closing_day}
+                              </span>
+                            </div>
+                          )}
 
                           {/* <div className="my-0">
                                 <span className="text-muted me-2">
@@ -2764,56 +2914,79 @@ class NearbyLabs extends Component {
                                 <i className="mdi mdi-phone"></i>{" "}
                                 {nearbyLab.landline}
                               </span>
-                            </div>) : null}
+                            </div>
+                          ) : null}
 
                           {nearbyLab.female_collectors == "Yes" && (
                             <div className="my-0">
-                              <span className="text-danger" >
-                                <i className="mdi mdi-account-question"></i>{" "}
-                                Lab has female sample collectors
+                              <span className="text-danger">
+                                <i className="mdi mdi-account-question"></i> Lab
+                                has female sample collectors
                               </span>
                             </div>
                           )}
-                          <Row style={{ display: "flex", justifyContent: "center", marginLeft: "40px" }}>
-  <Col className="d-flex justify-content-end" style={{ paddingRight: "0" }}>
-    <StarRatings
-      rating={nearbyLab.rating}
-      starRatedColor="#F1B44C"
-      starEmptyColor="#2D363F"
-      numberOfStars={5}
-      name="rating"
-      starDimension="12px"
-      starSpacing="3px"
-    />
-  </Col>
-  <Col className="d-flex justify-content-start" style={{ paddingLeft: "0" }}>
-    <span style={{ fontSize: "14px", marginLeft: "7px"}}>
-      {nearbyLab && nearbyLab.rating && (
-        <p>{nearbyLab.rating.toFixed(1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
-      )}
-    </span>
-  </Col>
-</Row>
+                          <Row
+                            style={{
+                              display: "flex",
+                              justifyContent: "center",
+                              marginLeft: "40px",
+                            }}
+                          >
+                            <Col
+                              className="d-flex justify-content-end"
+                              style={{ paddingRight: "0" }}
+                            >
+                              <StarRatings
+                                rating={nearbyLab.rating}
+                                starRatedColor="#F1B44C"
+                                starEmptyColor="#2D363F"
+                                numberOfStars={5}
+                                name="rating"
+                                starDimension="12px"
+                                starSpacing="3px"
+                              />
+                            </Col>
+                            <Col
+                              className="d-flex justify-content-start"
+                              style={{ paddingLeft: "0" }}
+                            >
+                              <span
+                                style={{ fontSize: "14px", marginLeft: "7px" }}
+                              >
+                                {nearbyLab && nearbyLab.rating && (
+                                  <p>
+                                    {nearbyLab.rating
+                                      .toFixed(1)
+                                      .toString()
+                                      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                                  </p>
+                                )}
+                              </span>
+                            </Col>
+                          </Row>
                           <Link
-  to={
-    this.props.match.params.uuid
-      ? `/nearby-lab-detail/${nearbyLab.account_id}/${this.props.match.params.uuid}`
-      : `/nearby-lab-detail/${nearbyLab.account_id}`
-  }
->
-  <div className="my-0 mt-3">
-    <span className="me-2" style={{ color: 'blue' }}>
-      See Details
-      <i className="mdi mdi-chevron-double-down"></i>{" "}
-    </span>
-  </div>
-</Link>
+                            to={
+                              this.props.match.params.uuid
+                                ? `/nearby-lab-detail/${nearbyLab.account_id}/${this.props.match.params.uuid}`
+                                : `/nearby-lab-detail/${nearbyLab.account_id}`
+                            }
+                          >
+                            <div className="my-0 mt-3">
+                              <span className="me-2" style={{ color: "blue" }}>
+                                See Details
+                                <i className="mdi mdi-chevron-double-down"></i>{" "}
+                              </span>
+                            </div>
+                          </Link>
                         </div>
                       </CardBody>
                     </Card>
                   </Col>
                 ))}
-              {!isEmpty(nearbyLabs) && (this.state.user_id) && (this.state.user_type === "CSR") && (this.state.user_type !== "b2bclient") &&
+              {!isEmpty(nearbyLabs) &&
+                this.state.user_id &&
+                this.state.user_type === "CSR" &&
+                this.state.user_type !== "b2bclient" &&
                 nearbyLabs.map((nearbyLab, key) => (
                   <Col xl="4" sm="6" key={"_col_" + key}>
                     <Card
@@ -2823,7 +2996,8 @@ class NearbyLabs extends Component {
                             ? `/nearby-lab-detail/${nearbyLab.account_id}/${this.props.match.params.guest_id}`
                             : `/nearby-lab-detail/${nearbyLab.account_id}`
                         )
-                      } style={{ height: "95%" }}
+                      }
+                      style={{ height: "95%" }}
                     >
                       <CardBody>
                         <Link
@@ -2865,9 +3039,6 @@ class NearbyLabs extends Component {
                               }}
                             />
                           </div>
-
-
-
                         </Link>
 
                         <div className="mt-4 text-center">
@@ -2904,82 +3075,102 @@ class NearbyLabs extends Component {
                             </Tooltip>
                           </div>
 
-                          {!nearbyLab.is_247_opened &&
-                              nearbyLab.opening_time && (
-                                <div className="my-0">
-                                  <span className="text-muted me-2">
-                                    <i className="mdi mdi-timer"></i>{" "}
-                                  {formatTime(nearbyLab.opening_time)} to {formatTime(nearbyLab.closing_time)}
-
-
-                                  </span>
-                                </div>
-                              )}
-                            {!nearbyLab.is_247_opened && nearbyLab.opening_day && (
-                              <div className="my-0">
-                                <span className="text-muted me-2">
-                                  <i className="mdi mdi-calendar"></i>{" "}
-                                  {nearbyLab.opening_day} to{" "}
-                                  {nearbyLab.closing_day}
-                                </span>
-                              </div>
-                            )}
+                          {!nearbyLab.is_247_opened && nearbyLab.opening_time && (
+                            <div className="my-0">
+                              <span className="text-muted me-2">
+                                <i className="mdi mdi-timer"></i>{" "}
+                                {formatTime(nearbyLab.opening_time)} to{" "}
+                                {formatTime(nearbyLab.closing_time)}
+                              </span>
+                            </div>
+                          )}
+                          {!nearbyLab.is_247_opened && nearbyLab.opening_day && (
+                            <div className="my-0">
+                              <span className="text-muted me-2">
+                                <i className="mdi mdi-calendar"></i>{" "}
+                                {nearbyLab.opening_day} to{" "}
+                                {nearbyLab.closing_day}
+                              </span>
+                            </div>
+                          )}
                           {nearbyLab.landline ? (
                             <div className="my-0">
                               <span className="text-muted me-2">
                                 <i className="mdi mdi-phone"></i>{" "}
                                 {nearbyLab.landline}
                               </span>
-                            </div>) : null}
+                            </div>
+                          ) : null}
                           {nearbyLab.female_collectors == "Yes" && (
                             <div className="my-0">
-                              <span className="text-danger" >
-                                <i className="mdi mdi-account-question"></i>{" "}
-                                Lab has female sample collectors
+                              <span className="text-danger">
+                                <i className="mdi mdi-account-question"></i> Lab
+                                has female sample collectors
                               </span>
                             </div>
                           )}
-                           <Row style={{ display: "flex", justifyContent: "center", marginLeft: "40px" }}>
-  <Col className="d-flex justify-content-end" style={{ paddingRight: "0" }}>
-    <StarRatings
-      rating={nearbyLab.rating}
-      starRatedColor="#F1B44C"
-      starEmptyColor="#2D363F"
-      numberOfStars={5}
-      name="rating"
-      starDimension="12px"
-      starSpacing="3px"
-    />
-  </Col>
-  <Col className="d-flex justify-content-start" style={{ paddingLeft: "0" }}>
-    <span style={{ fontSize: "14px", marginLeft: "7px"}}>
-      {nearbyLab && nearbyLab.rating && (
-        <p>{nearbyLab.rating.toFixed(1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
-      )}
-    </span>
-  </Col>
-</Row>
+                          <Row
+                            style={{
+                              display: "flex",
+                              justifyContent: "center",
+                              marginLeft: "40px",
+                            }}
+                          >
+                            <Col
+                              className="d-flex justify-content-end"
+                              style={{ paddingRight: "0" }}
+                            >
+                              <StarRatings
+                                rating={nearbyLab.rating}
+                                starRatedColor="#F1B44C"
+                                starEmptyColor="#2D363F"
+                                numberOfStars={5}
+                                name="rating"
+                                starDimension="12px"
+                                starSpacing="3px"
+                              />
+                            </Col>
+                            <Col
+                              className="d-flex justify-content-start"
+                              style={{ paddingLeft: "0" }}
+                            >
+                              <span
+                                style={{ fontSize: "14px", marginLeft: "7px" }}
+                              >
+                                {nearbyLab && nearbyLab.rating && (
+                                  <p>
+                                    {nearbyLab.rating
+                                      .toFixed(1)
+                                      .toString()
+                                      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                                  </p>
+                                )}
+                              </span>
+                            </Col>
+                          </Row>
                           <Link
-  to={
-    this.props.match.params.guest_id
-      ? `/nearby-lab-detail/${nearbyLab.account_id}/${this.props.match.params.guest_id}`
-      : `/nearby-lab-detail/${nearbyLab.account_id}}`
-  }
->
-  <div className="my-0 mt-3">
-    <span className="me-2" style={{ color: 'blue' }}>
-      See Details
-      <i className="mdi mdi-chevron-double-down"></i>{" "}
-    </span>
-  </div>
-</Link>
-
+                            to={
+                              this.props.match.params.guest_id
+                                ? `/nearby-lab-detail/${nearbyLab.account_id}/${this.props.match.params.guest_id}`
+                                : `/nearby-lab-detail/${nearbyLab.account_id}}`
+                            }
+                          >
+                            <div className="my-0 mt-3">
+                              <span className="me-2" style={{ color: "blue" }}>
+                                See Details
+                                <i className="mdi mdi-chevron-double-down"></i>{" "}
+                              </span>
+                            </div>
+                          </Link>
                         </div>
                       </CardBody>
                     </Card>
                   </Col>
                 ))}
-              {!isEmpty(nearbyLabs) && (this.state.user_id) && (this.state.user_type !== "CSR") && (this.state.user_type === "b2bclient") &&
+              {!isEmpty(nearbyLabs) &&
+                this.state.user_id &&
+                this.state.user_type !== "CSR" &&
+                this.state.user_type === "b2bclient" &&
                 nearbyLabs.map((nearbyLab, key) => (
                   <Col xl="4" sm="6" key={"_col_" + key}>
                     <Card
@@ -2989,7 +3180,8 @@ class NearbyLabs extends Component {
                             ? `/nearby-lab-detail/${nearbyLab.account_id}/${this.props.match.params.guest_id}/${this.props.match.params.uuid}`
                             : `/nearby-lab-detail/${nearbyLab.account_id}`
                         )
-                      } style={{ height: "95%" }}
+                      }
+                      style={{ height: "95%" }}
                     >
                       <CardBody>
                         <Link
@@ -3031,8 +3223,6 @@ class NearbyLabs extends Component {
                               }}
                             />
                           </div>
-
-
                         </Link>
 
                         <div className="mt-4 text-center">
@@ -3068,86 +3258,104 @@ class NearbyLabs extends Component {
                               </span>
                             </Tooltip>
                           </div>
-                          {!nearbyLab.is_247_opened &&
-                              nearbyLab.opening_time && (
-                                <div className="my-0">
-                                  <span className="text-muted me-2">
-                                    <i className="mdi mdi-timer"></i>{" "}
-                                                                        {formatTime(nearbyLab.opening_time)} to {formatTime(nearbyLab.closing_time)}
-
-
-                                  </span>
-                                </div>
-                              )}
-                            {!nearbyLab.is_247_opened && nearbyLab.opening_day && (
-                              <div className="my-0">
-                                <span className="text-muted me-2">
-                                  <i className="mdi mdi-calendar"></i>{" "}
-                                  {nearbyLab.opening_day} to{" "}
-                                  {nearbyLab.closing_day}
-                                </span>
-                              </div>
-                            )}
+                          {!nearbyLab.is_247_opened && nearbyLab.opening_time && (
+                            <div className="my-0">
+                              <span className="text-muted me-2">
+                                <i className="mdi mdi-timer"></i>{" "}
+                                {formatTime(nearbyLab.opening_time)} to{" "}
+                                {formatTime(nearbyLab.closing_time)}
+                              </span>
+                            </div>
+                          )}
+                          {!nearbyLab.is_247_opened && nearbyLab.opening_day && (
+                            <div className="my-0">
+                              <span className="text-muted me-2">
+                                <i className="mdi mdi-calendar"></i>{" "}
+                                {nearbyLab.opening_day} to{" "}
+                                {nearbyLab.closing_day}
+                              </span>
+                            </div>
+                          )}
                           {nearbyLab.landline ? (
                             <div className="my-0">
                               <span className="text-muted me-2">
                                 <i className="mdi mdi-phone"></i>{" "}
                                 {nearbyLab.landline}
                               </span>
-                            </div>) : null}
+                            </div>
+                          ) : null}
                           {nearbyLab.female_collectors == "Yes" && (
                             <div className="my-0">
-                              <span className="text-danger" >
-                                <i className="mdi mdi-account-question"></i>{" "}
-                                Lab has female sample collectors
+                              <span className="text-danger">
+                                <i className="mdi mdi-account-question"></i> Lab
+                                has female sample collectors
                               </span>
                             </div>
                           )}
-                          
-                          <Row style={{ display: "flex", justifyContent: "center", marginLeft: "40px" }}>
-  <Col className="d-flex justify-content-end" style={{ paddingRight: "0" }}>
-    <StarRatings
-      rating={nearbyLab.rating}
-      starRatedColor="#F1B44C"
-      starEmptyColor="#2D363F"
-      numberOfStars={5}
-      name="rating"
-      starDimension="12px"
-      starSpacing="3px"
-    />
-  </Col>
-  <Col className="d-flex justify-content-start" style={{ paddingLeft: "0" }}>
-    <span style={{ fontSize: "14px", marginLeft: "7px"}}>
-      {nearbyLab && nearbyLab.rating && (
-        <p>{nearbyLab.rating.toFixed(1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
-      )}
-    </span>
-  </Col>
-</Row>
+
+                          <Row
+                            style={{
+                              display: "flex",
+                              justifyContent: "center",
+                              marginLeft: "40px",
+                            }}
+                          >
+                            <Col
+                              className="d-flex justify-content-end"
+                              style={{ paddingRight: "0" }}
+                            >
+                              <StarRatings
+                                rating={nearbyLab.rating}
+                                starRatedColor="#F1B44C"
+                                starEmptyColor="#2D363F"
+                                numberOfStars={5}
+                                name="rating"
+                                starDimension="12px"
+                                starSpacing="3px"
+                              />
+                            </Col>
+                            <Col
+                              className="d-flex justify-content-start"
+                              style={{ paddingLeft: "0" }}
+                            >
+                              <span
+                                style={{ fontSize: "14px", marginLeft: "7px" }}
+                              >
+                                {nearbyLab && nearbyLab.rating && (
+                                  <p>
+                                    {nearbyLab.rating
+                                      .toFixed(1)
+                                      .toString()
+                                      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                                  </p>
+                                )}
+                              </span>
+                            </Col>
+                          </Row>
                           <Link
-   to={
-    this.props.match.params.guest_id
-      ? `/nearby-lab-detail/${nearbyLab.account_id}/${this.props.match.params.guest_id}/${this.props.match.params.uuid}`
-      : `/nearby-lab-detail/${nearbyLab.account_id}`
-  }
->
-  <div className="my-0 mt-3">
-    <span className="me-2" style={{ color: 'blue' }}>
-      See Details
-      <i className="mdi mdi-chevron-double-down"></i>{" "}
-    </span>
-  </div>
-</Link>
+                            to={
+                              this.props.match.params.guest_id
+                                ? `/nearby-lab-detail/${nearbyLab.account_id}/${this.props.match.params.guest_id}/${this.props.match.params.uuid}`
+                                : `/nearby-lab-detail/${nearbyLab.account_id}`
+                            }
+                          >
+                            <div className="my-0 mt-3">
+                              <span className="me-2" style={{ color: "blue" }}>
+                                See Details
+                                <i className="mdi mdi-chevron-double-down"></i>{" "}
+                              </span>
+                            </div>
+                          </Link>
                         </div>
                       </CardBody>
                     </Card>
                   </Col>
                 ))}
-              {isEmpty(nearbyLabs) && (
-                loading ? (
+              {isEmpty(nearbyLabs) &&
+                (loading ? (
                   <Row>
                     <Col lg="12">
-                      <div className="mb-5" style={{ fontSize: '24px' }}>
+                      <div className="mb-5" style={{ fontSize: "24px" }}>
                         Please Wait.....
                       </div>
                     </Col>
@@ -3155,18 +3363,18 @@ class NearbyLabs extends Component {
                 ) : (
                   <Row>
                     <Col lg="12">
-                      <div className="mb-5" style={{ fontSize: '24px', color: 'red' }}>
+                      <div
+                        className="mb-5"
+                        style={{ fontSize: "24px", color: "red" }}
+                      >
                         Sorry, No Labs Found In Your Specific Area.....
                       </div>
                     </Col>
                   </Row>
-                )
-              )}
+                ))}
               <ScrollButton />
             </Row>
-
           </Container>
-
         </div>
       </React.Fragment>
     );
@@ -3193,7 +3401,6 @@ NearbyLabs.propTypes = {
   patientProfile: PropTypes.array,
   error: PropTypes.any,
   success: PropTypes.any,
-
 };
 
 const mapStateToProps = state => ({
@@ -3206,7 +3413,6 @@ const mapStateToProps = state => ({
   patientProfile: state.LabMarket.patientProfile,
   error: state.LabProfile.error,
   success: state.LabProfile.success,
-
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
@@ -3215,7 +3421,6 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
   onGetTerritoriesList: id => dispatch(getTerritoriesList(id)),
   onGetLabNamesList: id => dispatch(getLabNamesList(id)),
   onGetPatientProfile: id => dispatch(getPatientProfile(id)),
-
 });
 
 export default connect(

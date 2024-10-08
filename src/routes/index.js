@@ -266,6 +266,7 @@ import DashboardCsr from "pages/Dashboard-Csr";
 import UnhandledComplaints from "pages/Complaints/unhandled-complaints";
 import HandledComplaints from "pages/Complaints/handled-complaints";
 import csrComplaints from "pages/Complaints/csr-complaints";
+import reduceTests from "pages/Complaints/reduce-tests";
 import NotesList from "pages/Complaints/notes-list";
 import NotesLists from "pages/Complaints/notes-list";
 import PatientCsrNotesList from "pages/Complaints/notes-list";
@@ -292,7 +293,12 @@ import PendingAudits from "pages/AuditorAdmin/pending-audits";
 import InProcessAudits from "pages/AuditorAdmin/inprocess-audits";
 import PassedAudits from "pages/AuditorAdmin/passed-audits";
 import FailedAudits from "pages/AuditorAdmin/failed-audits";
+import lablist from "pages/AuditorAdmin/lab-list";
 import AuditorsList from "pages/AuditorAdmin/auditors-list";
+import LabAudit from "pages/AuditorAdmin/lab-audit-list";
+import AuditorHistory from "pages/AuditorAdmin/auditor-history";
+import AuditorHistoryLab from "pages/AuditorAdmin/auditor-history";
+import AuditorAdminHistory from "pages/AuditorAdmin/auditor-history";
 
 import PagesMaintenance from "pages/Utility/pages-maintenance";
 import PagesComingsoon from "pages/Utility/pages-comingsoon";
@@ -327,6 +333,7 @@ import RadiologyOfferedbyLab from "pages/LabMarket/NearbyLabs/RadiologyOfferedby
 import advLabChatBox from "pages/LabAdvertisements/adv-lab-chat-box";
 import advmadminChatBox from "pages/LabAdvertisements/adv-lab-chat-box";
 import labCorporateStatement from "pages/FinanceAdmin/lab-corporate-statement";
+import { components } from "react-select/dist/react-select.cjs.prod";
 // All general public routes will be listed here
 const publicRoutes = [
   
@@ -385,6 +392,8 @@ const publicRoutes = [
 
 const labAuthProtectedRoutes = [
   // { path: "/change-password", component: ChangePassword },
+  
+  {path: "/audit-activity-history/:id",component: AuditorHistoryLab},
   { path: "/dashboard-lab", component: DashboardLab },
   {
     path: "/offered-tests",
@@ -707,6 +716,7 @@ const auditorAuthProtectedRoutes = [
   { path: "/auditor-profile", component: AuditorProfile },
   { path: "/assigned-audits", component: AssignedAudits },
   { path: "/audited-audits", component: AuditorCompletedAudits },
+  {path: "/audit-activity-auditor/:id",component: AuditorHistory}
 ];
 
 const registrationAdminAuthProtectedRoutes = [
@@ -778,6 +788,7 @@ const csrAuthProtectedRoutes = [
   { path: "/handled-complaints", component: HandledComplaints },
   { path: "/unhandled-complaints", component: UnhandledComplaints },
   { path: "/csr-pending-appointments", component: csrComplaints },
+  { path: "/reduce-tests/:id", component: reduceTests },
   { path: "/csr-notes-list/:id", component: NotesList },
   { path: "/csr-notes-complains/:id", component: NotesComplains },
 
@@ -827,9 +838,13 @@ const csrAdminAuthProtectedRoutes = [
 const auditorAdminAuthProtectedRoutes = [
   { path: "/pending-audits", component: PendingAudits },
   { path: "/inprocess-audits", component: InProcessAudits },
-  { path: "/passed-audits", component: PassedAudits },
+  { path: "/completed-audits", component: PassedAudits },
   { path: "/failed-audits", component: FailedAudits },
-  { path: "/auditors-list", component: AuditorsList}
+  { path: "/lab-list", component: lablist },
+  { path: "/auditors-list", component: AuditorsList},
+  { path: "/lab-audits/:id", component: LabAudit },,
+  {path: "/audit-activity-admin/:id",component: AuditorAdminHistory}
+
 ];
 
 

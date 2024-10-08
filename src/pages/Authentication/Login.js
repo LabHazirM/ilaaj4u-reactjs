@@ -306,7 +306,7 @@ class Login extends Component {
                                         console.log("yaha a raha hai mobile mation")
                                         this.props.history.push(
                                           this.state.finalUrl
-                                            ? `/nearby-labs/${this.state.finalUrl}`
+                                            ? `/nearby-labs/${this.props.match.params.guest_id}`
                                             : `/nearby-labs`
                                         );
                                         console.log("yaha pr aya nahi",this.state.finalUrl);
@@ -383,7 +383,7 @@ class Login extends Component {
                                     } else if (success.account_type === "csr-admin") {
                                       this.props.history.push("/pending-complaints-lab");
                                     } else if (success.account_type === "auditor-admin") {
-                                      this.props.history.push("/pending-audits");
+                                      this.props.history.push("/lab-list");
                                     } else if (success.account_type === "hr-admin") {
                                       this.props.history.push("/add-staff");
                                     } else if (success.account_type === "donor") {

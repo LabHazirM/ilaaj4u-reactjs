@@ -469,12 +469,12 @@ class TestsList extends Component {
                                               "Yes",
                                           }}
                                           validationSchema={Yup.object().shape({
-                                            // duration_required: Yup.number(
-                                            //   "Please enter number only"
-                                            // )
-                                            //   .required(
-                                            //     "Please enter turn around time required"
-                                            //   )
+                                            duration_required: Yup.number(
+                                              "Please enter number only"
+                                            )
+                                              .required(
+                                                "Please enter turn around time required"
+                                              ),
                                             //   .positive()
                                             //   .integer()
                                             //   .min(
@@ -501,11 +501,11 @@ class TestsList extends Component {
                                                 50000,
                                                 "Please enter a number less than or equal to 50000"
                                               ),
-                                            // duration_type: Yup.string()
-                                            //   .trim()
-                                            //   .required(
-                                            //     "Please select duration type"
-                                            //   ),
+                                            duration_type: Yup.string()
+                                              .trim()
+                                              .required(
+                                                "Please select duration type"
+                                              ),
                                             // is_eqa_participation: Yup.string()
                                             //   .trim()
                                             //   .required(
@@ -621,25 +621,25 @@ class TestsList extends Component {
                                                         this.state
                                                           .offeredTest
                                                           .duration_required
-                                                      }
-                                                      onChange={e => {
-                                                        this.setState({
-                                                          offeredTest: {
-                                                            id: this.state
-                                                              .offeredTest
-                                                              .id,
-                                                              duration_required:
-                                                              e.target.value,
-                                                            lab_id:
-                                                              this.props.match
-                                                                .params.id,
-                                                          },
-                                                        });
-                                                      }}
+                                                     }
+                                                      // onChange={e => {
+                                                      //   this.setState({
+                                                      //     offeredTest: {
+                                                      //       id: this.state
+                                                      //         .offeredTest
+                                                      //         .id,
+                                                      //         duration_required:
+                                                      //         e.target.value,
+                                                      //       lab_id:
+                                                      //         this.props.match
+                                                      //           .params.id,
+                                                      //     },
+                                                      //   });
+                                                      // }}
                                                       className={
                                                         "form-control" +
                                                         (errors.duration_required &&
-                                                        touched.shared_percentage
+                                                        touched.duration_required
                                                           ? " is-invalid"
                                                           : "")
                                                       }
@@ -671,7 +671,10 @@ class TestsList extends Component {
                                                           multiple={false}
                                                         >
                                                           <option value="">
-                                                            ---- Days/Hours ----
+                                                            ---- Week/Days/Hours ----
+                                                          </option>
+                                                          <option value="week">
+                                                            Week
                                                           </option>
                                                           <option value="days">
                                                             days

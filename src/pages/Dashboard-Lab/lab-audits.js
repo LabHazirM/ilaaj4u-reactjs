@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import MetaTags from "react-meta-tags";
 import { any } from "prop-types";
+import { Tooltip } from "@material-ui/core";
 import { withRouter, Link } from "react-router-dom";
 import {
   Alert,
@@ -31,7 +32,7 @@ import * as Yup from "yup";
 //Import Breadcrumb
 import "assets/scss/table.scss";
 import Breadcrumbs from "components/Common/Breadcrumb";
-import { getLabAudits, addNewAudit } from "store/auditor/actions";
+import { getLabAudits, UpdateAuditStatus } from "store/auditor/actions";
 
 class LabAudits extends Component {
   constructor(props) {
@@ -127,29 +128,33 @@ class LabAudits extends Component {
           isDummyField: true,
           editable: false,
           text: "Action",
-          formatter: (cellContent, audit) => {
-            if (audit.audit_status === "Fail") {
-              return (
-                <div className="text-sm-center">
-                  <Button
-                    color="primary"
-                    className="font-12 btn-block btn btn-primary"
-                    onClick={this.onClickAuditedEvent}
-                  >
-                    <i className="mdi mdi-plus-circle-outline me-1" />
-                    Request Reaudit
-                  </Button>
-                </div>
-              );
-            } else {
-              return null; // returning null will hide this column
-            }
-          },
+          formatter: (cellContent, audit) => (
+            <div className="text-sm-center">
+              {audit.audit_status === "Fail" && (
+                <Button
+                  color="primary"
+                  className="font-12 btn-block btn btn-primary"
+                  onClick ={e=>this.onClickAuditedEvent(e,audit)}
+                >
+                  <i className="mdi mdi-plus-circle-outline me-1" />
+                  Request Reaudit
+                </Button>
+              )}
+              <Tooltip title="Comments">
+                <Link
+                  className="fas fa-comment font-size-18"
+                  to={`/audit-activity-history/${audit.id}`}
+                />
+              </Tooltip>
+            </div>
+          ),
         },
       ],
       
      
     };
+    this.onClickAuditedEvent =
+    this.onClickAuditedEvent.bind(this);
     this.toggle = this.toggle.bind(this);
   }
 
@@ -159,12 +164,21 @@ class LabAudits extends Component {
     this.setState({ labAudits });
   }
   onClickAuditedEvent = (e, arg) => {
+    console.log("audit id is ", arg)
     this.setState({
-      id: arg,
+      audit: {
+        id: arg.id,
+        reason: arg.reason,
+        lab_id:arg.lab_id,
+        audit_status: "Revisit",
+      },
+      isEdit: true,
     });
+
     this.setState({ auditModal: true, });
-    
   };
+
+
   toggle() {
     this.setState(prevState => ({
       modal: !prevState.modal,
@@ -186,8 +200,8 @@ class LabAudits extends Component {
     const { SearchBar } = Search;
 
     const { labAudits, } = this.props;
-    const {  onGetLabAudits, onAddNewAudit } = this.props;
-
+    const {  onGetLabAudits, onUpdateAuditStatus } = this.props;
+    const audit = this.state.audit;
     const pageOptions = {
       sizePerPage: 10,
       totalSize: labAudits.length, // replace later with size(labAudits),
@@ -272,21 +286,23 @@ class LabAudits extends Component {
                                             ),
                                           })}
                                           onSubmit={values => {
-                                            const {
-                                             onAddNewAudit,
-                                            } = this.props;
-
-                                            const data = {
-                                              // id: this.state.id,
+                                            const Updateauditstatus =
+                                            {
+                                              id: audit.id,
+                                              lab_id: audit.lab_id,
                                               reason_of_reaudit: values.reason_of_reaudit,
+                                              audit_status: "Revisit",
+            
                                             };
-
-                                            console.log(data);
-
-                                            onAddNewAudit(data, this.state.user_id);
+                                            onUpdateAuditStatus(
+                                              Updateauditstatus
+                                            );
                                             this.setState({
                                               auditModal: false,
                                             });
+                                            setTimeout(() => {
+                                              onGetLabAudits(this.state.user_id);
+                                            }, 1000);
                                           }}
                                         >
                                           {({ errors, status, touched }) => (
@@ -405,7 +421,7 @@ LabAudits.propTypes = {
   labAudits: PropTypes.array,
   className: PropTypes.any,
   onGetLabAudits: PropTypes.func,
-  onAddNewAudit: PropTypes.func,
+  onUpdateAuditStatus: PropTypes.func,
   history: any,
   success: PropTypes.any,
   error: PropTypes.any,
@@ -416,8 +432,8 @@ const mapStateToProps = ({ audits }) => ({
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
   onGetLabAudits: id => dispatch(getLabAudits(id)),
-  onAddNewAudit: (audit, id) =>
-    dispatch(addNewAudit(audit, id)),
+  onUpdateAuditStatus: (audit) =>
+    dispatch(UpdateAuditStatus(audit)),
 });
 
 export default connect(

@@ -14,6 +14,12 @@ import {
   GET_LC_LIST,
   GET_LC_LIST_SUCCESS,
   GET_LC_LIST_FAIL,
+  GET_LABS_AUDIT_LIST,
+  GET_LABS_AUDIT_LIST_SUCCESS,
+  GET_LABS_AUDIT_LIST_FAIL,
+  GET_LABS_ALL_AUDIT_LIST,
+  GET_LABS_ALL_AUDIT_LIST_SUCCESS,
+  GET_LABS_ALL_AUDIT_LIST_FAIL,
 } from "./actionTypes";
 
 export const getLabsList = () => ({
@@ -29,6 +35,37 @@ export const getLabsListSuccess =
 
 export const getLabsListFail = error => ({
   type: GET_LABS_LIST_FAIL,
+  payload: error,
+});
+
+export const getLabsAuditList = () => ({
+  type: GET_LABS_AUDIT_LIST,
+  payload: {},
+});
+
+export const getLabsAuditListSuccess =
+  labs => ({
+    type: GET_LABS_AUDIT_LIST_SUCCESS,
+    payload: labs,
+  });
+
+export const getLabsAuditListFail = error => ({
+  type: GET_LABS_AUDIT_LIST_FAIL,
+  payload: error,
+});
+
+export const getLabsAllAuditList = id => ({
+  type: GET_LABS_ALL_AUDIT_LIST,
+  payload: id,
+});
+/// get single lab audits list
+export const getLabsAllAuditListSuccess = labaudit => ({
+  type:  GET_LABS_ALL_AUDIT_LIST_SUCCESS,
+  payload: labaudit,
+});
+
+export const getLabsAllAuditListFail = error => ({
+  type: GET_LABS_ALL_AUDIT_LIST_FAIL,
   payload: error,
 });
 export const getDonorsList = () => ({

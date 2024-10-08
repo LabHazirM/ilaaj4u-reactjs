@@ -264,6 +264,8 @@ class OfferedTestsList extends Component {
     const updateCorporateStatus = {
       id: offeredTest.id,
       shared_percentage: this.state.shared_percentage,
+      status: 'Accept'
+
     };
 
     // Dispatch the action
@@ -480,6 +482,7 @@ class OfferedTestsList extends Component {
                                                 this.state.offeredTest
                                                   .shared_percentage) ||
                                               "",
+                                             
                                           }}
                                           validationSchema={Yup.object().shape({
                                             status: Yup.number(
@@ -509,6 +512,7 @@ class OfferedTestsList extends Component {
                                               id: offeredTest.id,
                                               shared_percentage:
                                                 values.shared_percentage,
+                                              status: 'Accept'
                                             };
 
                                             // update PaymentStatus

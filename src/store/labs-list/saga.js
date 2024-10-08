@@ -1,11 +1,13 @@
 import { call, put, takeEvery } from "redux-saga/effects";
 
 // Crypto Redux States
-import { GET_LABS_LIST, GET_DONORS_LIST, GET_DONORSA,GET_LC_LIST,GET_CORPORATE_LIST } from "./actionTypes";
+import { GET_LABS_LIST,GET_LABS_AUDIT_LIST,  GET_DONORS_LIST, GET_DONORSA,GET_LC_LIST,GET_LABS_ALL_AUDIT_LIST, GET_CORPORATE_LIST } from "./actionTypes";
 
 import {
   getLabsListSuccess,
   getLabsListFail,
+  getLabsAuditListSuccess,
+  getLabsAuditListFail,
   getDonorsListSuccess,
   getDonorsListFail,
   getDonorsASuccess,
@@ -14,10 +16,12 @@ import {
   getLcListFail,
   getCorporateListSuccess,
   getCorporateListFail,
+  getLabsAllAuditListSuccess,
+  getLabsAllAuditListFail
 } from "./actions";
 
 //Include Both Helper File with needed methods
-import { getLabsList ,getDonorsList, getDonorsA,getLcList ,getCorporateList} from "../../helpers/django_api_helper";
+import { getLabsList ,getDonorsList, getDonorsA,getLcList ,getCorporateList, getLabsAuditList, getLabsAllAuditList} from "../../helpers/django_api_helper";
 
 function* fetchLabsList(object) {
   try {
@@ -27,6 +31,25 @@ function* fetchLabsList(object) {
     yield put(getLabsListFail(error));
   }
 }
+
+function* fetchLabsAuditList(object) {
+  try {
+    const response = yield call(getLabsAuditList, object.payload);
+    yield put(getLabsAuditListSuccess(response));
+  } catch (error) {
+    yield put(getLabsAuditListFail(error));
+  }
+}
+
+function* fetchLabAllAudits(object) {
+  try {
+    const response = yield call(getLabsAllAuditList, object.payload);
+    yield put(getLabsAllAuditListSuccess(response));
+  } catch (error) {
+    yield put(getLabsAllAuditListFail(error));
+  }
+}
+
 function* fetchDonorsList(object) {
   try {
     const response = yield call(getDonorsList, object.payload);
@@ -62,8 +85,16 @@ function* fetchDonorsA(object) {
 
 function* LabsSaga() {
   yield takeEvery(
+    GET_LABS_ALL_AUDIT_LIST,
+    fetchLabAllAudits
+  );
+  yield takeEvery(
     GET_LABS_LIST,
     fetchLabsList
+  );
+  yield takeEvery(
+    GET_LABS_AUDIT_LIST,
+    fetchLabsAuditList
   );
   yield takeEvery(
     GET_DONORS_LIST,

@@ -53,6 +53,8 @@ class OfferedTestsList extends Component {
     super(props);
     this.node = React.createRef();
     this.state = {
+      selectedStatus: null,
+      selectedName: null,
       cemployeeDatas: [],
       tests: [],
       labProfiles: [],
@@ -167,6 +169,7 @@ class OfferedTestsList extends Component {
     const { cemployeeDatas, onGetALabCorporate } = this.props;
     console.log(onGetALabCorporate(this.state.user_id));
     this.setState({ cemployeeDatas });
+    this.setInitialDropdownValue();
   }
   
   
@@ -289,6 +292,36 @@ class OfferedTestsList extends Component {
     }, 1000);
   };
 
+  setInitialDropdownValue = () => {
+    const { pathname } = this.props.history.location;
+    let selectedValue = '';
+
+    if (pathname.includes('/corporates-List')) {
+      selectedValue = 'Pending Corporate';
+    } else if (pathname.includes('/accepted-corporates-List')) {
+      selectedValue = 'Accepted Corporate';
+    }
+
+    this.setState({ selectedValue });
+  };
+  handleSelectChange = (event) => {
+    const selectedValue = event.target.value;
+    this.setState({ selectedValue });
+    // Perform navigation based on the selected value
+    if (selectedValue === 'Pending Corporate') {
+        this.props.history.push('/corporates-List');
+    }
+    if (selectedValue === 'Accepted Corporate') {
+        this.props.history.push('/accepted-corporates-List');
+    }
+}
+handleNameChange = (e) => {
+  this.setState({ selectedName: e.target.value });
+};
+
+handleStatusChange = (e) => {
+  this.setState({ selectedStatus: e.target.value });
+};
   render() {
     const { SearchBar } = Search;
 
@@ -299,7 +332,31 @@ class OfferedTestsList extends Component {
     const { onUpdateCorporateStatus, onGetALabCorporate, } =
       this.props;
     const offeredTest = this.state.offeredTest;
+    const uniqueCorporateName = [...new Set(cemployeeDatas.map(data => data.name))];
 
+    // Generate NameOptions for the <select> dropdown
+    const corporateNameOptions = uniqueCorporateName.map((CorporateName, index) => (
+      <option key={index} value={CorporateName}>
+        {CorporateName}
+      </option>
+    ));
+
+    const uniqueCorporateStatus = [...new Set(cemployeeDatas.map(data => data.corporate_status))];
+
+    // Generate StatusOptions for the <select> dropdown
+    const corporateStatusOptions = uniqueCorporateStatus.map((EmployeeStatus, index) => (
+      <option key={index} value={EmployeeStatus}>
+        {EmployeeStatus}
+      </option>
+    ));
+
+    // Combine the filters
+    const filteredData = cemployeeDatas.filter(item => {
+      const { selectedName, selectedStatus } = this.state;
+      const nameFilter = !selectedName || item.name === selectedName;
+      const statusFilter = !selectedStatus || item.corporate_status === selectedStatus;
+      return nameFilter && statusFilter;
+    });
     const pageOptions = {
       sizePerPage: 10000,
       totalSize: cemployeeDatas.length, // replace later with size(cemployeeDatas),
@@ -321,7 +378,7 @@ class OfferedTestsList extends Component {
           </MetaTags>
           <Container fluid>
             {/* Render Breadcrumbs */}
-            <Breadcrumbs title="Corporate Offered Tests" breadcrumbItem="Tests List" />
+            <Breadcrumbs title="Corporate Offered Tests" breadcrumbItem="Corporate List" />
             <Row>
               {/* <div> <span className="text-danger font-size-12">
                                     <strong> 
@@ -329,9 +386,57 @@ class OfferedTestsList extends Component {
                                     </strong>
                                   </span>
                                   </div> */}
+                                          <Row className="mb-2">
+            <Col sm="4">
+                <div className="ms-2 mb-4">
+                    <div>
+                        <Label for="accepted_corporate" className="form-label">
+                            <strong>Corporate Statuses</strong>
+                        </Label>
+                        <select
+                            className="form-control select2"
+                            title="accepted_corporate"
+                            name="accepted_corporate"
+                            onChange={this.handleSelectChange}
+                            value={this.state.selectedValue}
+                        >
+                            <option value="Pending Corporate">Pending Corporate</option>
+                            <option value="Accepted Corporate">Accepted Corporate</option>
+                        </select>
+                    </div>
+                </div>
+            </Col>
+
+        </Row>
               <Col lg="12">
                 <Card>
                   <CardBody>
+                    <Row className="mb-2">        <Col lg="3" className="mt-2">
+                                  <div className="mb-3">
+                                    <label className="form-label">Corporate Name</label>
+                                    <select
+                                      value={this.state.selectedName}
+                                      onChange={this.handleNameChange}
+                                      className="form-control"
+                                    >
+                                      <option value="">All</option>
+                                      {corporateNameOptions}
+                                    </select>
+                                  </div>
+                                </Col>
+                                <Col lg="3" className="mt-2">
+                                  <div className="mb-3">
+                                    <label className="form-label">Corporate Status</label>
+                                    <select
+                                      value={this.state.selectedStatus}
+                                      onChange={this.handleStatusChange}
+                                      className="form-control"
+                                    >
+                                      <option value="">All</option>
+                                      {corporateStatusOptions}
+                                    </select>
+                                  </div>
+                                </Col></Row>
                     <PaginationProvider
                       pagination={paginationFactory(pageOptions)}
                       keyField="id"
@@ -360,6 +465,7 @@ class OfferedTestsList extends Component {
                                       headerWrapperClasses={"table-light"}
                                       responsive
                                       ref={this.node}
+                                      data={filteredData}
                                     />
                                     <Modal
                                       isOpen={this.state.PatientModal}
@@ -541,6 +647,7 @@ OfferedTestsList.propTypes = {
   tests: PropTypes.array,
   labProfiles: PropTypes.array,
   // units: PropTypes.array,
+  history: PropTypes.any,
   cemployeeDatas: PropTypes.array,
   className: PropTypes.any,
   onGetALabCorporate: PropTypes.func,

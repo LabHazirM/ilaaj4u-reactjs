@@ -163,7 +163,7 @@ class MsgsList extends Component {
                         {msg.field_name == "request_status" &&(
                           <div >
                           <p>
-                            <b>{msg.name}</b>{" "} changes advertisement status to {msg.field_name} at {" "} {moment(msg.added_at).format("DD MMM YYYY, h:mm A")}.
+                            <b>{msg.name}</b>{" "} changes advertisement status to {msg.new_value} at {" "} {moment(msg.added_at).format("DD MMM YYYY, h:mm A")}.
                           </p>
                         </div>
                         )}
@@ -174,7 +174,13 @@ class MsgsList extends Component {
                           </p>
                         </div>
                         )}
-                      
+                  {msg.actions === "Updated" && msg.field_name === null && (
+  <div>
+    <p>
+      <b>{msg.name}</b>{" "} {msg.actions} advertisement payment status on {" "} {moment(msg.added_at).format("DD MMM YYYY, h:mm A")}
+    </p>
+  </div>
+)}
                         
                         </CardBody>
                       </Card>

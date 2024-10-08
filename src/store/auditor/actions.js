@@ -14,8 +14,27 @@ import {
   UPDATE_ASSIGNED_AUDITS,
   UPDATE_ASSIGNED_AUDITS_SUCCESS,
   UPDATE_ASSIGNED_AUDITS_FAIL,
+  UPDATE_AUDITS_STATUS,
+  UPDATE_AUDITS_STATUS_SUCCESS,
+  UPDATE_AUDITS_STATUS_FAIL,
 } from "./actionTypes";
 
+//////////////////////////
+export const UpdateAuditStatus = audit => (
+  {
+  type: UPDATE_AUDITS_STATUS,
+  payload: audit,
+});
+
+export const UpdateAuditStatusSuccess = audit => ({
+  type: UPDATE_AUDITS_STATUS_SUCCESS,
+  payload: audit,
+});
+
+export const UpdateAuditStatusFail = error => ({
+  type: UPDATE_AUDITS_STATUS_FAIL,
+  payload: error,
+});
 // ----------- Staff profile APIs actions -----------------
 export const getAssignedAudits = id => ({
   type: GET_ASSIGNED_AUDITS,
@@ -31,7 +50,8 @@ export const getAssignedAuditsFail = error => ({
   type: GET_ASSIGNED_AUDITS_FAIL,
   payload: error,
 });
-export const addNewAudit = (audit, id) => ({
+export const addNewAudit = (audit, id) => (
+  {
   type: ADD_NEW_AUDIT,
   payload: { audit, id },
 });

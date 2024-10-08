@@ -404,7 +404,7 @@ class PaymentStatussList extends Component {
             text: "Action",
             formatter: (cellContent, paymentCreatedStatus) => (
               <>
-              {paymentCreatedStatus.payment_status !== "Submit" ? ( 
+             {paymentCreatedStatus.payment_status !== "Paid" && paymentCreatedStatus.payment_status !== "Submit"  ? ( 
                 <div className="d-flex gap-1">
                 <button
                   type="submit"

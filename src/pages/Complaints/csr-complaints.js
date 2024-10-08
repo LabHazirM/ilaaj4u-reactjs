@@ -3,7 +3,8 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import MetaTags from "react-meta-tags";
 import { withRouter, Link } from "react-router-dom";
-import moment from 'moment';
+import DatePicker from "react-datepicker";
+import moment from "moment";
 import {
   Card,
   CardBody,
@@ -23,7 +24,10 @@ import paginationFactory, {
   PaginationProvider,
   PaginationListStandalone,
 } from "react-bootstrap-table2-paginator";
-import filterFactory, { textFilter,selectFilter } from 'react-bootstrap-table2-filter';
+import filterFactory, {
+  textFilter,
+  selectFilter,
+} from "react-bootstrap-table2-filter";
 import Tooltip from "@material-ui/core/Tooltip";
 import ToolkitProvider, { Search } from "react-bootstrap-table2-toolkit";
 import BootstrapTable from "react-bootstrap-table-next";
@@ -49,10 +53,17 @@ class csrComplaints extends Component {
   constructor(props) {
     super(props);
     this.node = React.createRef();
+
+    const today = new Date();
+    const oneMonthAgo = new Date();
+    oneMonthAgo.setMonth(today.getMonth() - 1);
+
     this.state = {
       csrComplaints: [],
       csrComplaint: "",
       modal: false,
+      startDate: oneMonthAgo, // Default to one month ago
+      endDate: today, // Default to today
       btnText: "Copy",
       btnText1: "Copy",
       deleteModal: false,
@@ -106,11 +117,12 @@ class csrComplaints extends Component {
           formatter: (cellContent, csrComplaint) => (
             <>
               <span>
-                <Link to="#"
-                //  onClick={e => this.openLabModal(e, csrComplaint)}
-                onMouseEnter={e =>  this.openLabModal(e, csrComplaint)}
-                onPointerLeave={this.handleMouseExit()}
-                 >
+                <Link
+                  to="#"
+                  //  onClick={e => this.openLabModal(e, csrComplaint)}
+                  onMouseEnter={e => this.openLabModal(e, csrComplaint)}
+                  onPointerLeave={this.handleMouseExit()}
+                >
                   {csrComplaint.lab_name}
                 </Link>
               </span>
@@ -124,7 +136,8 @@ class csrComplaints extends Component {
           sort: true,
           formatter: (cellContent, labsList) => (
             <>
-              {labsList.is_home_sampling_availed == true || labsList.is_state_sampling_availed == true ? (
+              {labsList.is_home_sampling_availed == true ||
+              labsList.is_state_sampling_availed == true ? (
                 <span>Yes</span>
               ) : (
                 <span>No</span>
@@ -133,14 +146,14 @@ class csrComplaints extends Component {
           ),
           filter: selectFilter({
             options: {
-              '': 'All',
-              'true': 'Yes',
-              'false': 'No',
+              "": "All",
+              true: "Yes",
+              false: "No",
             },
-            defaultValue: 'All',
+            defaultValue: "All",
           }),
         },
-        
+
         {
           dataField: "status",
           text: "Status",
@@ -154,7 +167,9 @@ class csrComplaints extends Component {
           formatter: (cellContent, complaint) => (
             <>
               <span>
-                {moment(complaint.appointment_requested_at).format("DD MMM YYYY, h:mm A")}
+                {moment(complaint.appointment_requested_at).format(
+                  "DD MMM YYYY, h:mm A"
+                )}
               </span>
             </>
           ),
@@ -166,24 +181,29 @@ class csrComplaints extends Component {
           sort: true,
           formatter: (cellContent, complaint) => (
             <>
-            {complaint.appointment_requested_at >  complaint.estimated_sample_collection_at ? (
-              <span className="text-danger">
-                {complaint.estimated_sample_collection_at
-                  ? moment(complaint.estimated_sample_collection_at).format("DD MMM YYYY, h:mm A")
-                  : "--"}
-              </span>
-            ) : 
-            <span>
-            {complaint.estimated_sample_collection_at
-              ? moment(complaint.estimated_sample_collection_at).format("DD MMM YYYY, h:mm A")
-              : "--"}
-          </span>}
-              
+              {complaint.appointment_requested_at >
+              complaint.estimated_sample_collection_at ? (
+                <span className="text-danger">
+                  {complaint.estimated_sample_collection_at
+                    ? moment(complaint.estimated_sample_collection_at).format(
+                        "DD MMM YYYY, h:mm A"
+                      )
+                    : "--"}
+                </span>
+              ) : (
+                <span>
+                  {complaint.estimated_sample_collection_at
+                    ? moment(complaint.estimated_sample_collection_at).format(
+                        "DD MMM YYYY, h:mm A"
+                      )
+                    : "--"}
+                </span>
+              )}
             </>
           ),
           filter: textFilter(),
         },
-        
+
         {
           dataField: "menu",
           isDummyField: true,
@@ -197,26 +217,36 @@ class csrComplaints extends Component {
                   to={`/appointment-detail/${csrComplaint.id}`}
                 ></Link>
               </Tooltip>
-              {csrComplaint.status !== "Cancel" && csrComplaint.status !== "Pending Cancel" ? (
+              {csrComplaint.status !== "Cancel" &&
+              csrComplaint.status !== "Pending Cancel" ? (
                 <Link className="text-success" to="#">
-                <Tooltip title="Update">
-                  <i
-                    className="mdi mdi-pencil font-size-18"
-                    id="edittooltip"
-                    onClick={e =>
-                      this.handlePaymentStatusClick(e, csrComplaint)
-                    }
-                  ></i>
-                </Tooltip>
-              </Link>
+                  <Tooltip title="Update">
+                    <i
+                      className="mdi mdi-pencil font-size-18"
+                      id="edittooltip"
+                      onClick={e =>
+                        this.handlePaymentStatusClick(e, csrComplaint)
+                      }
+                    ></i>
+                  </Tooltip>
+                </Link>
               ) : null}
-              
+
               <Tooltip title="Add Comment">
                 <Link
                   className="fas fa-comment font-size-18"
                   to={`/csr-notes-list/${csrComplaint.id}`}
                 ></Link>
               </Tooltip>
+              {csrComplaint.payment_method == "Cash" &&
+              csrComplaint.payment_status == "Not Paid" ? (
+              <Tooltip title="Edit Appointments">
+                <Link
+                  className="mdi mdi-pencil font-size-18"
+                  to={`/reduce-tests/${csrComplaint.id}`}
+                ></Link>
+              </Tooltip>
+               ) : null}
             </div>
           ),
         },
@@ -227,11 +257,30 @@ class csrComplaints extends Component {
     this.toggleLabModal = this.toggleLabModal.bind(this);
     this.toggle = this.toggle.bind(this);
   }
+  // componentDidMount() {
+  //   const { onGetCsrComplaints,csrComplaints } = this.props;
+  //   const { startDate, endDate, user_id } = this.state;
+  //   // Ensure dates are properly formatted before sending
+  //   onGetCsrComplaints(user_id, startDate.toISOString().split('T')[0], endDate.toISOString().split('T')[0]);
+  //   // this.setState({ csrComplaints });
+  //   console.log("datassss", startDate,endDate, csrComplaints)
+  // }
   componentDidMount() {
-    const { csrComplaints, onGetCsrComplaints } = this.props;
-    onGetCsrComplaints(this.state.user_id);
+    const { onGetCsrComplaints, csrComplaints } = this.props;
+    const { startDate, endDate, user_id } = this.state;
+  
+    console.log("Formatted Dates:", startDate.toISOString().split('T')[0], endDate.toISOString().split('T')[0]);
+  
+    if (startDate && endDate) {
+      onGetCsrComplaints(user_id, startDate.toISOString().split('T')[0], endDate.toISOString().split('T')[0]);
+    } else {
+      console.error('StartDate or EndDate is undefined');
+    }
+    
     this.setState({ csrComplaints });
+    console.log("datassss", startDate, endDate, csrComplaints);
   }
+  
 
   toggle() {
     this.setState(prevState => ({
@@ -265,7 +314,7 @@ class csrComplaints extends Component {
   handleMouseExit = () => {
     this.setState({
       PatientModal: false,
-      LabModal:  false,
+      LabModal: false,
       isHovered: false,
     });
   };
@@ -278,17 +327,24 @@ class csrComplaints extends Component {
       : this.setState({ btnText: "Copy" });
   };
 
-  // eslint-disable-next-line no-unused-vars
-  componentDidUpdate(prevProps, prevState, snapshot) {
-    const { csrComplaints } = this.props;
-    if (
-      !isEmpty(csrComplaints) &&
-      size(prevProps.csrComplaints) !== size(csrComplaints)
-    ) {
-      this.setState({ csrComplaints: {}, isEdit: false });
+  componentDidUpdate(prevProps, prevState) {
+    const { onGetCsrComplaints, csrComplaints } = this.props;
+    const { startDate, endDate, user_id } = this.state;
+  
+    // Fetch data if dates change
+    if (prevState.startDate !== startDate || prevState.endDate !== endDate) {
+      onGetCsrComplaints(user_id, startDate.toISOString().split('T')[0], endDate.toISOString().split('T')[0]);
+    }
+  
+    // Update state if the csrComplaints data has changed
+    if (!isEmpty(csrComplaints) && size(prevProps.csrComplaints) !== size(csrComplaints)) {
+      this.setState({ csrComplaints });
     }
   }
-
+  handleDateChange = (date, field) => {
+    this.setState({ [field]: date });
+  };
+  
   onPaginationPageChange = page => {
     if (
       this.node &&
@@ -318,7 +374,6 @@ class csrComplaints extends Component {
         status: arg.status,
         payment_status: arg.payment_status,
         payment_method: arg.payment_method,
-
       },
       isEdit: true,
     });
@@ -327,6 +382,8 @@ class csrComplaints extends Component {
   };
 
   render() {
+    const { startDate, endDate } = this.state;
+    
     const { SearchBar } = Search;
 
     const { csrComplaints } = this.props;
@@ -348,6 +405,7 @@ class csrComplaints extends Component {
         order: "desc", // desc or asc
       },
     ];
+ // Ensure csrComplaints is an array and has data
 
     return (
       <React.Fragment>
@@ -359,7 +417,33 @@ class csrComplaints extends Component {
             {/* Render Breadcrumbs */}
             <Breadcrumbs title="List" breadcrumbItem="All Appointments" />
             <Row>
-              <p className="text-danger">Note: This page will show all Appointments in all territories that are not in status complete.</p>
+              <p className="text-danger">
+                Note: This page will show all Complaints within the selected date range.
+              </p>
+              <Col lg="3">
+                <div className="mb-3">
+                  <label className="form-label">Start Date:</label>
+                  <DatePicker
+                    selected={startDate}
+                    onChange={date => this.handleDateChange(date, 'startDate')}
+                    className="form-control"
+                    dateFormat="d MMM yyyy"
+                  />
+                </div>
+              </Col>
+              <Col lg="3">
+                <div className="mb-3">
+                  <label className="form-label">End Date:</label>
+                  <DatePicker
+                    selected={endDate}
+                    onChange={date => this.handleDateChange(date, 'endDate')}
+                    className="form-control"
+                    dateFormat="d MMM yyyy"
+                  />
+                </div>
+              </Col>
+            </Row>
+            <Row>
               <Col lg="12">
                 <Card>
                   <CardBody>
@@ -391,7 +475,7 @@ class csrComplaints extends Component {
                                       headerWrapperClasses={"table-light"}
                                       responsive
                                       ref={this.node}
-                                      filter={ filterFactory() }
+                                      filter={filterFactory()}
                                     />
                                     <Modal
                                       isOpen={this.state.LabModal}
@@ -575,10 +659,10 @@ class csrComplaints extends Component {
                                                   .payment_status) ||
                                               "",
                                             payment_method:
-                                            (this.state.csrComplaint &&
-                                              this.state.csrComplaint
-                                                .payment_method) ||
-                                            "",
+                                              (this.state.csrComplaint &&
+                                                this.state.csrComplaint
+                                                  .payment_method) ||
+                                              "",
                                             appointment_option:
                                               (this.state &&
                                                 this.state
@@ -599,10 +683,8 @@ class csrComplaints extends Component {
                                                 values.appointment_requested_at,
                                               appointment_option:
                                                 values.appointment_option,
-                                              comments:
-                                                values.comments,
+                                              comments: values.comments,
                                               staff: this.state.user_id,
-                                                
                                             };
 
                                             // update PaymentStatus
@@ -611,7 +693,9 @@ class csrComplaints extends Component {
                                             );
                                             setTimeout(() => {
                                               onGetCsrComplaints(
-                                                this.state.user_id
+                                                this.state.user_id, 
+                                                this.state.startDate.toISOString().split('T')[0], 
+                                                this.state.endDate.toISOString().split('T')[0]
                                               );
                                             }, 1000);
                                             this.toggle();
@@ -627,50 +711,40 @@ class csrComplaints extends Component {
                                                     name="hiddenEditFlag"
                                                     value={isEdit}
                                                   />
-                                                  {(this.state.appointment_option =="Cancel") &&
-                                                  (csrComplaint.status === "Confirmed" && csrComplaint.payment_method === "Cash" && csrComplaint.payment_status === "Paid") ? (
-                                                    <p><span className="text-danger bold">Alert: The appointment is confirmed, and the cash has been received by the lab. Before canceling the appointment, please make sure to confirm the refund payment with the patient.</span></p>
+                                                  {this.state
+                                                    .appointment_option ==
+                                                    "Cancel" &&
+                                                  csrComplaint.status ===
+                                                    "Confirmed" &&
+                                                  csrComplaint.payment_method ===
+                                                    "Cash" &&
+                                                  csrComplaint.payment_status ===
+                                                    "Paid" ? (
+                                                    <p>
+                                                      <span className="text-danger bold">
+                                                        Alert: The appointment
+                                                        is confirmed, and the
+                                                        cash has been received
+                                                        by the lab. Before
+                                                        canceling the
+                                                        appointment, please make
+                                                        sure to confirm the
+                                                        refund payment with the
+                                                        patient.
+                                                      </span>
+                                                    </p>
                                                   ) : null}
-                                                  {
-
-                                                    (csrComplaint.status === "Pending" || csrComplaint.status === "Confirmed") &&
-                                                    (csrComplaint.payment_status === "Not Paid" || 
-                                                    csrComplaint.payment_status === "Allocate" || 
-                                                    csrComplaint.payment_status === "Paid") ? (
-                                                      <div className="mb-3">
-                                                        <Label
-                                                          for="appointment_option"
-                                                          className="form-label"
-                                                        >
-                                                          Select
-                                                        </Label>
-                                                        <Field
-                                                          name="appointment_option"
-                                                          component="select"
-                                                          onChange={e =>
-                                                            this.setState({
-                                                              appointment_option: e.target.value,
-                                                            })
-                                                          }
-                                                          value={this.state.appointment_option}
-                                                          className="form-select"
-                                                        >
-                                                          <option value="">
-                                                            --- Please Select---
-                                                          </option>
-                                                          <option value="Change">
-                                                            Appointment Request Time by Patient
-                                                          </option>
-                                                          <option value="Cancel">
-                                                            Appointment Cancellation Request
-                                                          </option>
-                                                        </Field>
-                                                      </div>
-                                                    ): (csrComplaint.status === "Confirmed" && csrComplaint.payment_method === "Cash" && csrComplaint.payment_status === "Paid") ? (
-                                                      <div className="mb-3">
-                                                                                                            {/* <p><span className="text-danger">Note: The appointment is confirmed, and the cash has been received by the lab. Before canceling the appointment, please make sure to confirm the refund payment with the patient.</span></p> */}
-
-                                                       
+                                                  {(csrComplaint.status ===
+                                                    "Pending" ||
+                                                    csrComplaint.status ===
+                                                      "Confirmed") &&
+                                                  (csrComplaint.payment_status ===
+                                                    "Not Paid" ||
+                                                    csrComplaint.payment_status ===
+                                                      "Allocate" ||
+                                                    csrComplaint.payment_status ===
+                                                      "Paid") ? (
+                                                    <div className="mb-3">
                                                       <Label
                                                         for="appointment_option"
                                                         className="form-label"
@@ -682,52 +756,111 @@ class csrComplaints extends Component {
                                                         component="select"
                                                         onChange={e =>
                                                           this.setState({
-                                                            appointment_option: e.target.value,
+                                                            appointment_option:
+                                                              e.target.value,
                                                           })
                                                         }
-                                                        value={this.state.appointment_option}
+                                                        value={
+                                                          this.state
+                                                            .appointment_option
+                                                        }
                                                         className="form-select"
                                                       >
                                                         <option value="">
                                                           --- Please Select---
                                                         </option>
                                                         <option value="Change">
-                                                          Appointment Request Time by Patient
+                                                          Appointment Request
+                                                          Time by Patient
                                                         </option>
-                                                        <option value="Cancel" className="text-danger">
-                                                          Appointment Cancellation Request
+                                                        <option value="Cancel">
+                                                          Appointment
+                                                          Cancellation Request
                                                         </option>
                                                       </Field>
                                                     </div>
-                                                    ) :  <div className="mb-3">
-                                                    <Label
-                                                      for="appointment_option"
-                                                      className="form-label"
-                                                    >
-                                                      Select
-                                                    </Label>
-                                                    <Field
-                                                      name="appointment_option"
-                                                      component="select"
-                                                      onChange={e =>
-                                                        this.setState({
-                                                          appointment_option: e.target.value,
-                                                        })
-                                                      }
-                                                      value={this.state.appointment_option}
-                                                      className="form-select"
-                                                    >
-                                                      {/* <option value="">
+                                                  ) : csrComplaint.status ===
+                                                      "Confirmed" &&
+                                                    csrComplaint.payment_method ===
+                                                      "Cash" &&
+                                                    csrComplaint.payment_status ===
+                                                      "Paid" ? (
+                                                    <div className="mb-3">
+                                                      {/* <p><span className="text-danger">Note: The appointment is confirmed, and the cash has been received by the lab. Before canceling the appointment, please make sure to confirm the refund payment with the patient.</span></p> */}
+
+                                                      <Label
+                                                        for="appointment_option"
+                                                        className="form-label"
+                                                      >
+                                                        Select
+                                                      </Label>
+                                                      <Field
+                                                        name="appointment_option"
+                                                        component="select"
+                                                        onChange={e =>
+                                                          this.setState({
+                                                            appointment_option:
+                                                              e.target.value,
+                                                          })
+                                                        }
+                                                        value={
+                                                          this.state
+                                                            .appointment_option
+                                                        }
+                                                        className="form-select"
+                                                      >
+                                                        <option value="">
+                                                          --- Please Select---
+                                                        </option>
+                                                        <option value="Change">
+                                                          Appointment Request
+                                                          Time by Patient
+                                                        </option>
+                                                        <option
+                                                          value="Cancel"
+                                                          className="text-danger"
+                                                        >
+                                                          Appointment
+                                                          Cancellation Request
+                                                        </option>
+                                                      </Field>
+                                                    </div>
+                                                  ) : (
+                                                    <div className="mb-3">
+                                                      <Label
+                                                        for="appointment_option"
+                                                        className="form-label"
+                                                      >
+                                                        Select
+                                                      </Label>
+                                                      <Field
+                                                        name="appointment_option"
+                                                        component="select"
+                                                        onChange={e =>
+                                                          this.setState({
+                                                            appointment_option:
+                                                              e.target.value,
+                                                          })
+                                                        }
+                                                        value={
+                                                          this.state
+                                                            .appointment_option
+                                                        }
+                                                        className="form-select"
+                                                      >
+                                                        {/* <option value="">
                                                         --- Please Select---
                                                       </option> */}
-                                                      <option value="Change">
-                                                        Appointment Request Time by Patient
-                                                      </option>
-                                                      {/* <option value="Cancel">
+                                                        <option value="Change">
+                                                          Appointment Request
+                                                          Time by Patient
+                                                        </option>
+                                                        {/* <option value="Cancel">
                                                         Appointment Cancellation Request
                                                       </option> */}
-                                                    </Field>
-                                                  </div> }
+                                                      </Field>
+                                                    </div>
+                                                  )}
                                                   {/* payments out pending clearence field */}
                                                   {this.state
                                                     .appointment_option ==
@@ -761,8 +894,10 @@ class csrComplaints extends Component {
                                                       />
                                                     </div>
                                                   ) : null}
-                                                  
-                                                  {this.state.appointment_option=="Cancel" ? (
+
+                                                  {this.state
+                                                    .appointment_option ==
+                                                  "Cancel" ? (
                                                     <div className="mb-3">
                                                       <Label className="form-label">
                                                         <b>Comment</b>
@@ -795,9 +930,8 @@ class csrComplaints extends Component {
                                                         className="invalid-feedback"
                                                       />
                                                     </div>
-                                                  ):null}
+                                                  ) : null}
                                                 </Col>
-
                                               </Row>
                                               <Row>
                                                 <Col>
@@ -855,7 +989,8 @@ const mapStateToProps = ({ csrcomplaints }) => ({
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-  onGetCsrComplaints: id => dispatch(getCsrComplaints(id)),
+  // onGetCsrComplaints: id => dispatch(getCsrComplaints(id)),
+  onGetCsrComplaints: (id, startDate, endDate) => dispatch(getCsrComplaints(id, startDate, endDate)),
   onUpdateCsrComplaints: csrComplaint =>
     dispatch(updateCsrComplaints(csrComplaint)),
 });

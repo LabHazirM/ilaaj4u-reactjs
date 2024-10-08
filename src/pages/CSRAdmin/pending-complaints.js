@@ -200,7 +200,7 @@ class PendingComplaints extends Component {
        
         
         {
-          dataField: "city",
+          dataField: "office",
           text: "Office",
           sort: true,   
           filter: textFilter(),   
@@ -363,7 +363,7 @@ class PendingComplaints extends Component {
     const { onAssignComplaint, onGetPendingComplaints } = this.props;
 
     const pageOptions = {
-      sizePerPage: 100,
+      sizePerPage: 10,
       totalSize: pendingComplaints.length, // replace later with size(pendingComplaints),
       custom: true,
     };
@@ -383,15 +383,14 @@ class PendingComplaints extends Component {
       });
     }
     // Central Office
-    const csrCentralTerritoryList = [];
-
+    const csrCentralTerritoryList = []
     for (let i = 0; i < this.props.csrCentralTerritoryList.length; i++) {
-      csrCentralTerritoryList.push({
-        label: this.props.csrCentralTerritoryList[i].name,
-        value: this.props.csrCentralTerritoryList[i].id,
-      });
-  
+        csrCentralTerritoryList.push({
+          label: this.props.csrCentralTerritoryList[i].name,
+          value: this.props.csrCentralTerritoryList[i].id,
+        });
     }
+    
     // South Office
     const csrSouthTerritoryList = [];
 
@@ -931,13 +930,13 @@ class PendingComplaints extends Component {
                                   </div>
                                 </Col>
                               </Row>
-                              {/* <Row className="align-items-md-center mt-30">
+                              <Row className="align-items-md-center mt-30">
                                 <Col className="pagination pagination-rounded justify-content-end mb-2">
                                   <PaginationListStandalone
                                     {...paginationProps}
                                   />
                                 </Col>
-                              </Row> */}
+                              </Row>
                             </React.Fragment>
                           )}
                         </ToolkitProvider>

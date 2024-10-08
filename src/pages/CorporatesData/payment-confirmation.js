@@ -343,12 +343,12 @@ class PaymentStatussList extends Component {
           //   headerStyle: { backgroundColor: '#DCDCDC' },
           // },
           {
-            dataField: "lab_name",
-            text: "Lab Name",
+            dataField: "corporate_name",
+            text: "Corporate Name",
             sort: true,
             formatter: (cellContent, paymentCreatedStatus) => (
               <span>
-                {paymentCreatedStatus.lab_name != null ? paymentCreatedStatus.lab_name : "---"}
+                {paymentCreatedStatus.corporate_name != null ? paymentCreatedStatus.corporate_name : "---"}
               </span>
             ),
             filter: textFilter(),

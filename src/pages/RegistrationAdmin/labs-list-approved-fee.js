@@ -104,12 +104,12 @@ class LabsLists extends Component {
     const filteredLabsList = labsListApprovedFee.filter((lab) => {
       return lab.lab_list.some((lab_list) => {
         return (
-          lab_list.city.toLowerCase().includes(filters.city.toLowerCase()) &&
-          lab_list.name.toLowerCase().includes(filters.name.toLowerCase()) &&
-          lab_list.type.toLowerCase().includes(filters.type.toLowerCase()) &&
-          lab_list.landline.includes(filters.landline) &&
-          lab_list.email.toLowerCase().includes(filters.email.toLowerCase()) &&
-          lab_list.address.toLowerCase().includes(filters.address.toLowerCase())
+          (lab_list.city && lab_list.city.toLowerCase().includes(filters.city.toLowerCase())) &&
+          (lab_list.name && lab_list.name.toLowerCase().includes(filters.name.toLowerCase())) &&
+          (lab_list.type && lab_list.type.toLowerCase().includes(filters.type.toLowerCase())) &&
+          (lab_list.landline && lab_list.landline.includes(filters.landline)) &&
+          (lab_list.email && lab_list.email.toLowerCase().includes(filters.email.toLowerCase())) &&
+          (lab_list.address && lab_list.address.toLowerCase().includes(filters.address.toLowerCase()))
         );
       });
     });

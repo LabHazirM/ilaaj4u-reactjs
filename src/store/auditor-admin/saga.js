@@ -7,6 +7,7 @@ import {
   GET_PASSED_AUDITS,
   GET_FAILED_AUDITS,
   ASSIGN_AUDIT,
+  ADD_LABS_AUDIT
 } from "./actionTypes";
 
 import {
@@ -20,6 +21,8 @@ import {
   getFailedAuditsFail,
   assignAuditSuccess,
   assignAuditFail,
+  AddAllLabsAuditSuccess,
+  AddAllLabsAuditFail
 } from "./actions";
 
 //Include Both Helper File with needed methods
@@ -29,6 +32,7 @@ import {
   getPassedAudits,
   getFailedAudits,
   assignAudit,
+  AddAllLabsAudit
 } from "../../helpers/django_api_helper";
 
 function* fetchPendingAudits() {
@@ -75,7 +79,17 @@ function* onAssignAudit(object) {
   }
 }
 
+function* onAddLabAudit(object) {
+  try {
+    const response = yield call(AddAllLabsAudit, object.payload.data);
+    yield put(AddAllLabsAuditSuccess(response));
+  } catch (error) {
+    yield put(AddAllLabsAuditFail(error));
+  }
+}
+
 function* auditorAdminSaga() {
+  yield takeEvery(ADD_LABS_AUDIT, onAddLabAudit);
   yield takeEvery(GET_PENDING_AUDITS, fetchPendingAudits);
   yield takeEvery(GET_INPROCESS_AUDITS, fetchInProcessAudits);
   yield takeEvery(GET_PASSED_AUDITS, fetchPassedAudits);

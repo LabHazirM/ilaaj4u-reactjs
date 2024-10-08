@@ -407,22 +407,33 @@ class TestsList extends Component {
                                                 50000,
                                                 "Please enter a number less than or equal to 50000"
                                               ),
+                                            // start_date: Yup.string(
+                                            //   Yup.number()
+                                            // ).when("discount", {
+                                            //   is: discount => discount > 0,
+                                            //   then: Yup.string().required(
+                                            //     "Please select start date"
+                                            //   ),
+                                            // }),
+                                            // end_date: Yup.string(
+                                            //   Yup.number()
+                                            // ).when("discount", {
+                                            //   is: discount => discount > 0,
+                                            //   then: Yup.string().required(
+                                            //     "Please select end date"
+                                            //   ),
+                                            // }),
+
                                             start_date: Yup.string(
                                               Yup.number()
-                                            ).when("discount", {
-                                              is: discount => discount > 0,
-                                              then: Yup.string().required(
+                                            ).required(
                                                 "Please select start date"
                                               ),
-                                            }),
                                             end_date: Yup.string(
                                               Yup.number()
-                                            ).when("discount", {
-                                              is: discount => discount > 0,
-                                              then: Yup.string().required(
+                                            ).required(
                                                 "Please select end date"
                                               ),
-                                            }),
                                           })}
                                           // in onSubmit function
                                           onSubmit={values => {

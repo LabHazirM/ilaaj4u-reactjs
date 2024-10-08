@@ -166,6 +166,22 @@ class FailedAudits extends Component {
             </>
           ),
         },
+        {
+          dataField: "data",
+          text: "id",
+          isDummyField: true,
+          editable: false,
+          text: "Action",
+          formatter: (cellContent, audit) => (
+            <>
+              <Link
+                  className="fas fa-comment font-size-18"
+                  to={`/audit-activity-admin/${audit.id}`}
+                  ></Link>
+            </>
+            
+          ),
+        }
       ],
     };
     this.toggle = this.toggle.bind(this);

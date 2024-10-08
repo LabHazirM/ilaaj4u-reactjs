@@ -9,6 +9,8 @@ import {
   GET_AUDITORS_COMPLETED_AUDITS_FAIL,
   UPDATE_ASSIGNED_AUDITS_SUCCESS,
   UPDATE_ASSIGNED_AUDITS_FAIL,
+  UPDATE_AUDITS_STATUS_SUCCESS,
+  UPDATE_AUDITS_STATUS_FAIL,
 } from "./actionTypes";
 
 const INIT_STATE = {
@@ -21,6 +23,23 @@ const INIT_STATE = {
 
 const audits = (state = INIT_STATE, action) => {
   switch (action.type) {
+
+    case UPDATE_AUDITS_STATUS_SUCCESS:
+      return {
+        ...state,
+        audit: state.audit.map(audit =>
+          audit.id.toString() === action.payload.id.toString()
+            ? { audit, ...action.payload }
+            : audit
+        ),
+      };
+
+    case UPDATE_AUDITS_STATUS_FAIL:
+      return {
+        ...state,
+        error: action.payload,
+      };
+
     case GET_ASSIGNED_AUDITS_SUCCESS:
       return {
         ...state,

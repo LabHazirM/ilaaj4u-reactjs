@@ -9,20 +9,26 @@ import {
 
 
 // ----------- Handled Complaints APIs actions -----------------
-export const getCsrComplaints = id => ({
-  type: GET_CSR_COMPLAINTS,
-  payload: id,
-});
+export const getCsrComplaints = (id, startDate, endDate) => {
+  return {
+    type: GET_CSR_COMPLAINTS,
+    payload: { id, startDate, endDate },
+  };
+};
 
-export const getCsrComplaintsSuccess = csrComplaints => ({
-  type: GET_CSR_COMPLAINTS_SUCCESS,
-  payload: csrComplaints,
-});
+export const getCsrComplaintsSuccess = csrComplaints => {
+  return {
+    type: GET_CSR_COMPLAINTS_SUCCESS,
+    payload: csrComplaints,
+  };
+};
 
-export const getCsrComplaintsFail = error => ({
-  type: GET_CSR_COMPLAINTS_FAIL,
-  payload: error,
-})
+export const getCsrComplaintsFail = error => {
+  return {
+    type: GET_CSR_COMPLAINTS_FAIL,
+    payload: error,
+  };
+};
 export const updateCsrComplaints = csrComplaints => ({
   type: UPDATE_CSR_COMPLAINTS,
   payload: csrComplaints,

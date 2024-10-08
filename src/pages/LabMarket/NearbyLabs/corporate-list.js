@@ -281,6 +281,17 @@ class TestsList extends Component {
   handleStatusChange = (e) => {
     this.setState({ selectedStatus: e.target.value });
   };
+  handleSelectChange = (event) => {
+    const selectedValue = event.target.value;
+    this.setState({ selectedValue });
+    // Perform navigation based on the selected value
+    if (selectedValue === 'Pending Corporate') {
+        this.props.history.push('/corporates-List');
+    }
+    if (selectedValue === 'Accepted Corporate') {
+        this.props.history.push('/accepted-corporates-List');
+    }
+}
   render() {
     const { SearchBar } = Search;
     const { isEdit, deleteModal } = this.state;
@@ -339,6 +350,28 @@ class TestsList extends Component {
           <Container fluid>
             {/* Render Breadcrumbs */}
             <Breadcrumbs title="Tests" breadcrumbItem="Corporations List" />
+            <Row className="mb-2">
+            <Col sm="4">
+                <div className="ms-2 mb-4">
+                    <div>
+                        <Label for="pending_corporate" className="form-label">
+                            <strong>Corporate Statuses</strong>
+                        </Label>
+                        <select
+                            className="form-control select2"
+                            title="pending_corporate"
+                            name="pending_corporate"
+                            onChange={this.handleSelectChange}
+                            value={this.state.selectedValue}
+                        >
+                            <option value="Pending Corporate">Pending Corporate</option>
+                            <option value="Accepted Corporate">Accepted Corporate</option>
+                        </select>
+                    </div>
+                </div>
+            </Col>
+
+        </Row>
             <Row>
               <Col lg="12">
                 <Card>
@@ -529,7 +562,7 @@ class TestsList extends Component {
                                                     htmlFor="name"
                                                     className="col-form-label"
                                                   >
-                                                    Collaction Points are allowed to handel this corporate patients.
+                                                    Collection Points are allowed to handle this corporate patients.
                                                     <span
                                                       style={{ color: "#f46a6a" }}
                                                       className="font-size-18"

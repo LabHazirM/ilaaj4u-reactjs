@@ -1,6 +1,8 @@
 import {
   GET_LABS_LIST_SUCCESS,
   GET_LABS_LIST_FAIL,
+  GET_LABS_AUDIT_LIST_SUCCESS,
+  GET_LABS_AUDIT_LIST_FAIL,
   GET_DONORS_LIST_SUCCESS,
   GET_DONORS_LIST_FAIL,
   GET_DONORSA_SUCCESS,
@@ -9,12 +11,15 @@ import {
   GET_LC_LIST_FAIL,
   GET_CORPORATE_LIST_SUCCESS,
   GET_CORPORATE_LIST_FAIL,
+  GET_LABS_ALL_AUDIT_LIST_SUCCESS,
+  GET_LABS_ALL_AUDIT_LIST_FAIL,
 } from "./actionTypes";
 
 const INIT_STATE = {
   labsList: [],
   donors: [],
   error: {},
+  labaudit:[]
 };
 
 const labs = (state = INIT_STATE, action) => {
@@ -26,6 +31,28 @@ const labs = (state = INIT_STATE, action) => {
       };
 
     case GET_LABS_LIST_FAIL:
+      return {
+        ...state,
+        error: action.payload,
+      };
+    case GET_LABS_AUDIT_LIST_SUCCESS:
+      return {
+        ...state,
+        labsList: action.payload.data,
+      };
+
+    case GET_LABS_AUDIT_LIST_FAIL:
+      return {
+        ...state,
+        error: action.payload,
+      };
+    case GET_LABS_ALL_AUDIT_LIST_SUCCESS:
+      return {
+        ...state,
+        labaudit: action.payload.data,
+      };
+
+    case GET_LABS_ALL_AUDIT_LIST_FAIL:
       return {
         ...state,
         error: action.payload,

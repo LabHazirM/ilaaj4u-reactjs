@@ -11,7 +11,7 @@ import {
   Label,
   Input,
 } from "reactstrap";
-
+import Select from "react-select";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 
@@ -21,7 +21,9 @@ import { Link, withRouter } from "react-router-dom";
 
 //Import Breadcrumb
 import Breadcrumb from "../../components/Common/Breadcrumb";
-
+import {
+  getBanks,
+} from "store/createbank/actions";
 // actions
 import { updateLabSettings, getLabSettings } from "../../store/actions";
 
@@ -29,6 +31,8 @@ class LabSettings extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      banks: [],
+      bank: "",
       is_247_opened: "",
       phone: "",
       opening_time: "",
@@ -49,7 +53,6 @@ class LabSettings extends Component {
       is_digital_payment_accepted: "",
       is_active: "",
       account_number: "",
-      bank: "",
       type: "",
       branch_code: "",
       isSettingsUpdated: false,
@@ -87,8 +90,12 @@ class LabSettings extends Component {
   };
 
   componentDidMount() {
-    this.props.getLabSettings(this.state.user_id);
+    // this.props.getLabSettings(this.state.user_id);
+    const { banks, getBanks, getLabSettings } = this.props;
+    getBanks(this.state.user_id);
+    getLabSettings(this.state.user_id)
 
+    console.log("bank list are: ", this.props.banks)
     setTimeout(() => {
       if (
         typeof this.props.success.health_dept_certified === "string" &&
@@ -101,17 +108,16 @@ class LabSettings extends Component {
         });
       }
 
-      if (this.props.success.is_247_opened == true) {
-        this.props.success.is_247_opened = "Yes";
-      } else {
-        this.props.success.is_247_opened = "No";
-      }
+      let is247Opened = "No";
+    if (this.props.success.is_247_opened === true) {
+      is247Opened = "Yes";
+    }
 
       this.setState({
         home_sampling_charges: this.props.success.home_sampling_charges,
         state_sampling_charges: this.props.success.state_sampling_charges,
         state_sampling_time: this.props.success.state_sampling_time,
-        is_247_opened: this.props.success.is_247_opened,
+        is_247_opened: is247Opened,
         opening_time: this.props.success.opening_time,
         closing_time: this.props.success.closing_time,
         opening_day: this.props.success.opening_day,
@@ -136,8 +142,64 @@ class LabSettings extends Component {
       });
     }, 1500);
   }
-
+  componentDidUpdate(prevProps) {
+    if (prevProps.success !== this.props.success || prevProps.banks !== this.props.banks) {
+      const { success } = this.props;
+  
+      if (success) {
+        this.setState({
+          health_dept_certificate: success.health_dept_certificate
+            ? process.env.REACT_APP_BACKENDURL + success.health_dept_certificate
+            : "",
+          home_sampling_charges: success.home_sampling_charges,
+          state_sampling_charges: success.state_sampling_charges,
+          state_sampling_time: success.state_sampling_time,
+          is_247_opened: success.is_247_opened ? "Yes" : "No",
+          opening_time: success.opening_time,
+          closing_time: success.closing_time,
+          opening_day: success.opening_day,
+          closing_day: success.closing_day,
+          phone: success.phone,
+          type: success.type,
+          complaint_handling_email: success.complaint_handling_email,
+          complaint_handling_phone: success.complaint_handling_phone,
+          registration_no: success.registration_no,
+          lab_experience: success.lab_experience,
+          license_no: success.license_no,
+          health_dept_certified: success.health_dept_certified,
+          is_digital_payment_accepted: success.is_digital_payment_accepted,
+          is_active: success.is_active,
+          is_homesampling_offered: success.is_homesampling_offered,
+          bank: success.bank,
+          branch_code: success.branch_code,
+          account_number: success.account_number,
+        });
+      }
+  
+      const bankList = this.props.banks.map(bank => ({
+        label: bank.name,
+        value: bank.id
+      }));
+  
+      this.setState({ banks: bankList });
+    }
+  }
   render() {
+    // Generate bank list from props
+    const bankList = this.props.banks.map(bank => ({
+      label: bank.name,
+      value: bank.id
+    }));
+
+    // Debugging logs
+    console.log("bankList:", bankList);
+    console.log("bank value is:", this.state.bank);
+    console.log("branch_code is:", this.state.branch_code);
+    // Find the selected option
+    const selectedOption = bankList.find(option => option.value === Number(this.state.bank)) || null;
+
+    console.log("selectedOption:", selectedOption);
+
     return (
       <React.Fragment>
         <div className="page-content">
@@ -458,8 +520,39 @@ class LabSettings extends Component {
                           </Col>
                         </Row>
                       )}
-                      <div className="mb-3">
-                        <Label for="bank" className="form-label">
+                <div className="mb-3">
+        <div>
+          <Label for="bank" className="form-label">Bank</Label>
+          <Select
+            name="bank"
+            value={selectedOption || null} // Ensure `value` is correctly set
+            onChange={selectedGroup => 
+              this.setState({ bank: selectedGroup ? selectedGroup.value : "" })
+            }
+            className={
+              "defautSelectParent" +
+              (errors.bank && touched.bank
+                ? " is-invalid"
+                : "")
+            }
+            styles={{
+              control: (base, state) => ({
+                ...base,
+                borderColor:
+                  errors.bank && touched.bank
+                    ? "#f46a6a"
+                    : "#ced4da",
+              }),
+            }}
+            options={bankList}
+          />
+          <ErrorMessage
+            name="bank"
+            component="div"
+            className="invalid-feedback"
+          />
+        </div>
+                        {/* <Label for="bank" className="form-label">
                           Bank
                         </Label>
                         <Field
@@ -489,6 +582,9 @@ class LabSettings extends Component {
                           <option value="MCB Bank Limited">
                             MCB Bank Limited
                           </option>
+                          <option value="Faysal Bank">
+                            Faysal Bank
+                          </option>
                           <option value="HBL / Konnect">HBL / Konnect</option>
                           <option value="MCB Islamic">MCB Islamic</option>
                           <option value="Meezan Bank">Meezan Bank</option>
@@ -499,8 +595,8 @@ class LabSettings extends Component {
                           <option value="United Bank Limited">
                             United Bank Limited
                           </option>
-                        </Field>
-                      </div>
+                  </Field>*/}
+                   </div>
                       {this.state.bank && (
                         <div className="mb-3">
                           <Label for="branch_code" className="form-label">
@@ -1051,17 +1147,21 @@ LabSettings.propTypes = {
   updateLabSettings: PropTypes.func,
   error: PropTypes.any,
   success: PropTypes.any,
+  banks: PropTypes.any,
   getLabSettings: PropTypes.func,
+  getBanks: PropTypes.func,
 };
 
 const mapStateToProps = state => {
   const { error, success } = state.LabSettings;
-  return { error, success };
+  const {banks} = state.createBank
+  return { error, success, banks };
 };
 
 export default withRouter(
   connect(mapStateToProps, {
     updateLabSettings,
     getLabSettings,
+    getBanks,
   })(LabSettings)
 );

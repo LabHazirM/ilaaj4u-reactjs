@@ -198,8 +198,8 @@ class MsgsList extends Component {
 
                               <b>
                               </b>{" "}
-                              from <b>{activitylogfinance.old_value}</b> to{" "}
-                              <b>{activitylogfinance.new_value}</b> 
+                              from <b>Unpaid</b> to{" "}
+                              <b>Submit</b> 
                       
                               {" "}
                               at{" "}

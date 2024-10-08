@@ -275,7 +275,7 @@ export const UPDATE_CORPORATE_STATUS = `${API_ENDPOINT}/api/lab/accepted-corpora
 export const ADD_NEW_CORPORATE = `${API_ENDPOINT}/api/lab/corporatelist`;
 export const ADD_NEW_CEMPLOYEE_FILE = `${API_ENDPOINT}/api/corporate/employee-data-file`;
 export const DELETE_CEDATA = `${API_ENDPOINT}/api/corporate/employee-data`;
-
+export const DELETE_TESTS_IN_APPOINTMENTS = `${API_ENDPOINT}/api/patient/reduce-tests`;
 // About All Finance
 export const GET_BANK_ACCOUNTS = `${API_ENDPOINT}/api/finance-admin/bankaccount-list`;
 export const GET_BANKS = `${API_ENDPOINT}/api/finance-admin/bank-list`;
@@ -381,6 +381,9 @@ export const ADD_CHECKOUT_DATA = `${API_ENDPOINT}/api/patient/checkout`;
 
 // INVOICES
 export const GET_INVOICE_DETAIL = `${API_ENDPOINT}/api/patient/invoice-detail`;
+/////////get tests
+
+export const GET_TESTS_IN_APPOINTMENTS = `${API_ENDPOINT}/api/patient/tests-in-appointments`;
 
 // ADVERTISEMENT INVOICES
 export const GET_ADV_INVOICE = `${API_ENDPOINT}/api/lab/lab-advertisement-invoice`;
@@ -475,14 +478,19 @@ export const GET_INPROCESS_AUDITS = `${API_ENDPOINT}/api/auditor-admin/inprocess
 export const GET_PASSED_AUDITS = `${API_ENDPOINT}/api/auditor-admin/passed-audits`;
 export const GET_FAILED_AUDITS = `${API_ENDPOINT}/api/auditor-admin/failed-audits`;
 export const ASSIGN_AUDIT = `${API_ENDPOINT}/api/auditor-admin/pending-audits`;
+export const ADD_LABS_AUDIT = `${API_ENDPOINT}/api/auditor-admin/pending-audits`;
+export const GET_LABS_AUDIT_LIST = `${API_ENDPOINT}/api/auditor-admin/labs-list`;
+export const GET_LABS_ALL_AUDIT_LIST = `${API_ENDPOINT}/api/auditor-admin/labs-audit-list`;
 
 // AUDITS
 export const GET_ASSIGNED_AUDITS = `${API_ENDPOINT}/api/auditor/assigned-audits`;
+export const GET_ACTIVITY_LOG_AUDITOR = `${API_ENDPOINT}/api/auditor/activitylog-audits`;
 export const UPDATE_ASSIGNED_AUDITS = `${API_ENDPOINT}/api/auditor/assigned-audits`;
 export const GET_AUDITORS_COMPLETED_AUDITS = `${API_ENDPOINT}/api/auditor/completed-audits`;
 
 export const GET_LAB_AUDITS = `${API_ENDPOINT}/api/lab/audits`;
 export const ADD_NEW_AUDIT = `${API_ENDPOINT}/api/lab/audits`;
+export const UPDATE_AUDIT_STATUS = `${API_ENDPOINT}/api/lab/reaudits-labs`;
 // -------------- TEMPLATES URLS --------------
 
 //REGISTER

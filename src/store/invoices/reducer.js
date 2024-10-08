@@ -1,14 +1,22 @@
 import {
   GET_INVOICE_DETAIL_SUCCESS,
   GET_INVOICE_DETAIL_FAIL,
+   ///////////
+  GET_TESTS_IN_APPOINTMENTS_SUCCESS,
+  GET_TESTS_IN_APPOINTMENTS_FAIL,
+  DELETE_TESTS_IN_APPOINTMENTS_SUCCESS,
+  DELETE_TESTS_IN_APPOINTMENTS_FAIL,
   GET_ADVINVOICE_DETAIL_SUCCESS,
   GET_ADVINVOICE_DETAIL_FAIL,
   UPDATE_PAYMENT_INFO_SUCCESS,
   UPDATE_PAYMENT_INFO_FAIL,
+
 } from "./actionTypes";
 
 const INIT_STATE = {
   invoiceDetail: {},
+  testsinappointments:[],
+  cemployees: [],
   advinvoiceDetail: {},
   paymentDetail: {},
   error: {},
@@ -27,6 +35,38 @@ const invoices = (state = INIT_STATE, action) => {
         ...state,
         error: action.payload,
       };
+
+
+    ////////////
+
+    case DELETE_TESTS_IN_APPOINTMENTS_SUCCESS:
+      return {
+        ...state,
+        cemployees: state.cemployees.filter(
+          cemployee =>
+            cemployee.id.toString() !== action.payload.id.toString()
+        ),
+      };
+
+    case DELETE_TESTS_IN_APPOINTMENTS_FAIL:
+      return {
+        ...state,
+        error: action.payload,
+      };
+
+    case GET_TESTS_IN_APPOINTMENTS_SUCCESS:
+      return {
+        ...state,
+        testsinappointments: action.payload.data,
+      };
+
+    case GET_TESTS_IN_APPOINTMENTS_FAIL:
+      return {
+        ...state,
+        error: action.payload,
+      };
+
+      ///////////
     case GET_ADVINVOICE_DETAIL_SUCCESS:
       return {
         ...state,

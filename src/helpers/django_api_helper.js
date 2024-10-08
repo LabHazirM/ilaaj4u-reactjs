@@ -806,6 +806,7 @@ export const getLcList = ()=>
 get( `${url.GET_CORPORATE_LIST}`, {
   headers: getHeader(authHeader()),
 });
+
 // ------------- Corporate START Activity Log-------------
 
 export const getCorporateCommit = id =>
@@ -922,6 +923,8 @@ export const postChangePwd = user => {
 export const addNewCollectionPointTestAppointment = (testAppointment, id) => {
   let formData = new FormData();
   formData.append("main_lab_appointments", testAppointment.main_lab_appointments);
+  formData.append("start_date", testAppointment.start_date)
+  formData.append("end_date", testAppointment.end_date)
   // formData.append("unit_id", testAppointment.unit_id);
  console.log("dataaaa",testAppointment )
   return axios.post(`${url.ADD_NEW_COLLECTIONPOINT_TESTAPPOINTMENT}/${id}`, formData, {
@@ -1352,14 +1355,18 @@ export const getCorporateProfileforpayment = id =>
     let formData = new FormData();
     formData.append("name", CorporateProfile.name);
     formData.append("logo", CorporateProfile.logo);
+    formData.append("limit", CorporateProfile.limit);
+    formData.append("end_date", CorporateProfile.end_date);
     formData.append("email", CorporateProfile.email);
     formData.append("phone", CorporateProfile.phone);
     formData.append("landline", CorporateProfile.landline);
     formData.append("address", CorporateProfile.address);
-    formData.append("city", CorporateProfile.city);
+    formData.append("city", CorporateProfile.city_id);
     formData.append("payment_terms", CorporateProfile.payment_terms);
     formData.append("national_taxation_no", CorporateProfile.national_taxation_no);
-  
+    formData.append("reason", CorporateProfile.reason);
+    formData.append("payment_request", CorporateProfile.payment_request);
+
     return axios.put(`${url.UPDATE_CORPORATE_PROFILE}/${id}`, formData, {
       headers: getHeader(authHeader()),
     });
@@ -1460,11 +1467,19 @@ export const getHandledComplaints = id =>
     });
   };
 
-export const getCsrComplaints = id =>
-  get(`${url.GET_CSR_COMPLAINTS}/${id}`, {
-    headers: getHeader(authHeader()),
-  });
-
+  export const getCsrComplaints = ({ id, startDate, endDate }) => {
+    // Log the payload to the console
+    console.log("API helper data:", { id, startDate, endDate });
+  
+    // Return the API call with query parameters
+    return get(`${url.GET_CSR_COMPLAINTS}/${id}`, {
+      headers: getHeader(authHeader()),
+      params: {
+        start_date: startDate,
+        end_date: endDate
+      },
+    });
+  }; 
   export const updateCsrComplaints = csrcomplaint => {
     let formData = new FormData();
     // formData.append("comment", data.comment);
@@ -1605,6 +1620,12 @@ export const getInvoiceDetail = id =>
   get(`${url.GET_INVOICE_DETAIL}/${id}`, {
     headers: getHeader(authHeader()),
   });
+
+
+  export const getTestsInAppointment = id =>
+    get(`${url.GET_TESTS_IN_APPOINTMENTS}/${id}`, {
+      headers: getHeader(authHeader()),
+    });
 
 // FEEDBACK
 export const getFeedbacks = id =>
@@ -1948,6 +1969,13 @@ export const getDonorAccountStatements = id =>
       }
     );
   };
+
+
+  export const deleteTestsInAppointment = cemployee =>
+    del(`${url.DELETE_TESTS_IN_APPOINTMENTS}/${cemployee.id}`, {
+      headers: getHeader(authHeader()),
+    });
+
 
   // List of Banks
   export const getBanks = () =>
@@ -2349,6 +2377,13 @@ export const assignAudit = data => {
   });
 };
 
+export const AddAllLabsAudit = data => {
+  let formData = new FormData();
+  return axios.post(`${url.ADD_LABS_AUDIT}`, formData, {
+    headers: getHeader(authHeader()),
+  });
+};
+
 // ------------- Advertisements Requests START -------------
 export const getAdvertisements = () =>
   get(`${url.GET_ADVERTISEMENTS}`, {
@@ -2446,6 +2481,16 @@ export const getLabsList = ()=>
 get(`${url.GET_LABS_LIST}`, {
   headers: getHeader(authHeader()),
 });
+
+export const getLabsAuditList = ()=>
+  get(`${url.GET_LABS_AUDIT_LIST}`, {
+    headers: getHeader(authHeader()),
+  });
+export const getLabsAllAuditList = id =>
+  get(`${url.GET_LABS_ALL_AUDIT_LIST}/${id}`, {
+    headers: getHeader(authHeader()),
+  });
+
 export const getDonorsList = ()=>
 get(`${url.GET_DONORS_LIST}`, {
   headers: getHeader(authHeader()),
@@ -2591,6 +2636,14 @@ export const updateDiscountAllLab = data => {
   });
 };
 
+// ------------- Auditor START Activity Log-------------
+
+export const getActivityLogAuditor = id =>
+  get(`${url.GET_ACTIVITY_LOG_AUDITOR}/${id}`, {
+    headers: getHeader(authHeader()),
+  });
+
+
 // ------------- Assigned Audits Requests START -------------
 export const getAssignedAudits = id =>
   get(`${url.GET_ASSIGNED_AUDITS}/${id}`, {
@@ -2615,7 +2668,7 @@ export const getLabAudits = id =>
 
   export const addNewAudit = (audit, id) => {
     let formData = new FormData();
-    formData.append("lab_id", audit.lab_id);
+    formData.append("lab_id", audit.id);
     formData.append("reason_of_reaudit", audit.reason_of_reaudit);
 
     return axios.post(`${url.ADD_NEW_AUDIT}/${id}`, formData, {
@@ -2623,6 +2676,15 @@ export const getLabAudits = id =>
     });
   };
 
+  export const UpdateAuditStatus = audit => {
+    let formData = new FormData();
+    formData.append("lab_id", audit.lab_id);
+    formData.append("reason_of_reaudit", audit.reason_of_reaudit);
+    formData.append("audit_status", audit.audit_status);
+    return axios.put(`${url.UPDATE_AUDIT_STATUS}/${audit.id}`, formData, {
+      headers: getHeader(authHeader()),
+    });
+  };
 export const getAuditorsCompletedAudits = id =>
   get(`${url.GET_AUDITORS_COMPLETED_AUDITS}/${id}`, {
     headers: getHeader(authHeader()),
