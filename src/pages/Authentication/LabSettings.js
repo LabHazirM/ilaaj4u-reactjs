@@ -51,6 +51,7 @@ class LabSettings extends Component {
       complaint_handling_email: "",
       complaint_handling_phone: "",
       is_digital_payment_accepted: "",
+      is_Receive_Email_On_Booking:"",
       is_active: "",
       account_number: "",
       type: "",
@@ -134,6 +135,8 @@ class LabSettings extends Component {
         // is_iso_9001_certified: this.props.success.is_iso_9001_certified,
         is_digital_payment_accepted:
           this.props.success.is_digital_payment_accepted,
+        is_Receive_Email_On_Booking:
+          this.props.success.is_Receive_Email_On_Booking,
         is_active: this.props.success.is_active,
         is_homesampling_offered: this.props.success.is_homesampling_offered,
         bank: this.props.success.bank,
@@ -168,6 +171,7 @@ class LabSettings extends Component {
           license_no: success.license_no,
           health_dept_certified: success.health_dept_certified,
           is_digital_payment_accepted: success.is_digital_payment_accepted,
+          is_Receive_Email_On_Booking: success.is_Receive_Email_On_Booking,
           is_active: success.is_active,
           is_homesampling_offered: success.is_homesampling_offered,
           bank: success.bank,
@@ -243,6 +247,9 @@ class LabSettings extends Component {
                       (this.state && this.state.complaint_handling_phone) || "",
                     is_digital_payment_accepted:
                       (this.state && this.state.is_digital_payment_accepted) ||
+                      "No",
+                    is_Receive_Email_On_Booking:
+                      (this.state && this.state.is_Receive_Email_On_Booking) ||
                       "No",
                     is_active: (this.state && this.state.is_active) || "Yes",
                     is_homesampling_offered: (this.state && this.state.is_homesampling_offered) || "",
@@ -1078,6 +1085,34 @@ class LabSettings extends Component {
                           <option value="No">No</option>
                         </Field>
                       </div>
+                      
+
+
+                      {/* //EMAIL  */}
+                      <div className="mb-3">
+                        <Label
+                          for="is_Receive_Email_On_Booking"
+                          className="form-label"
+                        >
+                          Do you want to receive an email when a patient books an appointment?
+                        </Label>
+                        <Field
+                          name="is_Receive_Email_On_Booking"
+                          component="select"
+                          defaultValue="No"
+                          onChange={e =>
+                            this.setState({
+                              is_Receive_Email_On_Booking: e.target.value,
+                            })
+                          }
+                          value={this.state.is_Receive_Email_On_Booking}
+                          className="form-select"
+                        >
+                          <option value="Yes">Yes</option>
+                          <option value="No">No</option>
+                        </Field>
+                      </div>
+
                       <div className="mb-3">
                         <Label for="type" className="form-label">
                           Main Lab / Collection Point

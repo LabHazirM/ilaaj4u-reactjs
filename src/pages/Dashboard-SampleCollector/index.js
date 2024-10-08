@@ -78,6 +78,9 @@ class Dashboard extends Component {
   }
 
   render() {
+    const userId = localStorage.getItem("authUser")
+    ? JSON.parse(localStorage.getItem("authUser")).user_id
+    : "";
     return (
       <React.Fragment>
         <div className="page-content">
@@ -97,73 +100,13 @@ class Dashboard extends Component {
                 <Card>
                   <CardBody>
                     <div className="d-sm-flex flex-wrap">
-                      <CardTitle className="card-title mb-4 h4">
+                      {/* <CardTitle className="card-title mb-4 h4">
                         Email Sent
-                      </CardTitle>
-                      <div className="ms-auto">
-                        <ul className="nav nav-pills">
-                          <li className="nav-item">
-                            <Link
-                              to="#"
-                              className={classNames(
-                                { active: this.state.periodType === "weekly" },
-                                "nav-link"
-                              )}
-                              onClick={() => {
-                                this.setState({
-                                  ...this.state,
-                                  periodType: "weekly",
-                                });
-                                this.props.onGetChartsData("weekly");
-                              }}
-                              id="one_month"
-                            >
-                              Week
-                            </Link>{" "}
-                          </li>
-                          <li className="nav-item">
-                            <Link
-                              to="#"
-                              className={classNames(
-                                { active: this.state.periodType === "monthly" },
-                                "nav-link"
-                              )}
-                              onClick={() => {
-                                this.setState({
-                                  ...this.state,
-                                  periodType: "monthly",
-                                });
-                                this.props.onGetChartsData("monthly");
-                              }}
-                              id="one_month"
-                            >
-                              Month
-                            </Link>
-                          </li>
-                          <li className="nav-item">
-                            <Link
-                              to="#"
-                              className={classNames(
-                                { active: this.state.periodType === "yearly" },
-                                "nav-link"
-                              )}
-                              onClick={() => {
-                                this.setState({
-                                  ...this.state,
-                                  periodType: "yearly",
-                                });
-                                this.props.onGetChartsData("yearly");
-                              }}
-                              id="one_month"
-                            >
-                              Year
-                            </Link>
-                          </li>
-                        </ul>
-                      </div>
+                      </CardTitle> */}
+                      
                     </div>
                     <div className="clearfix" />
-                    <StackedColumnChart chartSeries={this.state.chartSeries} />
+                    <StackedColumnChart user_id={userId} />
                   </CardBody>
                 </Card>
               </Col>
