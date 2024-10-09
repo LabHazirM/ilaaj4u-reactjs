@@ -243,10 +243,6 @@ export const postLabInformation = (id, lab) => {
     lab.is_digital_payment_accepted
   );
   formData.append(
-    "is_Receive_Email_On_Booking",
-    lab.is_Receive_Email_On_Booking
-  );
-  formData.append(
     "is_registering_for_first_time",
     lab.is_registering_for_first_time
   );
@@ -1086,10 +1082,6 @@ export const updateLabSettings = (labSettings, id) => {
   formData.append(
     "is_digital_payment_accepted",
     labSettings.is_digital_payment_accepted
-  );
-  formData.append(
-    "is_Receive_Email_On_Booking",
-    labSettings.is_Receive_Email_On_Booking
   );
   formData.append("is_active", labSettings.is_active);
   formData.append("bank", labSettings.bank);

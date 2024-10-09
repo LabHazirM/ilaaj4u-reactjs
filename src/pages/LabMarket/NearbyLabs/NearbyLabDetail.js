@@ -78,7 +78,7 @@ class NearbyLabDetail extends Component {
     const { patientProfile } = this.props;
     return (
       <React.Fragment>
-      {this.props.patientProfile.corporate_id == "undefined" && this.props.patientProfile.is_assosiatewith_anycorporate == false ? (
+      {this.props.patientProfile && this.props.patientProfile.corporate_id == "undefined" && this.props.patientProfile.is_assosiatewith_anycorporate == false ? (
         <div className="topnav">
           <div className="container-fluid left-space">
             <nav
@@ -652,7 +652,7 @@ class NearbyLabDetail extends Component {
                                 {!this.state.user_id ? (
                                   <Row style={{ textAlign: "center" }}>
                                     <div className="mb-1">
-                                      {(this.props.success.offered_tests === true && !this.props.patientProfile.corporate_id && !this.props.patientProfile.is_assosiatewith_anycorporate && !this.props.patientProfile.employee_id_card) ? (
+                                      {(this.props.success.offered_tests === true && this.props.patientProfile && !this.props.patientProfile.corporate_id && !this.props.patientProfile.is_assosiatewith_anycorporate && !this.props.patientProfile.employee_id_card) ? (
                                         <button
                                           onClick={() => {
                                             // Add the logic you want to execute when the button is clicked
@@ -670,7 +670,7 @@ class NearbyLabDetail extends Component {
                                           <i className="mdi mdi-arrow-right btn-block" />
                                           Offered Tests
                                         </button>
-                                      ) : this.props.success.offered_tests === true && this.props.patientProfile.corporate_id && this.props.patientProfile.is_assosiatewith_anycorporate && this.props.patientProfile.employee_id_card ? (
+                                      ) : this.props.success.offered_tests === true && this.props.patientProfile && this.props.patientProfile.corporate_id && this.props.patientProfile.is_assosiatewith_anycorporate && this.props.patientProfile.employee_id_card ? (
                                         <button
                                           onClick={() => {
                                             // Add the logic you want to execute when the button is clicked
@@ -957,7 +957,7 @@ class NearbyLabDetail extends Component {
                                           Offered Tests
                                         </button>
                                       )} */}
-                                      {(this.props.success.offered_tests === true && !this.props.patientProfile.corporate_id && !this.props.patientProfile.is_assosiatewith_anycorporate && !this.props.patientProfile.employee_id_card) ? (
+                                      {(this.props.success.offered_tests === true && this.props.patientProfile && !this.props.patientProfile.corporate_id && !this.props.patientProfile.is_assosiatewith_anycorporate && !this.props.patientProfile.employee_id_card) ? (
                                         <button
                                           onClick={() => {
                                             // Add the logic you want to execute when the button is clicked
@@ -975,7 +975,7 @@ class NearbyLabDetail extends Component {
                                           <i className="mdi mdi-arrow-right btn-block" />
                                           Offered Tests
                                         </button>
-                                      ) : this.props.success.offered_tests === true && this.props.patientProfile.corporate_id && this.props.patientProfile.is_assosiatewith_anycorporate && this.props.patientProfile.employee_id_card ? (
+                                      ) : this.props.success.offered_tests === true && this.props.patientProfile && this.props.patientProfile.corporate_id && this.props.patientProfile.is_assosiatewith_anycorporate && this.props.patientProfile.employee_id_card ? (
                                         <button
                                           onClick={() => {
                                             // Add the logic you want to execute when the button is clicked
@@ -1013,7 +1013,7 @@ class NearbyLabDetail extends Component {
 
                                     
                                     <div className="mb-1">
-                                       {(this.props.success.offered_profiles === true && !this.props.patientProfile.corporate_id && !this.props.patientProfile.is_assosiatewith_anycorporate && !this.props.patientProfile.employee_id_card) ? (
+                                       {(this.props.success.offered_profiles === true && this.props.patientProfile && !this.props.patientProfile.corporate_id && !this.props.patientProfile.is_assosiatewith_anycorporate && !this.props.patientProfile.employee_id_card) ? (
                                         <button
                                         onClick={() => {
                                           // Add the logic you want to execute when the button is clicked
@@ -1031,7 +1031,7 @@ class NearbyLabDetail extends Component {
                                         <i className="mdi mdi-arrow-right btn-block" />
                                         Offered Profiles{" "}
                                       </button>
-                                      ) : this.props.success.offered_profiles === true && this.props.patientProfile.corporate_id && this.props.patientProfile.is_assosiatewith_anycorporate && this.props.patientProfile.employee_id_card ? (
+                                      ) : this.props.success.offered_profiles === true && this.props.patientProfile && this.props.patientProfile.corporate_id && this.props.patientProfile.is_assosiatewith_anycorporate && this.props.patientProfile.employee_id_card ? (
                                         <button
                                           onClick={() => {
                                             // Add the logic you want to execute when the button is clicked
@@ -1069,7 +1069,7 @@ class NearbyLabDetail extends Component {
                                         )}
                                     </div>
                                     <div className="mb-1">
-                                        {(this.props.success.offered_packages === true && !this.props.patientProfile.corporate_id && !this.props.patientProfile.is_assosiatewith_anycorporate && !this.props.patientProfile.employee_id_card) ? (
+                                        {(this.props.success.offered_packages === true && this.props.patientProfile && !this.props.patientProfile.corporate_id && !this.props.patientProfile.is_assosiatewith_anycorporate && !this.props.patientProfile.employee_id_card) ? (
                                         <button
                                         onClick={() => {
                                           // Add the logic you want to execute when the button is clicked
@@ -1087,7 +1087,7 @@ class NearbyLabDetail extends Component {
                                         <i className="mdi mdi-arrow-right btn-block" />
                                         Offered Packages
                                       </button>
-                                      ) : this.props.success.offered_packages === true && this.props.patientProfile.corporate_id && this.props.patientProfile.is_assosiatewith_anycorporate && this.props.patientProfile.employee_id_card ? (
+                                      ) : this.props.success.offered_packages === true && this.props.patientProfile && this.props.patientProfile.corporate_id && this.props.patientProfile.is_assosiatewith_anycorporate && this.props.patientProfile.employee_id_card ? (
                                         <button
                                           onClick={() => {
                                             // Add the logic you want to execute when the button is clicked
@@ -1123,7 +1123,7 @@ class NearbyLabDetail extends Component {
                                         )}
                                     </div>
                                     <div className="mb-1">
-                                      {(this.props.success.offered_radiologies === true && !this.props.patientProfile.corporate_id && !this.props.patientProfile.is_assosiatewith_anycorporate && !this.props.patientProfile.employee_id_card) ? (
+                                      {(this.props.success.offered_radiologies === true && this.props.patientProfile && !this.props.patientProfile.corporate_id && !this.props.patientProfile.is_assosiatewith_anycorporate && !this.props.patientProfile.employee_id_card) ? (
                                         <button
                                         onClick={() => {
                                           // Add the logic you want to execute when the button is clicked
@@ -1141,7 +1141,7 @@ class NearbyLabDetail extends Component {
                                         <i className="mdi mdi-arrow-right btn-block" />
                                         Offered Radiology{" "}
                                       </button>
-                                      ) : this.props.success.offered_radiologies === true && this.props.patientProfile.corporate_id && this.props.patientProfile.is_assosiatewith_anycorporate && this.props.patientProfile.employee_id_card ? (
+                                      ) : this.props.success.offered_radiologies === true && this.props.patientProfile && this.props.patientProfile.corporate_id && this.props.patientProfile.is_assosiatewith_anycorporate && this.props.patientProfile.employee_id_card ? (
                                         <button
                                           onClick={() => {
                                             // Add the logic you want to execute when the button is clicked
@@ -1315,7 +1315,7 @@ class NearbyLabDetail extends Component {
                                           Offered Tests
                                         </button>
                                       )} */}
-                                      {(this.props.success.offered_tests === true && !this.props.patientProfile.corporate_id && !this.props.patientProfile.is_assosiatewith_anycorporate && !this.props.patientProfile.employee_id_card) ? (
+                                      {(this.props.success.offered_tests === true && this.props.patientProfile && !this.props.patientProfile.corporate_id && !this.props.patientProfile.is_assosiatewith_anycorporate && !this.props.patientProfile.employee_id_card) ? (
                                         <button
                                           onClick={() => {
                                             // Add the logic you want to execute when the button is clicked
@@ -1333,7 +1333,7 @@ class NearbyLabDetail extends Component {
                                           <i className="mdi mdi-arrow-right btn-block" />
                                           Offered Tests
                                         </button>
-                                      ) : this.props.success.offered_tests === true && this.props.patientProfile.corporate_id && this.props.patientProfile.is_assosiatewith_anycorporate && this.props.patientProfile.employee_id_card ? (
+                                      ) : this.props.success.offered_tests === true && this.props.patientProfile && this.props.patientProfile.corporate_id && this.props.patientProfile.is_assosiatewith_anycorporate && this.props.patientProfile.employee_id_card ? (
                                         <button
                                           onClick={() => {
                                             // Add the logic you want to execute when the button is clicked
@@ -1594,6 +1594,7 @@ class NearbyLabDetail extends Component {
                                     </div>
                                   </Row>
                                 ) : null}
+
                                 {this.state.user_id &&
                                   this.state.user_type !== "CSR" &&
                                   this.state.user_type === "b2bclient" ? (
@@ -1619,7 +1620,7 @@ class NearbyLabDetail extends Component {
                                           Offered Tests
                                         </button>
                                       )} */}
-                                      {(this.props.success.offered_tests === true && !this.props.patientProfile.corporate_id && !this.props.patientProfile.is_assosiatewith_anycorporate && !this.props.patientProfile.employee_id_card) ? (
+                                      {(this.props.success.offered_tests === true && this.props.patientProfile && !this.props.patientProfile.corporate_id && !this.props.patientProfile.is_assosiatewith_anycorporate && !this.props.patientProfile.employee_id_card) ? (
                                         <button
                                           onClick={() => {
                                             // Add the logic you want to execute when the button is clicked
@@ -1637,7 +1638,7 @@ class NearbyLabDetail extends Component {
                                           <i className="mdi mdi-arrow-right btn-block" />
                                           Offered Tests
                                         </button>
-                                      ) : this.props.success.offered_tests === true && this.props.patientProfile.corporate_id && this.props.patientProfile.is_assosiatewith_anycorporate && this.props.patientProfile.employee_id_card ? (
+                                      ) : this.props.success.offered_tests === true && this.props.patientProfile && this.props.patientProfile.corporate_id && this.props.patientProfile.is_assosiatewith_anycorporate && this.props.patientProfile.employee_id_card ? (
                                         <button
                                           onClick={() => {
                                             // Add the logic you want to execute when the button is clicked
@@ -1939,8 +1940,8 @@ class NearbyLabDetail extends Component {
                                 )}
                                 {this.state.user_id &&
                                   this.state.user_type !== "CSR" &&
-                                  this.state.user_type !== "b2bclient" && 
-                                  !this.props.patientProfile.corporate_id && !this.props.patientProfile.is_assosiatewith_anycorporate && !this.props.patientProfile.employee_id_card && (
+                                  this.state.user_type !== "b2bclient" &&  this.props.patientProfile &&
+                                  !this.props.patientProfile.corporate_id  && !this.props.patientProfile.is_assosiatewith_anycorporate && !this.props.patientProfile.employee_id_card && (
 
                                     <Link
                                       to={
@@ -1957,6 +1958,7 @@ class NearbyLabDetail extends Component {
                                 {this.state.user_id &&
                                   this.state.user_type !== "CSR" &&
                                   this.state.user_type !== "b2bclient" && 
+                                  this.props.patientProfile &&
                                   this.props.patientProfile.corporate_id && this.props.patientProfile.is_assosiatewith_anycorporate && this.props.patientProfile.employee_id_card && (
                                     <Link
                                       to={
@@ -2152,7 +2154,8 @@ class NearbyLabDetail extends Component {
                                 {this.state.user_id &&
                                   this.state.user_type !== "CSR" &&
                                   this.state.user_type !== "b2bclient" && 
-                                  !this.props.patientProfile.corporate_id && !this.props.patientProfile.is_assosiatewith_anycorporate && !this.props.patientProfile.employee_id_card && (
+                                  this.props.patientProfile &&
+                                  !this.props.patientProfile.corporate_id  && !this.props.patientProfile.is_assosiatewith_anycorporate && !this.props.patientProfile.employee_id_card && (
 
                                     <Link
                                       to={
@@ -2171,7 +2174,8 @@ class NearbyLabDetail extends Component {
                                 {this.state.user_id &&
                                   this.state.user_type !== "CSR" &&
                                   this.state.user_type !== "b2bclient" && 
-                                  this.props.patientProfile.corporate_id && this.props.patientProfile.is_assosiatewith_anycorporate && this.props.patientProfile.employee_id_card && (
+                                  this.props.patientProfile &&
+                                  this.props.patientProfile.corporate_id  && this.props.patientProfile.is_assosiatewith_anycorporate && this.props.patientProfile.employee_id_card && (
                                     <Link
                                       to={
                                         this.props.match.params.guest_id
@@ -2285,7 +2289,7 @@ class NearbyLabDetail extends Component {
                                 {/* <span className="font-size-11">Offered Tests</span>
                                   </button>
                                 )} */}
-                                {(this.props.success.offered_tests === true && !this.props.patientProfile.corporate_id && !this.props.patientProfile.is_assosiatewith_anycorporate && !this.props.patientProfile.employee_id_card) ? (
+                                {(this.props.success.offered_tests === true && this.props.patientProfile && !this.props.patientProfile.corporate_id && !this.props.patientProfile.is_assosiatewith_anycorporate && !this.props.patientProfile.employee_id_card) ? (
                                   <button
                                     onClick={() => {
                                       // Add the logic you want to execute when the button is clicked
@@ -2298,12 +2302,12 @@ class NearbyLabDetail extends Component {
                                     }}
                                     // Add any other button styling or attributes as needed
                                     className="btn btn-primary btn-md"
-                                    style={{ width: "80%", textAlign: "left" }} // Set inline style to ensure the same width
+                                    style={{ width: "100%", textAlign: "left" }} // Set inline style to ensure the same width
                                   >
-                                    <i className="mdi mdi-arrow-right btn-block" />
-                                    Offered Tests
+                                    {/* <i className="mdi mdi-arrow-right btn-block" /> */}
+                                    <span className="font-size-11">Offered Tests{" "}</span>
                                   </button>
-                                ) : this.props.success.offered_tests === true && this.props.patientProfile.corporate_id && this.props.patientProfile.is_assosiatewith_anycorporate && this.props.patientProfile.employee_id_card ? (
+                                ) : this.props.success.offered_tests === true && this.props.patientProfile && this.props.patientProfile.corporate_id && this.props.patientProfile.is_assosiatewith_anycorporate && this.props.patientProfile.employee_id_card ? (
                                   <button
                                     onClick={() => {
                                       // Add the logic you want to execute when the button is clicked
@@ -2316,10 +2320,10 @@ class NearbyLabDetail extends Component {
                                     }}
                                     // Add any other button styling or attributes as needed
                                     className="btn btn-primary btn-md"
-                                    style={{ width: "80%", textAlign: "left" }} // Set inline style to ensure the same width
+                                    style={{ width: "100%", textAlign: "left" }} // Set inline style to ensure the same width
                                   >
-                                    <i className="mdi mdi-arrow-right btn-block" />
-                                    Offered Tests
+                                    {/* <i className="mdi mdi-arrow-right btn-block" /> */}
+                                    <span className="font-size-11">Offered Tests{" "}</span>
                                   </button>
                                 ) : null}
                                 {this.props.success.offered_tests === false && (
@@ -2334,7 +2338,7 @@ class NearbyLabDetail extends Component {
                                     style={{ width: "100%", textAlign: "left" }} // Set inline style to ensure the same width
                                   >
                                     {/* <i className="mdi mdi-arrow-right" />  */}
-                                    <span className="font-size-11">Offered Tests</span>
+                                    <span className="font-size-11">Offered Tests{" "}</span>
                                   </button>
                                 )}
                               </div>

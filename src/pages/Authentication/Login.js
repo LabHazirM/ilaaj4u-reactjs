@@ -43,7 +43,7 @@ class Login extends Component {
   componentDidMount() {
 
     const url = window.location.href;
-    const queryString = url.includes('&') ? url.substring(url.indexOf('&') + 1) : '';
+    const queryString = url.substring(url.indexOf("&"));
     console.log(queryString);
     const params = new URLSearchParams(queryString);
     console.log("print params in app", url, queryString, params)
@@ -53,17 +53,18 @@ class Login extends Component {
     console.log('Latitude:', latitudeFromUrl);
     console.log('Longitude:', longitudeFromUrl);
     if (latitudeFromUrl && longitudeFromUrl) {
+      
+      // Extract only the query string part from the full URL
+      const finalUrl = queryString;
+      
+      // Setting the final URL in the component's state
+      this.setState({ finalUrl: finalUrl }, () => {
+          // Logging the final URL after state update
+          console.log("Final URL after state update:", this.state.finalUrl);
+      });
 
-      const url = `http://localhost:3000/nearby-labs/&lat=${latitudeFromUrl}&lon=${longitudeFromUrl}`;
-      const queryString = url.substring(url.indexOf("&") + 1);
-      const finalUrl = ("&") + queryString; // Remove the leading question mark ('?')        
-      this.setState({ finalUrl: finalUrl });
-      console.log("differ with the final url state:", this.state.finalUrl);
-
-      console.log(finalUrl);
-      console.log("whsuqi", this.props.match.params.uuid);
-    }
-
+  }
+  
     // Removing attributes from the body
     const elem = document.getElementsByTagName("body")[0];
     while (elem.attributes.length > 0) {
@@ -299,14 +300,42 @@ class Login extends Component {
                                       console.log("finalUrl in mobile app else case", this.state.finalUrl);
                                       if (success.account_type === "samplecollector") {
                                         this.props.history.push("/dashboard-samplecollector");
-                                      } else if (success.account_type === "patient") {
+                                      } else if (success.account_type === "patient" && 
+                                        (success.is_associate_with_any_corporate == undefined || success.is_associate_with_any_corporate == false) &&
+                                        !success.employee_id_card) {
+                                        console.log("yaha a raha hai mobile mation")
                                         this.props.history.push(
                                           this.state.finalUrl
                                             ? `/nearby-labs/${this.props.match.params.guest_id}`
                                             : `/nearby-labs`
                                         );
+                                        console.log("yaha pr aya nahi",this.state.finalUrl);
+                                      } else if (success.account_type === "patient" && 
+                                        success.is_associate_with_any_corporate == true &&
+                                        success.employee_id_card) {
+                                        console.log("yaha a raha hai mobile mation")
+                                        this.props.history.push(
+                                          this.state.finalUrl
+                                            ? `/corporate-modal/${this.state.finalUrl}`
+                                            : `/corporate-modal`
+                                        );
+                                        console.log("yaha pr aya nahi",this.state.finalUrl);
+
                                       }
-                                    }
+                                    } else if (
+                                      !isLargeScreen &&
+                                      !this.state.finalUrl
+                                    ) {
+                                      console.log("not finalurl yaha a raha hai mobile mation")
+                                      if (success.account_type === "patient") {
+                                        this.props.history.push(
+                                          this.props.match.params.uuid
+                                            ? `/nearby-labs/${this.props.match.params.uuid}`
+                                            : `/nearby-labs`
+                                        );
+                                        console.log(this.props.match.params.uuid);
+                                      }
+                                    }  
                                     else if (
                                       isLargeScreen &&
                                       success.account_type === "patient" &&
@@ -322,20 +351,6 @@ class Login extends Component {
                                       console.log(this.props.match.params.uuid);
                                     }
                                     else if (
-                                      !isLargeScreen &&
-                                      success.account_type === "patient" &&
-                                      // success.is_associate_with_any_corporate == false &&
-                                      // // success.corporate_id == null &&
-                                      // success.employee_id_card == null &&
-                                      !this.state.finalUrl
-                                    ) {
-                                      this.props.history.push(
-                                        this.props.match.params.uuid
-                                          ? `/nearby-labs/${this.props.match.params.uuid}`
-                                          : `/nearby-labs`
-                                      );
-                                      console.log(this.props.match.params.uuid);
-                                    } else if (
                                       isLargeScreen &&
                                       success.account_type === "patient" &&
                                       success.is_associate_with_any_corporate == true &&
@@ -344,12 +359,7 @@ class Login extends Component {
                                       !this.state.finalUrl
                                     ) {
                                       console.log("Patient Profile:", success.is_associate_with_any_corporate);
-                                      // this.props.history.push("/labs");
                                       this.props.history.push("/corporate-modal");
-
-                                      //   setTimeout(() => {
-                                      //     this.props.history.push("/labs");
-                                      // }, 1000)
                                     } else if (success.account_type === "labowner") {
                                       this.props.history.push("/dashboard-lab");
                                     } else if (success.account_type === "b2b-admin") {
@@ -401,6 +411,7 @@ class Login extends Component {
                           >
                             {({ errors, status, touched }) => (
                               <Form className="form-horizontal">
+
                                 <div className="mb-3">
                                   <Label for="username" className="form-label">
                                     Username or Email
@@ -451,6 +462,7 @@ class Login extends Component {
                                     className="invalid-feedback"
                                   />
                                 </div>
+
                                 <div className="form-check">
                                   <input
                                     type="checkbox"
