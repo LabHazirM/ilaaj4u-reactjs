@@ -12,6 +12,7 @@ const INIT_STATE = {
 const csrcomplaints = (state = INIT_STATE, action) => {
   switch (action.type) {
     case GET_CSR_COMPLAINTS_SUCCESS:
+      // console.log("Reducer Dataaaaaaaaaaaa:", action.payload);
       return {
         ...state,
         csrComplaints: action.payload,

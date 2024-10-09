@@ -18,4 +18,4 @@ Once `npm` has finished downloading the dependencies:
 ```sh
 npm start
 ```
-And navigate to `http://localhost:3000/`
+And navigate to `https://labhazirapi.com/`

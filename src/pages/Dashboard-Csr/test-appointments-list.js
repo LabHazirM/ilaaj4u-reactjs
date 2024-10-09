@@ -830,7 +830,7 @@ downloadFile = async (url) => {
       this.props;
 
     const pageOptions = {
-      sizePerPage: 100,
+      sizePerPage: 10,
       totalSize: patientTestAppointments.length, // replace later with size(patientTestAppointments),
       custom: true,
     };

@@ -466,7 +466,7 @@ class PendingAudits extends Component {
         <React.Fragment>
           <div className="page-content">
             <MetaTags>
-              <title>Audits list | Audits</title>
+              <title>Audits list | Audit Hazir</title>
             </MetaTags>
   
             <Container fluid>

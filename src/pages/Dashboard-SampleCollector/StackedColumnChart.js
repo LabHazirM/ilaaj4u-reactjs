@@ -1,10 +1,12 @@
-import React, { Component } from "react"
+import React, { Component } from "react";
 import PropTypes from 'prop-types';
-import ReactApexChart from "react-apexcharts"
+import ReactApexChart from "react-apexcharts";
+import { Link } from "react-router-dom"; // Import Link for navigation
+import classNames from "classnames"; // Import classNames for conditional classNames
 
 class StackedColumnChart extends Component {
   constructor(props) {
-    super(props)
+    super(props);
 
     this.state = {
       options: {
@@ -16,9 +18,7 @@ class StackedColumnChart extends Component {
           zoom: {
             enabled: true,
           },
-
         },
-
         plotOptions: {
           bar: {
             horizontal: false,
@@ -26,27 +26,18 @@ class StackedColumnChart extends Component {
             endingShape: "rounded",
           },
         },
-
         dataLabels: {
           enabled: false,
         },
         xaxis: {
-          categories: [
-            "Jan",
-            "Feb",
-            "Mar",
-            "Apr",
-            "May",
-            "Jun",
-            "Jul",
-            "Aug",
-            "Sep",
-            "Oct",
-            "Nov",
-            "Dec",
-          ],
+          categories: [],
         },
-        colors: ["#556ee6", "#f1b44c", "#34c38f"],
+        yaxis: {
+          title: {
+            text: 'Number of Appointments',
+          }
+        },
+        colors: ["#556ee6", "#f1b44c", "#34c38f", "#ff0000", "#00ff00"],
         legend: {
           position: "bottom",
         },
@@ -68,7 +59,7 @@ class StackedColumnChart extends Component {
   }
 
   fetchData = (period, labId) => {
-    fetch('https://labhazirapi.com/api/patient/ForSampleCollectorChartCalculation', {
+    fetch('http://127.0.0.1:8000/api/patient/ForSampleCollectorChartCalculation', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -112,22 +103,70 @@ class StackedColumnChart extends Component {
   };
 
   render() {
+    console.log('Rendering data:', this.state.series);
+
     return (
       <React.Fragment>
+        <div className="d-flex justify-content-end">
+          <ul className="nav nav-pills">
+            <li className="nav-item">
+              <Link
+                to="#"
+                className={classNames(
+                  { active: this.state.selectedPeriod === "weekly" },
+                  "nav-link"
+                )}
+                onClick={() => this.handlePeriodChange('weekly')}
+                id="one_month"
+              >
+                Week
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link
+                to="#"
+                className={classNames(
+                  { active: this.state.selectedPeriod === "monthly" },
+                  "nav-link"
+                )}
+                onClick={() => this.handlePeriodChange('monthly')}
+                id="one_month"
+              >
+                Month
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link
+                to="#"
+                className={classNames(
+                  { active: this.state.selectedPeriod === "yearly" },
+                  "nav-link"
+                )}
+                onClick={() => this.handlePeriodChange('yearly')}
+                id="one_month"
+              >
+                Year
+              </Link>
+            </li>
+          </ul>
+        </div>
+
         <ReactApexChart
           options={this.state.options}
-          series={this.props.chartSeries || []}
+          series={this.state.series}
           type="bar"
           height="360"
           className="apex-charts"
         />
       </React.Fragment>
-    )
+    );
   }
 }
 
 StackedColumnChart.propTypes = {
+  user_id: PropTypes.string.isRequired, // Add this line to validate user_id prop
   chartSeries: PropTypes.any,
   periodData: PropTypes.any
-}
-export default StackedColumnChart
+};
+
+export default StackedColumnChart;

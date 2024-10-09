@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import MetaTags from "react-meta-tags";
+import Tooltip from "@material-ui/core/Tooltip";
 import Select from "react-select";
 import { withRouter, Link } from "react-router-dom";
 import {
@@ -404,7 +405,7 @@ class PaymentStatussList extends Component {
             text: "Action",
             formatter: (cellContent, paymentCreatedStatus) => (
               <>
-             {paymentCreatedStatus.payment_status !== "Paid" && paymentCreatedStatus.payment_status !== "Submit"  ? ( 
+              {paymentCreatedStatus.payment_status !== "Paid" && paymentCreatedStatus.payment_status !== "Submit"  ? ( 
                 <div className="d-flex gap-1">
                 <button
                   type="submit"
@@ -441,15 +442,16 @@ class PaymentStatussList extends Component {
             text: "Comments/ Voucher",
             formatter: (cellContent, paymentCreatedStatus) => (
               <div>
+                <Tooltip title="Comments">
                 <Link
                   className="fas fa-comment font-size-18"
                   to={`/corporate-activity-log/${paymentCreatedStatus.id}`}
                   style={{ marginRight: '10px' }} // Add space between icons
-                />
-                <Link
+                /></Tooltip>
+                <Tooltip title="Voucher"><Link
                   className="fas fa-copy font-size-18"
                   to={`/corporate-voucher/${paymentCreatedStatus.id}`}
-                />
+                /></Tooltip>
               </div>
             ),
             headerStyle: { backgroundColor: '#DCDCDC' },

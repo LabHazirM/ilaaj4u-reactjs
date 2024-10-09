@@ -44,7 +44,7 @@ class Register extends Component {
     console.log('Longitude:', longitudeFromUrl);
     if (latitudeFromUrl && longitudeFromUrl) {
 
-      const url = `https://www.labhazir.com/nearby-labs/&lat=${latitudeFromUrl}&lon=${longitudeFromUrl}`;
+      const url = `https://labhazirapi.com/nearby-labs/&lat=${latitudeFromUrl}&lon=${longitudeFromUrl}`;
       const queryString = url.substring(url.indexOf("&") + 1);
       const finalUrl = ("&") + queryString; // Remove the leading question mark ('?')        
       this.setState({ finalUrl: finalUrl });

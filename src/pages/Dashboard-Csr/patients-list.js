@@ -17,7 +17,7 @@ import {
   Modal,
   ModalBody,
 } from "reactstrap";
-import filterFactory, { textFilter } from 'react-bootstrap-table2-filter';
+import filterFactory, { textFilter } from "react-bootstrap-table2-filter";
 
 import paginationFactory, {
   PaginationProvider,
@@ -52,11 +52,11 @@ class PatientsList extends Component {
   }
 
   componentDidMount() {
-    console.log("uuuuuuid", this.props.match.params.uuid)
+    console.log("uuuuuuid", this.props.match.params.uuid);
     const { patients, onGetPatientsList } = this.props;
     onGetPatientsList(this.state.user_id);
     this.setState({ patients });
-    console.log("guest", this.props.match.params.guest_id)
+    console.log("guest", this.props.match.params.guest_id);
   }
   handleBlur = () => {
     // Reset the showNoResultMessage state to false before performing the search
@@ -145,7 +145,7 @@ class PatientsList extends Component {
                       className="form-control"
                       name="phone"
                       placeholder="Search Phone..."
-                      onChange={(e) =>
+                      onChange={e =>
                         this.setState({
                           phone: e.target.value,
                         })
@@ -168,7 +168,7 @@ class PatientsList extends Component {
                 </div>
               </Col>
             </Row>
-            <Card >
+            <Card>
               <CardBody>
                 <div className="table-responsive">
                   <Table className="table-nowrap">
@@ -178,99 +178,114 @@ class PatientsList extends Component {
                         <th className="text-start">Name</th>
                         <th className="text-start">Email</th>
                         <th className="text-start">City</th>
-                        <th className="text-start">is_assosiatewith_anycorporate</th>
+                        <th className="text-start">
+                          is_assosiatewith_anycorporate
+                        </th>
                         <th className="text-start">employee_id_card</th>
                         <th className="text-start">Appointments</th>
                         <th className="text-start"></th>
-
-
-
                       </tr>
                     </thead>
-                    {patients.length > 0 ? (
-                      patients.map((patient, key) => (
-                        <tr key={"_row_" + key}>
-                          <td className="text-start py-2 pl-3 pr-4">{patient.account_id}</td>
-                          <td className="text-start py-2 pl-3 pr-4">
-                            {patient.name}
-                          </td>
-                          <td className="text-start py-2 pl-3 pr-4">{patient.email}</td>
-                          <td className="text-start py-2 pl-3 pr-4">{patient.city}</td>
-                          <td className="text-start py-2 pl-3 pr-4">{patient.is_assosiatewith_anycorporate}</td>
-                          <td className="text-start py-2 pl-3 pr-4">{patient.employee_id_card}</td>
-                          <td className="text-center py-2 pl-3 pr-4">
+                    {patients.length > 0
+                      ? patients.map((patient, key) => (
+                          <tr key={"_row_" + key}>
+                            <td className="text-start py-2 pl-3 pr-4">
+                              {patient.account_id}
+                            </td>
+                            <td className="text-start py-2 pl-3 pr-4">
+                              {patient.name}
+                            </td>
+                            <td className="text-start py-2 pl-3 pr-4">
+                              {patient.email}
+                            </td>
+                            <td className="text-start py-2 pl-3 pr-4">
+                              {patient.city}
+                            </td>
+                            <td className="text-start py-2 pl-3 pr-4">
+                              {patient.is_assosiatewith_anycorporate}
+                            </td>
+                            <td className="text-start py-2 pl-3 pr-4">
+                              {patient.employee_id_card}
+                            </td>
+                            <td className="text-center py-2 pl-3 pr-4">
+                              <Link
+                                style={{ background: "transparent" }}
+                                className="fas fa-calendar font-size-18"
+                                to={
+                                  this.props.match.params.uuid
+                                    ? `/test-appointments/${this.props.match.params.uuid}/${patient.account_id}`
+                                    : `/test-appointments/${patient.account_id}`
+                                }
+                              ></Link>
+                            </td>
+                            <td className="text-center py-2 pl-3 pr-4">
+                              {console.log(
+                                "corporate patient",
+                                patient.is_assosiatewith_anycorporate,
+                                patient.employee_id_card
+                              )}
+                              {patient.is_assosiatewith_anycorporate &&
+                              patient.employee_id_card ? (
+                                <button
+                                  className="btn btn-primary font-size-14"
+                                  onClick={() => {
+                                    const uuid = this.props.match.params.uuid;
+                                    const accountId = patient.corporate_id;
+                                    const patientaccountId = patient.account_id;
+                                    const url = uuid
+                                      ? `/corporate-patients-book-appointments/${uuid}/${patientaccountId}/${accountId}`
+                                      : `/corporate-patients-book-appointments/${patientaccountId}/${accountId}`;
 
-                            <Link
-                              style={{ background: 'transparent' }}
-                              className="fas fa-calendar font-size-18"
-                              to={
-                                this.props.match.params.uuid
-                                  ? `/test-appointments/${this.props.match.params.uuid}/${patient.account_id}`
-                                  : `/test-appointments/${patient.account_id}`}
-                            ></Link>
-                          </td>
-                          <td className="text-center py-2 pl-3 pr-4">
-  {console.log("corporate patient", patient.is_assosiatewith_anycorporate, patient.employee_id_card)}
-  {patient.is_assosiatewith_anycorporate && patient.employee_id_card ? (
-    <button
-      className="btn btn-primary font-size-14"
-      onClick={() => {
-        const uuid = this.props.match.params.uuid;
-        const accountId = patient.corporate_id;
-        const patientaccountId = patient.account_id;
-        const url = uuid
-          ? `/corporate-patients-book-appointments/${uuid}/${patientaccountId}/${accountId}`
-          : `/corporate-patients-book-appointments/${patientaccountId}/${accountId}`;
+                                    // Perform any additional actions or navigation logic here
 
-        // Perform any additional actions or navigation logic here
+                                    // For navigation, you can use react-router-dom's history or other navigation methods
+                                    this.props.history.push(url);
+                                  }}
+                                >
+                                  Book Appointment
+                                </button>
+                              ) : (
+                                <button
+                                  className="btn btn-primary font-size-14"
+                                  onClick={() => {
+                                    const uuid = this.props.match.params.uuid;
+                                    const accountId = patient.account_id;
+                                    const url = uuid
+                                      ? `/tests-offered-labhazir/${uuid}/${accountId}`
+                                      : `/tests-offered-labhazir/${accountId}`;
 
-        // For navigation, you can use react-router-dom's history or other navigation methods
-        this.props.history.push(url);
-      }}
-    >
-      Book Appointment
-    </button>
-  ) : (
-    <button
-      className="btn btn-primary font-size-14"
-      onClick={() => {
-        const uuid = this.props.match.params.uuid;
-        const accountId = patient.account_id;
-        const url = uuid
-          ? `/tests-offered-labhazir/${uuid}/${accountId}`
-          : `/tests-offered-labhazir/${accountId}`;
+                                    // Perform any additional actions or navigation logic here
 
-        // Perform any additional actions or navigation logic here
-
-        // For navigation, you can use react-router-dom's history or other navigation methods
-        this.props.history.push(url);
-      }}
-    >
-      Book Appointment
-    </button>
-  )}
-</td>
-
-
-                        </tr>
-                      ))
-                    ) : null}
-
+                                    // For navigation, you can use react-router-dom's history or other navigation methods
+                                    this.props.history.push(url);
+                                  }}
+                                >
+                                  Book Appointment
+                                </button>
+                              )}
+                            </td>
+                          </tr>
+                        ))
+                      : null}
+                  </Table>
+                  <div>
                     {isEmpty(patients) && (
-                      <Row>
-                        <div className=" mt-5">
-                          <h4 className="text-primary" style={{ fontSize: "18px" }}>
-                            &quot;Labhazir will display patient details only when you provide the correct phone number.&quot;
+                      <Row >
+                        <div className=" col-10 mt-5 ">
+                          <h4
+                            className="text-primary text-center "
+                            style={{ fontSize: "18px", marginLeft: "50px" }}
+                          >
+                            &quot;Labhazir will display patient details only <br></br>
+                            when you provide the correct phone number.&quot;
                           </h4>
                         </div>
                       </Row>
                     )}
-                  </Table>
+                  </div>
                 </div>
               </CardBody>
             </Card>
-
-
           </Container>
         </div>
       </React.Fragment>
@@ -290,7 +305,7 @@ const mapStateToProps = ({ patients }) => ({
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-  onGetPatientsList: (data) => dispatch(getPatientsList(data)),
+  onGetPatientsList: data => dispatch(getPatientsList(data)),
 });
 
 export default connect(

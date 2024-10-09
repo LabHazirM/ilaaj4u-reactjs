@@ -68,7 +68,7 @@ class Header extends Component {
     const longitudeFromUrl = params.get('lon');
 
     if (latitudeFromUrl && longitudeFromUrl) {
-      const finalUrl = `https://www.labhazir.com/nearby-labs/&lat=${latitudeFromUrl}&lon=${longitudeFromUrl}`;
+      const finalUrl = `https://labhazirapi.com/nearby-labs/&lat=${latitudeFromUrl}&lon=${longitudeFromUrl}`;
       this.setState({ finalUrl });
       console.log('Final URL:', this.state.finalUrl);
     }

@@ -13,9 +13,9 @@ import { Button, Collapse } from "reactstrap";
 import classname from "classnames";
 import logo from "../../../assets/images/logo.svg";
 import mtest from "../../../assets/images/m.test.png";
-import mprofile from "../../../assets/images/m.profile1.png";
-import mpackages from "../../../assets/images/m.package.png";
-import mradiology from "../../../assets/images/m.radiology.png";
+import mprofile from "../../../assets/images/m.profile1.jpeg";
+import mpackages from "../../../assets/images/m.package.jpeg";
+import mradiology from "../../../assets/images/m.radiology.jpeg";
 import mappointment from "../../../assets/images/m.appointment.png";
 import discount from "../../../assets/images/discount.png";
 import logoLight from "../../../assets/images/logo-light.png";
@@ -175,213 +175,200 @@ class NearbyLabs extends Component {
       onGetNearbyLabs,
       onGetRegionWiseAdvertisement,
     } = this.props;
+
     if (territoriesList && !territoriesList.length) {
       console.log(onGetTerritoriesList(this.state.user_id));
     }
+
     const { labNamesList, onGetLabNamesList } = this.props;
+
     if (labNamesList && !labNamesList.length) {
       console.log(onGetLabNamesList(this.state.user_id));
     }
+
     const { patientProfile, onGetPatientProfile } = this.props;
     onGetPatientProfile(this.state.user_id);
     this.setState({
       patientProfile,
     });
     console.log("state", patientProfile);
+
+
     let latitude;
     let longitude;
+
     const url = window.location.href;
-    const queryString = url.substring(url.indexOf("&"));
+    const queryString = url.substring(url.indexOf("&") + 1);
     const params = new URLSearchParams(queryString);
     console.log("print params in app", url, queryString, params);
+
     const latitudeFromUrl = params.get("lat");
     const longitudeFromUrl = params.get("lon");
+
     console.log("Latitude:", latitudeFromUrl);
     console.log("Longitude:", longitudeFromUrl);
+
     // Check if latitude and longitude values are present in URL parameters
     if (latitudeFromUrl && longitudeFromUrl) {
-      // Parse latitude and longitude from URL
-      const latitude = parseFloat(latitudeFromUrl);
-      const longitude = parseFloat(longitudeFromUrl);
+      // Use latitude and longitude from URL
+      latitude = parseFloat(latitudeFromUrl);
+      longitude = parseFloat(longitudeFromUrl);
       console.log("print lat log in app", latitude, longitude);
 
-      // Construct the query string (finalUrl)
-      const finalUrl = `&lat=${latitude}&lon=${longitude}`;
+      const url = `https://labhazirapi.com/nearby-labs/&lat=${latitude}&lon=${longitude}`;
+      const queryString = url.substring(url.indexOf("&") + 1);
+      const finalUrl = "&" + queryString; // Remove the leading question mark ('?')
+      this.setState({ finalUrl: finalUrl });
+      console.log("differ with the final url state:", this.state.finalUrl);
 
-      // Batch state updates and use a callback to handle logic after state update
-      this.setState(
-        {
-          finalUrl: finalUrl,
-          currentLatitude: latitude,
-          currentLongitude: longitude,
-          search_type: "Current Location",
-          LabType: "Main",
-        },
-        () => {
-          // Logging the updated state values
-          console.log("Final URL after state update:", this.state.finalUrl, this.state.search_type);
+      console.log(finalUrl);
+      console.log("whsuqi", latitude, longitude, this.props.match.params.uuid);
 
-          // Lab Advertisement
-          const regionWiseAdvLocationDetails = {
-            latitude: this.state.currentLatitude,
-            longitude: this.state.currentLongitude,
-            search_type: this.state.search_type,
-            address: this.state.address,
-            city: this.state.city,
-          };
-          if (this.state.currentLatitude && this.state.currentLongitude) {
-            onGetRegionWiseAdvertisement(regionWiseAdvLocationDetails);
-            setTimeout(() => {
-              this.setState({
-                regionWiseAdvertisement: this.props.regionWiseAdvertisement,
-              });
-            }, 500);
-          }
+      this.setState({ currentLatitude: latitude });
+      this.setState({ currentLongitude: longitude });
 
-          // Labhazir Advertisement
-          const advLiveLocationDetails = {
-            latitude: this.state.currentLatitude,
-            longitude: this.state.currentLongitude,
-            search_type: this.state.search_type,
-            address: this.state.address,
-            city: this.state.city,
-          };
-          if (this.state.currentLatitude && this.state.currentLongitude) {
-            onGetAdvLive(advLiveLocationDetails);
-            setTimeout(() => {
-              this.setState({ advLives: this.props.advLives });
-            }, 500);
-          }
+      // Lab Advertisement
+      const regionWiseAdvLocationDetails = {
+        latitude,
+        longitude,
+        search_type: this.state.search_type,
+        address: this.state.address,
+        city: this.state.city,
 
-          // Nearby Labs
-          const guest_id = uuidv4();
-          const nearbyLabsLocationDetails = {
-            latitude: this.state.currentLatitude,
-            longitude: this.state.currentLongitude,
-            search_type: this.state.search_type,
-            address: this.state.address,
-            city: this.state.city,
-            km: this.state.km,
-            LabType: this.state.LabType,
-            locationAccessAllowed: this.state.locationAccessAllowed,
-            guest_id: guest_id,
-          };
+      };
+      if (latitude && longitude) {
+        onGetRegionWiseAdvertisement(regionWiseAdvLocationDetails);
+        setTimeout(() => {
+          this.setState({
+            regionWiseAdvertisement: this.props.regionWiseAdvertisement,
+          });
+        }, 500);
+      }
+      // Labhazir Advertisement
+      const advLiveLocationDetails = {
+        latitude,
+        longitude,
+        search_type: this.state.search_type,
+        address: this.state.address,
+        city: this.state.city,
 
-          console.log("guestid in nearby lab:", guest_id, nearbyLabsLocationDetails.guest_id, this.state.search_type);
+      };
+      if (latitude && longitude) {
+        onGetAdvLive(advLiveLocationDetails);
+        setTimeout(() => {
+          this.setState({ advLives: this.props.advLives });
+        }, 500);
+      }
+      // near by labs
+      if (
+        (!this.state.user_id || this.state.user_type === "CSR") &&
+        !this.props.match.params.guest_id
+      ) {
+        const guest_id = uuidv4();
+        const nearbyLabsLocationDetails = {
+          latitude,
+          longitude,
+          search_type: this.state.search_type,
+          address: this.state.address,
+          city: this.state.city,
+          km: this.state.km,
+          LabType: this.state.LabType,
+          locationAccessAllowed: this.state.locationAccessAllowed,
+          guest_id,
+        };
+        console.log(
+          "guestid in nearby lab:",
+          guest_id,
+          nearbyLabsLocationDetails.guest_id
+        );
+        this.setState({ guest_id });
+        console.log("differ:", this.state.guest_id);
+        console.log(window.location.href);
+        if (latitude && longitude) {
+          onGetNearbyLabs(nearbyLabsLocationDetails);
+          this.setState({ nearbyLabs: [] });
 
-          this.setState({ guest_id });
-
-          if (this.state.currentLatitude && this.state.currentLongitude) {
-            onGetNearbyLabs(nearbyLabsLocationDetails);
-            this.setState({ nearbyLabs: [] });
-
-            setTimeout(() => {
-              this.setState({ nearbyLabs: this.props.nearbyLabs });
-            }, 500);
-          }
-
-          // Additional user-type specific logic for nearby labs
-          if (this.state.user_id || this.state.user_type === "b2bclient") {
-            const nearbyLabsLocationDetailsForB2B = {
-              latitude: this.state.currentLatitude,
-              longitude: this.state.currentLongitude,
-              search_type: this.state.search_type,
-              address: this.state.address,
-              city: this.state.city,
-              km: this.state.km,
-              locationAccessAllowed: this.state.locationAccessAllowed,
-              LabType: this.state.LabType,
-            };
-            if (this.state.currentLatitude && this.state.currentLongitude) {
-              onGetNearbyLabs(nearbyLabsLocationDetailsForB2B);
-              this.setState({ nearbyLabs: [] });
-
-              setTimeout(() => {
-                this.setState({ nearbyLabs: this.props.nearbyLabs });
-              }, 500);
-            }
-          }
-          if ((!this.state.user_id || this.state.user_type === "CSR") &&
-            !this.props.match.params.guest_id) {
-            const guest_id = uuidv4();
-
-            const nearbyLabsLocationDetailsForB2B = {
-              latitude: this.state.currentLatitude,
-              longitude: this.state.currentLongitude,
-              search_type: this.state.search_type,
-              address: this.state.address,
-              city: this.state.city,
-              km: this.state.km,
-              locationAccessAllowed: this.state.locationAccessAllowed,
-              LabType: this.state.LabType,
-              guest_id,
-
-            };
-            this.setState({ guest_id });
-
-            if (this.state.currentLatitude && this.state.currentLongitude) {
-              onGetNearbyLabs(nearbyLabsLocationDetailsForB2B);
-              this.setState({ nearbyLabs: [] });
-
-              setTimeout(() => {
-                this.setState({ nearbyLabs: this.props.nearbyLabs });
-              }, 500);
-            }
-          }
-          if (!this.state.user_id && !this.props.match.params.guest_id) {
-            const guest_id = uuidv4();
-
-            const nearbyLabsLocationDetailsForB2B = {
-              latitude: this.state.currentLatitude,
-              longitude: this.state.currentLongitude,
-              search_type: this.state.search_type,
-              address: this.state.address,
-              city: this.state.city,
-              km: this.state.km,
-              locationAccessAllowed: this.state.locationAccessAllowed,
-              LabType: this.state.LabType,
-              guest_id,
-
-            };
-            this.setState({ guest_id });
-
-            if (this.state.currentLatitude && this.state.currentLongitude) {
-              onGetNearbyLabs(nearbyLabsLocationDetailsForB2B);
-              this.setState({ nearbyLabs: [] });
-
-              setTimeout(() => {
-                this.setState({ nearbyLabs: this.props.nearbyLabs });
-              }, 500);
-            }
-          }
-          if (this.state.user_id) {
-
-            const nearbyLabsLocationDetailsForB2B = {
-              latitude: this.state.currentLatitude,
-              longitude: this.state.currentLongitude,
-              search_type: this.state.search_type,
-              address: this.state.address,
-              city: this.state.city,
-              km: this.state.km,
-              locationAccessAllowed: this.state.locationAccessAllowed,
-              LabType: this.state.LabType,
-
-            };
-
-            if (this.state.currentLatitude && this.state.currentLongitude) {
-              onGetNearbyLabs(nearbyLabsLocationDetailsForB2B);
-              this.setState({ nearbyLabs: [] });
-
-              setTimeout(() => {
-                this.setState({ nearbyLabs: this.props.nearbyLabs });
-              }, 500);
-            }
-          }
-
+          setTimeout(() => {
+            this.setState({ nearbyLabs: this.props.nearbyLabs });
+          }, 500);
         }
-      );
-    }
+      }
+      // near by labs
+      if (this.state.user_id || this.state.user_type === "b2bclient") {
+        const nearbyLabsLocationDetails = {
+          latitude,
+          longitude,
+          search_type: this.state.search_type,
+          address: this.state.address,
+          city: this.state.city,
+          km: this.state.km,
+          locationAccessAllowed: this.state.locationAccessAllowed,
+          LabType: this.state.LabType,
+        };
+        if (latitude && longitude) {
+          onGetNearbyLabs(nearbyLabsLocationDetails);
+          this.setState({ nearbyLabs: [] });
 
+          setTimeout(() => {
+            this.setState({ nearbyLabs: this.props.nearbyLabs });
+          }, 500);
+        }
+      }
+
+      if (!this.state.user_id && !this.props.match.params.guest_id) {
+        const guest_id = uuidv4();
+        const nearbyLabsLocationDetails = {
+          latitude,
+          longitude,
+          search_type: this.state.search_type,
+          address: this.state.address,
+          city: this.state.city,
+          km: this.state.km,
+          LabType: this.state.LabType,
+          locationAccessAllowed: this.state.locationAccessAllowed,
+          guest_id,
+        };
+        console.log(
+          "guestid in nearby lab check yeh chalta h yah nahi:",
+          guest_id,
+          nearbyLabsLocationDetails.guest_id
+        );
+        this.setState({ guest_id });
+        console.log("differ:", this.state.guest_id);
+        console.log("href url", window.location.href);
+        if (latitude && longitude) {
+          onGetNearbyLabs(nearbyLabsLocationDetails);
+          this.setState({ nearbyLabs: [] });
+
+          setTimeout(() => {
+            this.setState({ nearbyLabs: this.props.nearbyLabs });
+          }, 500);
+        }
+      }
+      if (this.state.user_id) {
+        const nearbyLabsLocationDetails = {
+          latitude,
+          longitude,
+          search_type: this.state.search_type,
+          address: this.state.address,
+          city: this.state.city,
+          km: this.state.km,
+          LabType: this.state.LabType,
+          locationAccessAllowed: this.state.locationAccessAllowed,
+
+        };
+        if (latitude && longitude) {
+          onGetNearbyLabs(nearbyLabsLocationDetails);
+          this.setState({ nearbyLabs: [] });
+
+          setTimeout(() => {
+            this.setState({ nearbyLabs: this.props.nearbyLabs });
+          }, 500);
+        }
+      }
+
+
+    }
     else {
       if (navigator.geolocation) {
         const geolocationPermission = navigator.permissions.query({ name: 'geolocation' });
@@ -685,6 +672,7 @@ class NearbyLabs extends Component {
     setTimeout(() => {
       this.setState({ loading: false });
     }, 7000);
+
     if (this.state.search_type === "Current Location") {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(position => {
@@ -729,74 +717,74 @@ class NearbyLabs extends Component {
     }
   }
 
-  handleLocationUpdate(latitude, longitude) {
-    const { onGetAdvLive, onGetNearbyLabs, onGetRegionWiseAdvertisement } = this.props;
+  // handleLocationUpdate(latitude, longitude) {
+  //   const { onGetAdvLive, onGetNearbyLabs, onGetRegionWiseAdvertisement } = this.props;
 
-    this.setState({ currentLatitude: latitude });
-    this.setState({ currentLongitude: longitude });
+  //   this.setState({ currentLatitude: latitude });
+  //   this.setState({ currentLongitude: longitude });
 
-    // region Wise Advertisement
-    const advLiveLocationDetails = {
-      latitude: this.state.currentLatitude,
-      longitude: this.state.currentLongitude,
-      search_type: this.state.search_type,
-      address: this.state.address,
-      city: this.state.city,
-    };
+  //   // region Wise Advertisement
+  //   const advLiveLocationDetails = {
+  //     latitude: this.state.currentLatitude,
+  //     longitude: this.state.currentLongitude,
+  //     search_type: this.state.search_type,
+  //     address: this.state.address,
+  //     city: this.state.city,
+  //   };
 
-    if (this.state.currentLatitude && this.state.currentLongitude) {
-      onGetAdvLive(advLiveLocationDetails);
-      setTimeout(() => {
-        this.setState({ advLives: this.props.advLives });
-      }, 500);
-    }
+  //   if (this.state.currentLatitude && this.state.currentLongitude) {
+  //     onGetAdvLive(advLiveLocationDetails);
+  //     setTimeout(() => {
+  //       this.setState({ advLives: this.props.advLives });
+  //     }, 500);
+  //   }
 
-    // near by labs
-    if ((!this.state.user_id || this.state.user_type === "CSR") && !this.props.match.params.guest_id) {
-      const guest_id = uuidv4();
-      const nearbyLabsLocationDetails = {
-        latitude: this.state.currentLatitude,
-        longitude: this.state.currentLongitude,
-        search_type: this.state.search_type,
-        address: this.state.address,
-        city: this.state.city,
-        km: this.state.km,
-        LabType: this.state.LabType,
-        guest_id: guest_id,
-      };
-      console.log("guestid in nearby lab:", guest_id, nearbyLabsLocationDetails.guest_id)
-      this.setState({ guest_id: guest_id });
-      console.log("differ:", this.state.guest_id)
-      console.log(window.location.href);
-      // onGetNearbyLabs(nearbyLabsLocationDetails).then(() => {
-      //   this.setState({ nearbyLabs: this.props.nearbyLabs });
-      // }).catch((error) => {
-      //   console.log("Error fetching nearby labs:", error);
-      //   // Handle error if necessary
-      // });
-      if (this.state.currentLatitude && this.state.currentLongitude) {
-        onGetNearbyLabs(nearbyLabsLocationDetails);
-        setTimeout(() => {
-          this.setState({ nearbyLabs: this.props.nearbyLabs });
-        }, 500);
-      }
-    }
+  //   // near by labs
+  //   if ((!this.state.user_id || this.state.user_type === "CSR") && !this.props.match.params.guest_id) {
+  //     const guest_id = uuidv4();
+  //     const nearbyLabsLocationDetails = {
+  //       latitude: this.state.currentLatitude,
+  //       longitude: this.state.currentLongitude,
+  //       search_type: this.state.search_type,
+  //       address: this.state.address,
+  //       city: this.state.city,
+  //       km: this.state.km,
+  //       LabType: this.state.LabType,
+  //       guest_id: guest_id,
+  //     };
+  //     console.log("guestid in nearby lab:", guest_id, nearbyLabsLocationDetails.guest_id)
+  //     this.setState({ guest_id: guest_id });
+  //     console.log("differ:", this.state.guest_id)
+  //     console.log(window.location.href);
+  //     // onGetNearbyLabs(nearbyLabsLocationDetails).then(() => {
+  //     //   this.setState({ nearbyLabs: this.props.nearbyLabs });
+  //     // }).catch((error) => {
+  //     //   console.log("Error fetching nearby labs:", error);
+  //     //   // Handle error if necessary
+  //     // });
+  //     if (this.state.currentLatitude && this.state.currentLongitude) {
+  //       onGetNearbyLabs(nearbyLabsLocationDetails);
+  //       setTimeout(() => {
+  //         this.setState({ nearbyLabs: this.props.nearbyLabs });
+  //       }, 500);
+  //     }
+  //   }
 
-    // region Wise Advertisement
-    const regionWiseAdvLocationDetails = {
-      latitude: this.state.currentLatitude,
-      longitude: this.state.currentLongitude,
-      search_type: this.state.search_type,
-      address: this.state.address,
-      city: this.state.city,
-    };
-    if (this.state.currentLatitude && this.state.currentLongitude) {
-      onGetRegionWiseAdvertisement(regionWiseAdvLocationDetails);
-      setTimeout(() => {
-        this.setState({ regionWiseAdvertisement: this.props.regionWiseAdvertisement });
-      }, 500);
-    }
-  }
+  //   // region Wise Advertisement
+  //   const regionWiseAdvLocationDetails = {
+  //     latitude: this.state.currentLatitude,
+  //     longitude: this.state.currentLongitude,
+  //     search_type: this.state.search_type,
+  //     address: this.state.address,
+  //     city: this.state.city,
+  //   };
+  //   if (this.state.currentLatitude && this.state.currentLongitude) {
+  //     onGetRegionWiseAdvertisement(regionWiseAdvLocationDetails);
+  //     setTimeout(() => {
+  //       this.setState({ regionWiseAdvertisement: this.props.regionWiseAdvertisement });
+  //     }, 500);
+  //   }
+  // }
   // eslint-disable-next-line no-unused-vars
   componentDidUpdate(prevProps, prevState, snapshot) {
     const { nearbyLabs } = this.props;
@@ -2698,27 +2686,27 @@ class NearbyLabs extends Component {
                                 </span>
                               </div>
                             )}
-                            <Row style={{ display: "flex", justifyContent: "center", marginLeft: "40px" }}>
-                              <Col className="d-flex justify-content-end" style={{ paddingRight: "0" }}>
-                                <StarRatings
-                                  rating={nearbyLab.rating}
-                                  starRatedColor="#F1B44C"
-                                  starEmptyColor="#2D363F"
-                                  numberOfStars={5}
-                                  name="rating"
-                                  starDimension="12px"
-                                  starSpacing="3px"
-                                />
-                              </Col>
-                              <Col className="d-flex justify-content-start" style={{ paddingLeft: "0" }}>
-                                <span style={{ fontSize: "14px", marginLeft: "7px" }}>
-                                  {nearbyLab && nearbyLab.rating && (
-                                    <p>{nearbyLab.rating.toFixed(1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
-                                  )}
-                                </span>
-                              </Col>
-                            </Row>
-
+                             <Row style={{ display: "flex", justifyContent: "center", marginLeft: "40px" }}>
+  <Col className="d-flex justify-content-end" style={{ paddingRight: "0" }}>
+    <StarRatings
+      rating={nearbyLab.rating}
+      starRatedColor="#F1B44C"
+      starEmptyColor="#2D363F"
+      numberOfStars={5}
+      name="rating"
+      starDimension="12px"
+      starSpacing="3px"
+    />
+  </Col>
+  <Col className="d-flex justify-content-start" style={{ paddingLeft: "0" }}>
+    <span style={{ fontSize: "14px", marginLeft: "7px"}}>
+      {nearbyLab && nearbyLab.rating && (
+        <p>{nearbyLab.rating.toFixed(1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
+      )}
+    </span>
+  </Col>
+</Row>
+                            
                             <Link
                               to={
                                 this.props.match.params.uuid
@@ -2868,27 +2856,27 @@ class NearbyLabs extends Component {
                                 </span>
                               </div>
                             )}
-                            <Row style={{ display: "flex", justifyContent: "center", marginLeft: "40px" }}>
-                              <Col className="d-flex justify-content-end" style={{ paddingRight: "0" }}>
-                                <StarRatings
-                                  rating={nearbyLab.rating}
-                                  starRatedColor="#F1B44C"
-                                  starEmptyColor="#2D363F"
-                                  numberOfStars={5}
-                                  name="rating"
-                                  starDimension="12px"
-                                  starSpacing="3px"
-                                />
-                              </Col>
-                              <Col className="d-flex justify-content-start" style={{ paddingLeft: "0" }}>
-                                <span style={{ fontSize: "14px", marginLeft: "7px" }}>
-                                  {nearbyLab && nearbyLab.rating && (
-                                    <p>{nearbyLab.rating.toFixed(1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
-                                  )}
-                                </span>
-                              </Col>
-                            </Row>
-
+                             <Row style={{ display: "flex", justifyContent: "center", marginLeft: "40px" }}>
+  <Col className="d-flex justify-content-end" style={{ paddingRight: "0" }}>
+    <StarRatings
+      rating={nearbyLab.rating}
+      starRatedColor="#F1B44C"
+      starEmptyColor="#2D363F"
+      numberOfStars={5}
+      name="rating"
+      starDimension="12px"
+      starSpacing="3px"
+    />
+  </Col>
+  <Col className="d-flex justify-content-start" style={{ paddingLeft: "0" }}>
+    <span style={{ fontSize: "14px", marginLeft: "7px"}}>
+      {nearbyLab && nearbyLab.rating && (
+        <p>{nearbyLab.rating.toFixed(1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
+      )}
+    </span>
+  </Col>
+</Row>
+                            
                             <Link
                               to={
                                 this.props.match.params.uuid
@@ -3034,26 +3022,26 @@ class NearbyLabs extends Component {
                                 </span>
                               </div>
                             )}
-                            <Row style={{ display: "flex", justifyContent: "center", marginLeft: "40px" }}>
-                              <Col className="d-flex justify-content-end" style={{ paddingRight: "0" }}>
-                                <StarRatings
-                                  rating={nearbyLab.rating}
-                                  starRatedColor="#F1B44C"
-                                  starEmptyColor="#2D363F"
-                                  numberOfStars={5}
-                                  name="rating"
-                                  starDimension="12px"
-                                  starSpacing="3px"
-                                />
-                              </Col>
-                              <Col className="d-flex justify-content-start" style={{ paddingLeft: "0" }}>
-                                <span style={{ fontSize: "14px", marginLeft: "7px" }}>
-                                  {nearbyLab && nearbyLab.rating && (
-                                    <p>{nearbyLab.rating.toFixed(1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
-                                  )}
-                                </span>
-                              </Col>
-                            </Row>
+                             <Row style={{ display: "flex", justifyContent: "center", marginLeft: "40px" }}>
+  <Col className="d-flex justify-content-end" style={{ paddingRight: "0" }}>
+    <StarRatings
+      rating={nearbyLab.rating}
+      starRatedColor="#F1B44C"
+      starEmptyColor="#2D363F"
+      numberOfStars={5}
+      name="rating"
+      starDimension="12px"
+      starSpacing="3px"
+    />
+  </Col>
+  <Col className="d-flex justify-content-start" style={{ paddingLeft: "0" }}>
+    <span style={{ fontSize: "14px", marginLeft: "7px"}}>
+      {nearbyLab && nearbyLab.rating && (
+        <p>{nearbyLab.rating.toFixed(1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
+      )}
+    </span>
+  </Col>
+</Row>
                             <Link
                               to={
                                 this.props.match.params.uuid
@@ -3199,26 +3187,26 @@ class NearbyLabs extends Component {
                                 </span>
                               </div>
                             )}
-                            <Row style={{ display: "flex", justifyContent: "center", marginLeft: "40px" }}>
-                              <Col className="d-flex justify-content-end" style={{ paddingRight: "0" }}>
-                                <StarRatings
-                                  rating={nearbyLab.rating}
-                                  starRatedColor="#F1B44C"
-                                  starEmptyColor="#2D363F"
-                                  numberOfStars={5}
-                                  name="rating"
-                                  starDimension="12px"
-                                  starSpacing="3px"
-                                />
-                              </Col>
-                              <Col className="d-flex justify-content-start" style={{ paddingLeft: "0" }}>
-                                <span style={{ fontSize: "14px", marginLeft: "7px" }}>
-                                  {nearbyLab && nearbyLab.rating && (
-                                    <p>{nearbyLab.rating.toFixed(1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
-                                  )}
-                                </span>
-                              </Col>
-                            </Row>                   <Link
+                             <Row style={{ display: "flex", justifyContent: "center", marginLeft: "40px" }}>
+  <Col className="d-flex justify-content-end" style={{ paddingRight: "0" }}>
+    <StarRatings
+      rating={nearbyLab.rating}
+      starRatedColor="#F1B44C"
+      starEmptyColor="#2D363F"
+      numberOfStars={5}
+      name="rating"
+      starDimension="12px"
+      starSpacing="3px"
+    />
+  </Col>
+  <Col className="d-flex justify-content-start" style={{ paddingLeft: "0" }}>
+    <span style={{ fontSize: "14px", marginLeft: "7px"}}>
+      {nearbyLab && nearbyLab.rating && (
+        <p>{nearbyLab.rating.toFixed(1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
+      )}
+    </span>
+  </Col>
+</Row>                   <Link
                               to={
                                 this.props.match.params.uuid
                                   ? `/nearby-lab-detail/${nearbyLab.account_id}/${this.state.guest_id}/${this.props.match.params.uuid}`
@@ -3753,26 +3741,26 @@ class NearbyLabs extends Component {
                                   </span>
                                 </div>
                               )}
-                              <Row style={{ display: "flex", justifyContent: "center", marginLeft: "40px" }}>
-                                <Col className="d-flex justify-content-end" style={{ paddingRight: "0" }}>
-                                  <StarRatings
-                                    rating={nearbyLab.rating}
-                                    starRatedColor="#F1B44C"
-                                    starEmptyColor="#2D363F"
-                                    numberOfStars={5}
-                                    name="rating"
-                                    starDimension="12px"
-                                    starSpacing="3px"
-                                  />
-                                </Col>
-                                <Col className="d-flex justify-content-start" style={{ paddingLeft: "0" }}>
-                                  <span style={{ fontSize: "14px", marginLeft: "7px" }}>
-                                    {nearbyLab && nearbyLab.rating && (
-                                      <p>{nearbyLab.rating.toFixed(1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
-                                    )}
-                                  </span>
-                                </Col>
-                              </Row>
+                               <Row style={{ display: "flex", justifyContent: "center", marginLeft: "40px" }}>
+  <Col className="d-flex justify-content-end" style={{ paddingRight: "0" }}>
+    <StarRatings
+      rating={nearbyLab.rating}
+      starRatedColor="#F1B44C"
+      starEmptyColor="#2D363F"
+      numberOfStars={5}
+      name="rating"
+      starDimension="12px"
+      starSpacing="3px"
+    />
+  </Col>
+  <Col className="d-flex justify-content-start" style={{ paddingLeft: "0" }}>
+    <span style={{ fontSize: "14px", marginLeft: "7px"}}>
+      {nearbyLab && nearbyLab.rating && (
+        <p>{nearbyLab.rating.toFixed(1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
+      )}
+    </span>
+  </Col>
+</Row>
                               <Link
                                 to={
                                   this.props.match.params.uuid
@@ -3924,26 +3912,26 @@ class NearbyLabs extends Component {
                                   </span>
                                 </div>
                               )}
-                              <Row style={{ display: "flex", justifyContent: "center", marginLeft: "40px" }}>
-                                <Col className="d-flex justify-content-end" style={{ paddingRight: "0" }}>
-                                  <StarRatings
-                                    rating={nearbyLab.rating}
-                                    starRatedColor="#F1B44C"
-                                    starEmptyColor="#2D363F"
-                                    numberOfStars={5}
-                                    name="rating"
-                                    starDimension="12px"
-                                    starSpacing="3px"
-                                  />
-                                </Col>
-                                <Col className="d-flex justify-content-start" style={{ paddingLeft: "0" }}>
-                                  <span style={{ fontSize: "14px", marginLeft: "7px" }}>
-                                    {nearbyLab && nearbyLab.rating && (
-                                      <p>{nearbyLab.rating.toFixed(1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
-                                    )}
-                                  </span>
-                                </Col>
-                              </Row>                      <Link
+                               <Row style={{ display: "flex", justifyContent: "center", marginLeft: "40px" }}>
+  <Col className="d-flex justify-content-end" style={{ paddingRight: "0" }}>
+    <StarRatings
+      rating={nearbyLab.rating}
+      starRatedColor="#F1B44C"
+      starEmptyColor="#2D363F"
+      numberOfStars={5}
+      name="rating"
+      starDimension="12px"
+      starSpacing="3px"
+    />
+  </Col>
+  <Col className="d-flex justify-content-start" style={{ paddingLeft: "0" }}>
+    <span style={{ fontSize: "14px", marginLeft: "7px"}}>
+      {nearbyLab && nearbyLab.rating && (
+        <p>{nearbyLab.rating.toFixed(1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
+      )}
+    </span>
+  </Col>
+</Row>                      <Link
                                 to={
                                   this.props.match.params.uuid
                                     ? `/nearby-lab-detail/${nearbyLab.account_id}/${this.state.guest_id}/${this.props.match.params.uuid}`
@@ -4089,26 +4077,26 @@ class NearbyLabs extends Component {
                                   </span>
                                 </div>
                               )}
-                              <Row style={{ display: "flex", justifyContent: "center", marginLeft: "40px" }}>
-                                <Col className="d-flex justify-content-end" style={{ paddingRight: "0" }}>
-                                  <StarRatings
-                                    rating={nearbyLab.rating}
-                                    starRatedColor="#F1B44C"
-                                    starEmptyColor="#2D363F"
-                                    numberOfStars={5}
-                                    name="rating"
-                                    starDimension="12px"
-                                    starSpacing="3px"
-                                  />
-                                </Col>
-                                <Col className="d-flex justify-content-start" style={{ paddingLeft: "0" }}>
-                                  <span style={{ fontSize: "14px", marginLeft: "7px" }}>
-                                    {nearbyLab && nearbyLab.rating && (
-                                      <p>{nearbyLab.rating.toFixed(1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
-                                    )}
-                                  </span>
-                                </Col>
-                              </Row>
+                               <Row style={{ display: "flex", justifyContent: "center", marginLeft: "40px" }}>
+  <Col className="d-flex justify-content-end" style={{ paddingRight: "0" }}>
+    <StarRatings
+      rating={nearbyLab.rating}
+      starRatedColor="#F1B44C"
+      starEmptyColor="#2D363F"
+      numberOfStars={5}
+      name="rating"
+      starDimension="12px"
+      starSpacing="3px"
+    />
+  </Col>
+  <Col className="d-flex justify-content-start" style={{ paddingLeft: "0" }}>
+    <span style={{ fontSize: "14px", marginLeft: "7px"}}>
+      {nearbyLab && nearbyLab.rating && (
+        <p>{nearbyLab.rating.toFixed(1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
+      )}
+    </span>
+  </Col>
+</Row>
                               <Link
                                 to={
                                   this.props.match.params.uuid
@@ -4255,26 +4243,26 @@ class NearbyLabs extends Component {
                                   </span>
                                 </div>
                               )}
-                              <Row style={{ display: "flex", justifyContent: "center", marginLeft: "40px" }}>
-                                <Col className="d-flex justify-content-end" style={{ paddingRight: "0" }}>
-                                  <StarRatings
-                                    rating={nearbyLab.rating}
-                                    starRatedColor="#F1B44C"
-                                    starEmptyColor="#2D363F"
-                                    numberOfStars={5}
-                                    name="rating"
-                                    starDimension="12px"
-                                    starSpacing="3px"
-                                  />
-                                </Col>
-                                <Col className="d-flex justify-content-start" style={{ paddingLeft: "0" }}>
-                                  <span style={{ fontSize: "14px", marginLeft: "7px" }}>
-                                    {nearbyLab && nearbyLab.rating && (
-                                      <p>{nearbyLab.rating.toFixed(1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
-                                    )}
-                                  </span>
-                                </Col>
-                              </Row>
+                               <Row style={{ display: "flex", justifyContent: "center", marginLeft: "40px" }}>
+  <Col className="d-flex justify-content-end" style={{ paddingRight: "0" }}>
+    <StarRatings
+      rating={nearbyLab.rating}
+      starRatedColor="#F1B44C"
+      starEmptyColor="#2D363F"
+      numberOfStars={5}
+      name="rating"
+      starDimension="12px"
+      starSpacing="3px"
+    />
+  </Col>
+  <Col className="d-flex justify-content-start" style={{ paddingLeft: "0" }}>
+    <span style={{ fontSize: "14px", marginLeft: "7px"}}>
+      {nearbyLab && nearbyLab.rating && (
+        <p>{nearbyLab.rating.toFixed(1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
+      )}
+    </span>
+  </Col>
+</Row>
                               <Link
                                 to={
                                   this.props.match.params.uuid
@@ -4604,63 +4592,75 @@ class NearbyLabs extends Component {
                 >
                   {({ errors, status, touched }) => (
                     <Form className="form-horizontal">
-                      {/* Type field */}
-                      {/* Type field */}
-                      <h4 style={{ background: "#3B71CA", color: "white", fontWeight: "bold" }}> Search Labs for more result in Pakistan!</h4>
-                      <Row className="g-0">
-
+                    {/* Type field */}
+                    {/* Type field */}
+                    <h4 style={{ background: "#3B71CA", color: "white", fontWeight: "bold" }}> Search Labs for more result in Pakistan!</h4>
+                    <Row className="g-0">
                       <Col>
-                            <div>
-                              <Select
-                                type="text"
-                                onChange={this.onChangeLabName}
-                                options={labNames}
-                                placeholder="Lab Name..."
-                                styles={{
-                                  control: (provided, state) => ({
-                                    ...provided,
-                                    border: '2px solid blue',
-                                    borderRadius: '5px',
-                                  }),
-                                }}
-                                isSearchable={true}
-                                isClearable={true}
-                                components={{
-                                  ClearIndicator,
-                                }}
-                              />
-                            </div>
-                          </Col>
-                        
-                        {(this.state.search_type === "Current Location" || this.state.search_type === "City" || this.state.search_type === "Custom Address") ? (
-                          <Col xs="4" sm="4" md="3" lg="3">
-                            <div className="mb-3">
-                              <Field
-                                name="LabType"
-                                component="select"
-                                onChange={(e) => this.onChangeType(e)}
-                                value={this.state.LabType}
-                                className="form-select"
-                                style={{
-                                  border: '2px solid blue',
-                                  borderRadius: '5px',
-                                  // Add more style overrides as needed
-                                }}
-                              >
-                                <option value="Main">Main Labs</option>
-                                <option value="Collection">Collection Points</option>
-                                <option value="Others">Both</option>
-                              </Field>
-                            </div>
-                          </Col>
-                        ) : null}
+                        <div>
+                          <Select
+                            type="text"
 
-                      </Row>
-                      <Row className="g-0">
-                        {this.state.locationAccessAllowed === true ? (
-                          <Col xs="6" sm="6" md="3" lg="3">
-                            <div className="mb-3">
-                              {/* <Label
+                            onChange={this.onChangeLabName}
+                            options={labNames}
+                            placeholder="Lab Name..."
+                            styles={{
+                              control: (provided, state) => ({
+                                ...provided,
+                                border: '2px solid blue',
+                                borderRadius: '5px',
+                              }),
+                              // Add more style overrides as needed
+                            }}
+                            isSearchable={true}
+                            isClearable={true}
+                            components={{
+                              ClearIndicator,
+                            }}
+                          />
+
+                        </div>
+                      </Col>
+                      {this.state.locationAccessAllowed === true ? (
+                        <Col xs="4" sm="4" md="3" lg="3">
+                          <div className="mb-3">
+                            {/* <Label
+                            for="LabType2"
+                            className="form-label"
+                            style={{
+                              fontSize: window.innerWidth <= 576 ? '7px' : '12px',
+                              color: 'black',
+                              fontWeight: "bold",
+                            }}
+                          >
+                            Search By Labs Type
+                          </Label> */}
+                            <Field
+                              name="LabType"
+                              component="select"
+                              onChange={(e) => this.onChangeType(e)}
+                              value={this.state.LabType}
+                              className="form-select"
+                              style={{
+                                border: '2px solid blue',
+                                borderRadius: '5px',
+                                // Add more style overrides as needed
+                              }}
+                            >
+                              <option value="Main">Main Labs</option>
+                              <option value="Collection">Collection Points</option>
+                              <option value="Others">Both</option>
+                            </Field>
+                          </div>
+                        </Col>
+                      ) : null}
+
+                    </Row>
+                    <Row className="g-0">
+                      {this.state.locationAccessAllowed === true ? (
+                        <Col xs="6" sm="6" md="3" lg="3">
+                          <div className="mb-3">
+                            {/* <Label
                                 for="LabType2"
                                 className="form-label"
                                 style={{
@@ -4671,28 +4671,28 @@ class NearbyLabs extends Component {
                               >
                                 Search Types
                               </Label> */}
-                              <Field
-                                name="search_type"
-                                component="select"
-                                onChange={e => this.onChangeSearchType(e)}
-                                value={search_type}
-                                className="form-select"
-                                style={{
-                                  border: borderColor,
-                                  borderRadius: '5px',
-                                  // Add more style overrides as needed
-                                }}
-                              >
-                                <option value="Current Location">Current Location</option>
-                                <option value="City">Search By City</option>
-                                <option value="Custom Address">Custom Address</option>
-                              </Field>
-                            </div>
-                          </Col>
-                        ) : (
-                          <Col xs="6" sm="6" md="3" lg="3">
-                            <div className="mb-3">
-                              {/* <Label
+                            <Field
+                              name="search_type"
+                              component="select"
+                              onChange={e => this.onChangeSearchType(e)}
+                              value={search_type}
+                              className="form-select"
+                              style={{
+                                border: borderColor,
+                                borderRadius: '5px',
+                                // Add more style overrides as needed
+                              }}
+                            >
+                              <option value="Current Location">Current Location</option>
+                              <option value="City">Search By City</option>
+                              <option value="Custom Address">Custom Address</option>
+                            </Field>
+                          </div>
+                        </Col>
+                      ) : (
+                        <Col xs="6" sm="6" md="3" lg="3">
+                          <div className="mb-3">
+                            {/* <Label
                             for="LabType2"
                             className="form-label"
                             style={{
@@ -4703,29 +4703,29 @@ class NearbyLabs extends Component {
                           >
                             Search Types
                           </Label> */}
-                              <Field
-                                name="search_type"
-                                component="select"
-                                onChange={e => this.onChangeSearchType(e)}
-                                value={search_type}
-                                className="form-select"
-                                style={{
-                                  border: borderColor,
-                                  borderRadius: '5px',
-                                  // Add more style overrides as needed
-                                }}
-                              >
-                                <option value="">Choose an option</option>
-                                <option value="Current Location">
-                                  Current Location
-                                </option>
-                                <option value="City">Search By City</option>
-                                <option value="Custom Address">Custom Address</option>
-                              </Field>
-                            </div>
-                          </Col>
-                        )}
-                        {/* <Col xs="6" sm="6" md="3" lg="3">
+                            <Field
+                              name="search_type"
+                              component="select"
+                              onChange={e => this.onChangeSearchType(e)}
+                              value={search_type}
+                              className="form-select"
+                              style={{
+                                border: borderColor,
+                                borderRadius: '5px',
+                                // Add more style overrides as needed
+                              }}
+                            >
+                              <option value="">Choose an option</option>
+                              <option value="Current Location">
+                                Current Location
+                              </option>
+                              <option value="City">Search By City</option>
+                              <option value="Custom Address">Custom Address</option>
+                            </Field>
+                          </div>
+                        </Col>
+                      )}
+                      {/* <Col xs="6" sm="6" md="3" lg="3">
                         <div className="mb-3">
                           <Field
                             name="search_type"
@@ -4745,99 +4745,96 @@ class NearbyLabs extends Component {
                           </Field>
                         </div>
                       </Col> */}
-                      
-                       
-                      {this.state.search_type === "Current Location" && (
-                          <Col xs="2" sm="2" md="2" lg="2">
-                            <div className="mb-3">
-                              <div className="input-group">
-                                <Input
-                                  defaultValue={this.state.km}
-                                  onChange={e => this.onChangeKm(e)}
-                                  id="pac-input"
-                                  type="number"  // Change "numbers" to "number"
-                                  className="form-control"
-                                  placeholder="Search By Km..."
-                                  style={{
-                                    border: '2px solid red',
-                                    borderRadius: '5px',
-                                    fontSize: '14px'
-                                    // Add more style overrides as needed
-                                  }}
-                                />
-                              </div>
-                            </div>
-                          </Col>
-                        )}
-                        {this.state.search_type === "Custom Address" && (
-                          <Col xs="2" sm="2" md="2" lg="2">
-                            <div className="mb-3">
-                              <div className="input-group">
-                                <Input
-                                  defaultValue={this.state.km}
-                                  onChange={e => this.onChangeKm(e)}
-                                  id="pac-input"
-                                  type="number"  // Change "numbers" to "number"
-                                  className="form-control"
-                                  placeholder="Search By Km..."
-                                  style={{
-                                    border: '2px solid yellow',
-                                    borderRadius: '5px',
-                                    fontSize: '14px'
-                                    // Add more style overrides as needed
-                                  }}
-                                />
-                              </div>
-                            </div>
-                          </Col>
-                        )}
 
-                      
-                        {/* City field */}
-                        {this.state.search_type === "City" && (
-                          <Col xs="4" sm="4" md="3" lg="3">
-                            <div className="mb-3">
-                              <Select
-                                name="city"
-                                component="Select"
-                                onChange={this.onChangeCity}
-                                className="defautSelectParent is-invalid"
-                                options={cityList}
-                                placeholder="City..."
-                                styles={{
-                                  control: (provided, state) => ({
-                                    ...provided,
-                                    border: '2px solid green',
-                                    borderRadius: '5px',
-                                  }),
+                      {this.state.search_type === "Current Location" && (
+                        <Col xs="2" sm="2" md="2" lg="2">
+                          <div className="mb-3">
+                            <div className="input-group">
+                              <Input
+                                defaultValue={this.state.km}
+                                onChange={e => this.onChangeKm(e)}
+                                id="pac-input"
+                                type="number"  // Change "numbers" to "number"
+                                className="form-control"
+                                placeholder="Search By Km..."
+                                style={{
+                                  border: '2px solid red',
+                                  borderRadius: '5px',
+                                  fontSize: '14px'
                                   // Add more style overrides as needed
                                 }}
                               />
                             </div>
-                          </Col>
-                        )}
-                        {/* Custom Address field */}
-                        {this.state.search_type === "Custom Address" && (
-                          <Col xs="4" sm="4" md="3" lg="3">
-                            <div className="mb-3">
+                          </div>
+                        </Col>
+                      )}
+                      {this.state.search_type === "Custom Address" && (
+                        <Col xs="2" sm="2" md="2" lg="2">
+                          <div className="mb-3">
+                            <div className="input-group">
                               <Input
-                                defaultValue={this.state.address}
-                                onChange={e => this.onChangeAddress(e)}
+                                defaultValue={this.state.km}
+                                onChange={e => this.onChangeKm(e)}
                                 id="pac-input"
-                                type="text"
+                                type="number"  // Change "numbers" to "number"
                                 className="form-control"
-                                placeholder="Search Location..."
+                                placeholder="Search By Km..."
                                 style={{
                                   border: '2px solid yellow',
                                   borderRadius: '5px',
+                                  fontSize: '14px'
                                   // Add more style overrides as needed
                                 }}
                               />
                             </div>
-                          </Col>
-                        )}
-                      </Row>
-                    </Form>
+                          </div>
+                        </Col>
+                      )}
+                      {/* City field */}
+                      {this.state.search_type === "City" && (
+                        <Col xs="4" sm="4" md="3" lg="3">
+                          <div className="mb-3">
+                            <Select
+                              name="city"
+                              component="Select"
+                              onChange={this.onChangeCity}
+                              className="defautSelectParent is-invalid"
+                              options={cityList}
+                              placeholder="City..."
+                              styles={{
+                                control: (provided, state) => ({
+                                  ...provided,
+                                  border: '2px solid green',
+                                  borderRadius: '5px',
+                                }),
+                                // Add more style overrides as needed
+                              }}
+                            />
+                          </div>
+                        </Col>
+                      )}
+                      {/* Custom Address field */}
+                      {this.state.search_type === "Custom Address" && (
+                        <Col xs="4" sm="4" md="3" lg="3">
+                          <div className="mb-3">
+                            <Input
+                              defaultValue={this.state.address}
+                              onChange={e => this.onChangeAddress(e)}
+                              id="pac-input"
+                              type="text"
+                              className="form-control"
+                              placeholder="Search Location..."
+                              style={{
+                                border: '2px solid yellow',
+                                borderRadius: '5px',
+                                // Add more style overrides as needed
+                              }}
+                            />
+                          </div>
+                        </Col>
+                      )}
+                    </Row>
+                  </Form>
                   )}
                 </Formik>
               </Row>
@@ -4967,25 +4964,25 @@ class NearbyLabs extends Component {
                             </div>
                           )}
                           <Row style={{ display: "flex", justifyContent: "center", marginLeft: "40px" }}>
-                            <Col className="d-flex justify-content-end" style={{ paddingRight: "0" }}>
-                              <StarRatings
-                                rating={nearbyLab.rating}
-                                starRatedColor="#F1B44C"
-                                starEmptyColor="#2D363F"
-                                numberOfStars={5}
-                                name="rating"
-                                starDimension="12px"
-                                starSpacing="3px"
-                              />
-                            </Col>
-                            <Col className="d-flex justify-content-start" style={{ paddingLeft: "0" }}>
-                              <span style={{ fontSize: "14px", marginLeft: "7px" }}>
-                                {nearbyLab && nearbyLab.rating && (
-                                  <p>{nearbyLab.rating.toFixed(1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
-                                )}
-                              </span>
-                            </Col>
-                          </Row>
+  <Col className="d-flex justify-content-end" style={{ paddingRight: "0" }}>
+    <StarRatings
+      rating={nearbyLab.rating}
+      starRatedColor="#F1B44C"
+      starEmptyColor="#2D363F"
+      numberOfStars={5}
+      name="rating"
+      starDimension="12px"
+      starSpacing="3px"
+    />
+  </Col>
+  <Col className="d-flex justify-content-start" style={{ paddingLeft: "0" }}>
+    <span style={{ fontSize: "14px", marginLeft: "7px"}}>
+      {nearbyLab && nearbyLab.rating && (
+        <p>{nearbyLab.rating.toFixed(1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
+      )}
+    </span>
+  </Col>
+</Row>
                           <Link
                             to={
                               this.props.match.params.uuid
@@ -5136,26 +5133,26 @@ class NearbyLabs extends Component {
                               </span>
                             </div>
                           )}
-                          <Row style={{ display: "flex", justifyContent: "center", marginLeft: "40px" }}>
-                            <Col className="d-flex justify-content-end" style={{ paddingRight: "0" }}>
-                              <StarRatings
-                                rating={nearbyLab.rating}
-                                starRatedColor="#F1B44C"
-                                starEmptyColor="#2D363F"
-                                numberOfStars={5}
-                                name="rating"
-                                starDimension="12px"
-                                starSpacing="3px"
-                              />
-                            </Col>
-                            <Col className="d-flex justify-content-start" style={{ paddingLeft: "0" }}>
-                              <span style={{ fontSize: "14px", marginLeft: "7px" }}>
-                                {nearbyLab && nearbyLab.rating && (
-                                  <p>{nearbyLab.rating.toFixed(1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
-                                )}
-                              </span>
-                            </Col>
-                          </Row>
+                           <Row style={{ display: "flex", justifyContent: "center", marginLeft: "40px" }}>
+  <Col className="d-flex justify-content-end" style={{ paddingRight: "0" }}>
+    <StarRatings
+      rating={nearbyLab.rating}
+      starRatedColor="#F1B44C"
+      starEmptyColor="#2D363F"
+      numberOfStars={5}
+      name="rating"
+      starDimension="12px"
+      starSpacing="3px"
+    />
+  </Col>
+  <Col className="d-flex justify-content-start" style={{ paddingLeft: "0" }}>
+    <span style={{ fontSize: "14px", marginLeft: "7px"}}>
+      {nearbyLab && nearbyLab.rating && (
+        <p>{nearbyLab.rating.toFixed(1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
+      )}
+    </span>
+  </Col>
+</Row>
                           <Link
                             to={
                               this.props.match.params.uuid
@@ -5312,8 +5309,8 @@ class NearbyLabs extends Component {
                               starSpacing="3px"
                             />
                             {nearbyLab && nearbyLab.rating && (
-                              <p> {nearbyLab.rating.toFixed(1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
-                            )}
+    <p> {nearbyLab.rating.toFixed(1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
+)}
                           </div>
                           <Link
                             to={
@@ -5461,26 +5458,26 @@ class NearbyLabs extends Component {
                               </span>
                             </div>
                           )}
-                          <Row style={{ display: "flex", justifyContent: "center", marginLeft: "40px" }}>
-                            <Col className="d-flex justify-content-end" style={{ paddingRight: "0" }}>
-                              <StarRatings
-                                rating={nearbyLab.rating}
-                                starRatedColor="#F1B44C"
-                                starEmptyColor="#2D363F"
-                                numberOfStars={5}
-                                name="rating"
-                                starDimension="12px"
-                                starSpacing="3px"
-                              />
-                            </Col>
-                            <Col className="d-flex justify-content-start" style={{ paddingLeft: "0" }}>
-                              <span style={{ fontSize: "14px", marginLeft: "7px" }}>
-                                {nearbyLab && nearbyLab.rating && (
-                                  <p>{nearbyLab.rating.toFixed(1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
-                                )}
-                              </span>
-                            </Col>
-                          </Row>
+                           <Row style={{ display: "flex", justifyContent: "center", marginLeft: "40px" }}>
+  <Col className="d-flex justify-content-end" style={{ paddingRight: "0" }}>
+    <StarRatings
+      rating={nearbyLab.rating}
+      starRatedColor="#F1B44C"
+      starEmptyColor="#2D363F"
+      numberOfStars={5}
+      name="rating"
+      starDimension="12px"
+      starSpacing="3px"
+    />
+  </Col>
+  <Col className="d-flex justify-content-start" style={{ paddingLeft: "0" }}>
+    <span style={{ fontSize: "14px", marginLeft: "7px"}}>
+      {nearbyLab && nearbyLab.rating && (
+        <p>{nearbyLab.rating.toFixed(1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
+      )}
+    </span>
+  </Col>
+</Row>
                           <Link
                             to={
                               this.props.match.params.uuid
@@ -5564,39 +5561,39 @@ class NearbyLabs extends Component {
                 >
                   {({ errors, status, touched }) => (
                     <Form className="form-horizontal">
-                      {/* Type field */}
-                      {/* Type field */}
-                      <h4 style={{ background: "#3B71CA", color: "white", fontWeight: "bold" }}> Search Labs for more result in Pakistan!</h4>
-                      <Row className="g-0">
-                        <Col>
-                          <div>
-                            <Select
-                              type="text"
+                    {/* Type field */}
+                    {/* Type field */}
+                    <h4 style={{ background: "#3B71CA", color: "white", fontWeight: "bold" }}> Search Labs for more result in Pakistan!</h4>
+                    <Row className="g-0">
+                      <Col>
+                        <div>
+                          <Select
+                            type="text"
 
-                              onChange={this.onChangeLabName}
-                              options={labNames}
-                              placeholder="Lab Name..."
-                              styles={{
-                                control: (provided, state) => ({
-                                  ...provided,
-                                  border: '2px solid blue',
-                                  borderRadius: '5px',
-                                }),
-                                // Add more style overrides as needed
-                              }}
-                              isSearchable={true}
-                              isClearable={true}
-                              components={{
-                                ClearIndicator,
-                              }}
-                            />
+                            onChange={this.onChangeLabName}
+                            options={labNames}
+                            placeholder="Lab Name..."
+                            styles={{
+                              control: (provided, state) => ({
+                                ...provided,
+                                border: '2px solid blue',
+                                borderRadius: '5px',
+                              }),
+                              // Add more style overrides as needed
+                            }}
+                            isSearchable={true}
+                            isClearable={true}
+                            components={{
+                              ClearIndicator,
+                            }}
+                          />
 
-                          </div>
-                        </Col>
-                        {this.state.locationAccessAllowed === true ? (
-                          <Col xs="4" sm="4" md="3" lg="3">
-                            <div className="mb-3">
-                              {/* <Label
+                        </div>
+                      </Col>
+                      {this.state.locationAccessAllowed === true ? (
+                        <Col xs="4" sm="4" md="3" lg="3">
+                          <div className="mb-3">
+                            {/* <Label
                             for="LabType2"
                             className="form-label"
                             style={{
@@ -5607,32 +5604,32 @@ class NearbyLabs extends Component {
                           >
                             Search By Labs Type
                           </Label> */}
-                              <Field
-                                name="LabType"
-                                component="select"
-                                onChange={(e) => this.onChangeType(e)}
-                                value={this.state.LabType}
-                                className="form-select"
-                                style={{
-                                  border: '2px solid blue',
-                                  borderRadius: '5px',
-                                  // Add more style overrides as needed
-                                }}
-                              >
-                                <option value="Main">Main Labs</option>
-                                <option value="Collection">Collection Points</option>
-                                <option value="Others">Both</option>
-                              </Field>
-                            </div>
-                          </Col>
-                        ) : null}
+                            <Field
+                              name="LabType"
+                              component="select"
+                              onChange={(e) => this.onChangeType(e)}
+                              value={this.state.LabType}
+                              className="form-select"
+                              style={{
+                                border: '2px solid blue',
+                                borderRadius: '5px',
+                                // Add more style overrides as needed
+                              }}
+                            >
+                              <option value="Main">Main Labs</option>
+                              <option value="Collection">Collection Points</option>
+                              <option value="Others">Both</option>
+                            </Field>
+                          </div>
+                        </Col>
+                      ) : null}
 
-                      </Row>
-                      <Row className="g-0">
-                        {this.state.locationAccessAllowed === true ? (
-                          <Col xs="6" sm="6" md="3" lg="3">
-                            <div className="mb-3">
-                              {/* <Label
+                    </Row>
+                    <Row className="g-0">
+                      {this.state.locationAccessAllowed === true ? (
+                        <Col xs="6" sm="6" md="3" lg="3">
+                          <div className="mb-3">
+                            {/* <Label
                                 for="LabType2"
                                 className="form-label"
                                 style={{
@@ -5643,28 +5640,28 @@ class NearbyLabs extends Component {
                               >
                                 Search Types
                               </Label> */}
-                              <Field
-                                name="search_type"
-                                component="select"
-                                onChange={e => this.onChangeSearchType(e)}
-                                value={search_type}
-                                className="form-select"
-                                style={{
-                                  border: borderColor,
-                                  borderRadius: '5px',
-                                  // Add more style overrides as needed
-                                }}
-                              >
-                                <option value="Current Location">Current Location</option>
-                                <option value="City">Search By City</option>
-                                <option value="Custom Address">Custom Address</option>
-                              </Field>
-                            </div>
-                          </Col>
-                        ) : (
-                          <Col xs="6" sm="6" md="3" lg="3">
-                            <div className="mb-3">
-                              {/* <Label
+                            <Field
+                              name="search_type"
+                              component="select"
+                              onChange={e => this.onChangeSearchType(e)}
+                              value={search_type}
+                              className="form-select"
+                              style={{
+                                border: borderColor,
+                                borderRadius: '5px',
+                                // Add more style overrides as needed
+                              }}
+                            >
+                              <option value="Current Location">Current Location</option>
+                              <option value="City">Search By City</option>
+                              <option value="Custom Address">Custom Address</option>
+                            </Field>
+                          </div>
+                        </Col>
+                      ) : (
+                        <Col xs="6" sm="6" md="3" lg="3">
+                          <div className="mb-3">
+                            {/* <Label
                             for="LabType2"
                             className="form-label"
                             style={{
@@ -5675,29 +5672,29 @@ class NearbyLabs extends Component {
                           >
                             Search Types
                           </Label> */}
-                              <Field
-                                name="search_type"
-                                component="select"
-                                onChange={e => this.onChangeSearchType(e)}
-                                value={search_type}
-                                className="form-select"
-                                style={{
-                                  border: borderColor,
-                                  borderRadius: '5px',
-                                  // Add more style overrides as needed
-                                }}
-                              >
-                                <option value="">Choose an option</option>
-                                <option value="Current Location">
-                                  Current Location
-                                </option>
-                                <option value="City">Search By City</option>
-                                <option value="Custom Address">Custom Address</option>
-                              </Field>
-                            </div>
-                          </Col>
-                        )}
-                        {/* <Col xs="6" sm="6" md="3" lg="3">
+                            <Field
+                              name="search_type"
+                              component="select"
+                              onChange={e => this.onChangeSearchType(e)}
+                              value={search_type}
+                              className="form-select"
+                              style={{
+                                border: borderColor,
+                                borderRadius: '5px',
+                                // Add more style overrides as needed
+                              }}
+                            >
+                              <option value="">Choose an option</option>
+                              <option value="Current Location">
+                                Current Location
+                              </option>
+                              <option value="City">Search By City</option>
+                              <option value="Custom Address">Custom Address</option>
+                            </Field>
+                          </div>
+                        </Col>
+                      )}
+                      {/* <Col xs="6" sm="6" md="3" lg="3">
                         <div className="mb-3">
                           <Field
                             name="search_type"
@@ -5718,95 +5715,95 @@ class NearbyLabs extends Component {
                         </div>
                       </Col> */}
 
-                        {this.state.search_type === "Current Location" && (
-                          <Col xs="2" sm="2" md="2" lg="2">
-                            <div className="mb-3">
-                              <div className="input-group">
-                                <Input
-                                  defaultValue={this.state.km}
-                                  onChange={e => this.onChangeKm(e)}
-                                  id="pac-input"
-                                  type="number"  // Change "numbers" to "number"
-                                  className="form-control"
-                                  placeholder="Search By Km..."
-                                  style={{
-                                    border: '2px solid red',
-                                    borderRadius: '5px',
-                                    fontSize: '14px'
-                                    // Add more style overrides as needed
-                                  }}
-                                />
-                              </div>
-                            </div>
-                          </Col>
-                        )}
-                        {this.state.search_type === "Custom Address" && (
-                          <Col xs="2" sm="2" md="2" lg="2">
-                            <div className="mb-3">
-                              <div className="input-group">
-                                <Input
-                                  defaultValue={this.state.km}
-                                  onChange={e => this.onChangeKm(e)}
-                                  id="pac-input"
-                                  type="number"  // Change "numbers" to "number"
-                                  className="form-control"
-                                  placeholder="Search By Km..."
-                                  style={{
-                                    border: '2px solid yellow',
-                                    borderRadius: '5px',
-                                    fontSize: '14px'
-                                    // Add more style overrides as needed
-                                  }}
-                                />
-                              </div>
-                            </div>
-                          </Col>
-                        )}
-                        {/* City field */}
-                        {this.state.search_type === "City" && (
-                          <Col xs="4" sm="4" md="3" lg="3">
-                            <div className="mb-3">
-                              <Select
-                                name="city"
-                                component="Select"
-                                onChange={this.onChangeCity}
-                                className="defautSelectParent is-invalid"
-                                options={cityList}
-                                placeholder="City..."
-                                styles={{
-                                  control: (provided, state) => ({
-                                    ...provided,
-                                    border: '2px solid green',
-                                    borderRadius: '5px',
-                                  }),
+                      {this.state.search_type === "Current Location" && (
+                        <Col xs="2" sm="2" md="2" lg="2">
+                          <div className="mb-3">
+                            <div className="input-group">
+                              <Input
+                                defaultValue={this.state.km}
+                                onChange={e => this.onChangeKm(e)}
+                                id="pac-input"
+                                type="number"  // Change "numbers" to "number"
+                                className="form-control"
+                                placeholder="Search By Km..."
+                                style={{
+                                  border: '2px solid red',
+                                  borderRadius: '5px',
+                                  fontSize: '14px'
                                   // Add more style overrides as needed
                                 }}
                               />
                             </div>
-                          </Col>
-                        )}
-                        {/* Custom Address field */}
-                        {this.state.search_type === "Custom Address" && (
-                          <Col xs="4" sm="4" md="3" lg="3">
-                            <div className="mb-3">
+                          </div>
+                        </Col>
+                      )}
+                      {this.state.search_type === "Custom Address" && (
+                        <Col xs="2" sm="2" md="2" lg="2">
+                          <div className="mb-3">
+                            <div className="input-group">
                               <Input
-                                defaultValue={this.state.address}
-                                onChange={e => this.onChangeAddress(e)}
+                                defaultValue={this.state.km}
+                                onChange={e => this.onChangeKm(e)}
                                 id="pac-input"
-                                type="text"
+                                type="number"  // Change "numbers" to "number"
                                 className="form-control"
-                                placeholder="Search Location..."
+                                placeholder="Search By Km..."
                                 style={{
                                   border: '2px solid yellow',
                                   borderRadius: '5px',
+                                  fontSize: '14px'
                                   // Add more style overrides as needed
                                 }}
                               />
                             </div>
-                          </Col>
-                        )}
-                      </Row>
-                    </Form>
+                          </div>
+                        </Col>
+                      )}
+                      {/* City field */}
+                      {this.state.search_type === "City" && (
+                        <Col xs="4" sm="4" md="3" lg="3">
+                          <div className="mb-3">
+                            <Select
+                              name="city"
+                              component="Select"
+                              onChange={this.onChangeCity}
+                              className="defautSelectParent is-invalid"
+                              options={cityList}
+                              placeholder="City..."
+                              styles={{
+                                control: (provided, state) => ({
+                                  ...provided,
+                                  border: '2px solid green',
+                                  borderRadius: '5px',
+                                }),
+                                // Add more style overrides as needed
+                              }}
+                            />
+                          </div>
+                        </Col>
+                      )}
+                      {/* Custom Address field */}
+                      {this.state.search_type === "Custom Address" && (
+                        <Col xs="4" sm="4" md="3" lg="3">
+                          <div className="mb-3">
+                            <Input
+                              defaultValue={this.state.address}
+                              onChange={e => this.onChangeAddress(e)}
+                              id="pac-input"
+                              type="text"
+                              className="form-control"
+                              placeholder="Search Location..."
+                              style={{
+                                border: '2px solid yellow',
+                                borderRadius: '5px',
+                                // Add more style overrides as needed
+                              }}
+                            />
+                          </div>
+                        </Col>
+                      )}
+                    </Row>
+                  </Form>
                   )}
                 </Formik>
               </Row>
@@ -5935,26 +5932,26 @@ class NearbyLabs extends Component {
                               </span>
                             </div>
                           )}
-                          <Row style={{ display: "flex", justifyContent: "center", marginLeft: "40px" }}>
-                            <Col className="d-flex justify-content-end" style={{ paddingRight: "0" }}>
-                              <StarRatings
-                                rating={nearbyLab.rating}
-                                starRatedColor="#F1B44C"
-                                starEmptyColor="#2D363F"
-                                numberOfStars={5}
-                                name="rating"
-                                starDimension="12px"
-                                starSpacing="3px"
-                              />
-                            </Col>
-                            <Col className="d-flex justify-content-start" style={{ paddingLeft: "0" }}>
-                              <span style={{ fontSize: "14px", marginLeft: "7px" }}>
-                                {nearbyLab && nearbyLab.rating && (
-                                  <p>{nearbyLab.rating.toFixed(1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
-                                )}
-                              </span>
-                            </Col>
-                          </Row>
+                           <Row style={{ display: "flex", justifyContent: "center", marginLeft: "40px" }}>
+  <Col className="d-flex justify-content-end" style={{ paddingRight: "0" }}>
+    <StarRatings
+      rating={nearbyLab.rating}
+      starRatedColor="#F1B44C"
+      starEmptyColor="#2D363F"
+      numberOfStars={5}
+      name="rating"
+      starDimension="12px"
+      starSpacing="3px"
+    />
+  </Col>
+  <Col className="d-flex justify-content-start" style={{ paddingLeft: "0" }}>
+    <span style={{ fontSize: "14px", marginLeft: "7px"}}>
+      {nearbyLab && nearbyLab.rating && (
+        <p>{nearbyLab.rating.toFixed(1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
+      )}
+    </span>
+  </Col>
+</Row>
                           <Link
                             to={
                               this.props.match.params.uuid
@@ -6106,26 +6103,26 @@ class NearbyLabs extends Component {
                               </span>
                             </div>
                           )}
-                          <Row style={{ display: "flex", justifyContent: "center", marginLeft: "40px" }}>
-                            <Col className="d-flex justify-content-end" style={{ paddingRight: "0" }}>
-                              <StarRatings
-                                rating={nearbyLab.rating}
-                                starRatedColor="#F1B44C"
-                                starEmptyColor="#2D363F"
-                                numberOfStars={5}
-                                name="rating"
-                                starDimension="12px"
-                                starSpacing="3px"
-                              />
-                            </Col>
-                            <Col className="d-flex justify-content-start" style={{ paddingLeft: "0" }}>
-                              <span style={{ fontSize: "14px", marginLeft: "7px" }}>
-                                {nearbyLab && nearbyLab.rating && (
-                                  <p>{nearbyLab.rating.toFixed(1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
-                                )}
-                              </span>
-                            </Col>
-                          </Row>
+                           <Row style={{ display: "flex", justifyContent: "center", marginLeft: "40px" }}>
+  <Col className="d-flex justify-content-end" style={{ paddingRight: "0" }}>
+    <StarRatings
+      rating={nearbyLab.rating}
+      starRatedColor="#F1B44C"
+      starEmptyColor="#2D363F"
+      numberOfStars={5}
+      name="rating"
+      starDimension="12px"
+      starSpacing="3px"
+    />
+  </Col>
+  <Col className="d-flex justify-content-start" style={{ paddingLeft: "0" }}>
+    <span style={{ fontSize: "14px", marginLeft: "7px"}}>
+      {nearbyLab && nearbyLab.rating && (
+        <p>{nearbyLab.rating.toFixed(1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
+      )}
+    </span>
+  </Col>
+</Row>
                           <Link
                             to={
                               this.props.match.params.uuid
@@ -6271,26 +6268,26 @@ class NearbyLabs extends Component {
                               </span>
                             </div>
                           )}
-                          <Row style={{ display: "flex", justifyContent: "center", marginLeft: "40px" }}>
-                            <Col className="d-flex justify-content-end" style={{ paddingRight: "0" }}>
-                              <StarRatings
-                                rating={nearbyLab.rating}
-                                starRatedColor="#F1B44C"
-                                starEmptyColor="#2D363F"
-                                numberOfStars={5}
-                                name="rating"
-                                starDimension="12px"
-                                starSpacing="3px"
-                              />
-                            </Col>
-                            <Col className="d-flex justify-content-start" style={{ paddingLeft: "0" }}>
-                              <span style={{ fontSize: "14px", marginLeft: "7px" }}>
-                                {nearbyLab && nearbyLab.rating && (
-                                  <p>{nearbyLab.rating.toFixed(1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
-                                )}
-                              </span>
-                            </Col>
-                          </Row>
+                           <Row style={{ display: "flex", justifyContent: "center", marginLeft: "40px" }}>
+  <Col className="d-flex justify-content-end" style={{ paddingRight: "0" }}>
+    <StarRatings
+      rating={nearbyLab.rating}
+      starRatedColor="#F1B44C"
+      starEmptyColor="#2D363F"
+      numberOfStars={5}
+      name="rating"
+      starDimension="12px"
+      starSpacing="3px"
+    />
+  </Col>
+  <Col className="d-flex justify-content-start" style={{ paddingLeft: "0" }}>
+    <span style={{ fontSize: "14px", marginLeft: "7px"}}>
+      {nearbyLab && nearbyLab.rating && (
+        <p>{nearbyLab.rating.toFixed(1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
+      )}
+    </span>
+  </Col>
+</Row>
                           <Link
                             to={
                               this.props.match.params.uuid
@@ -6437,25 +6434,25 @@ class NearbyLabs extends Component {
                             </div>
                           )}
                           <Row style={{ display: "flex", justifyContent: "center", marginLeft: "40px" }}>
-                            <Col className="d-flex justify-content-end" style={{ paddingRight: "0" }}>
-                              <StarRatings
-                                rating={nearbyLab.rating}
-                                starRatedColor="#F1B44C"
-                                starEmptyColor="#2D363F"
-                                numberOfStars={5}
-                                name="rating"
-                                starDimension="12px"
-                                starSpacing="3px"
-                              />
-                            </Col>
-                            <Col className="d-flex justify-content-start" style={{ paddingLeft: "0" }}>
-                              <span style={{ fontSize: "14px", marginLeft: "7px" }}>
-                                {nearbyLab && nearbyLab.rating && (
-                                  <p>{nearbyLab.rating.toFixed(1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
-                                )}
-                              </span>
-                            </Col>
-                          </Row>
+  <Col className="d-flex justify-content-end" style={{ paddingRight: "0" }}>
+    <StarRatings
+      rating={nearbyLab.rating}
+      starRatedColor="#F1B44C"
+      starEmptyColor="#2D363F"
+      numberOfStars={5}
+      name="rating"
+      starDimension="12px"
+      starSpacing="3px"
+    />
+  </Col>
+  <Col className="d-flex justify-content-start" style={{ paddingLeft: "0" }}>
+    <span style={{ fontSize: "14px", marginLeft: "7px"}}>
+      {nearbyLab && nearbyLab.rating && (
+        <p>{nearbyLab.rating.toFixed(1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
+      )}
+    </span>
+  </Col>
+</Row>
                           <Link
                             to={
                               this.props.match.params.uuid
@@ -6991,26 +6988,26 @@ class NearbyLabs extends Component {
                                   </span>
                                 </div>
                               )}
-                              <Row style={{ display: "flex", justifyContent: "center", marginLeft: "40px" }}>
-                                <Col className="d-flex justify-content-end" style={{ paddingRight: "0" }}>
-                                  <StarRatings
-                                    rating={nearbyLab.rating}
-                                    starRatedColor="#F1B44C"
-                                    starEmptyColor="#2D363F"
-                                    numberOfStars={5}
-                                    name="rating"
-                                    starDimension="12px"
-                                    starSpacing="3px"
-                                  />
-                                </Col>
-                                <Col className="d-flex justify-content-start" style={{ paddingLeft: "0" }}>
-                                  <span style={{ fontSize: "14px", marginLeft: "7px" }}>
-                                    {nearbyLab && nearbyLab.rating && (
-                                      <p>{nearbyLab.rating.toFixed(1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
-                                    )}
-                                  </span>
-                                </Col>
-                              </Row>
+                               <Row style={{ display: "flex", justifyContent: "center", marginLeft: "40px" }}>
+  <Col className="d-flex justify-content-end" style={{ paddingRight: "0" }}>
+    <StarRatings
+      rating={nearbyLab.rating}
+      starRatedColor="#F1B44C"
+      starEmptyColor="#2D363F"
+      numberOfStars={5}
+      name="rating"
+      starDimension="12px"
+      starSpacing="3px"
+    />
+  </Col>
+  <Col className="d-flex justify-content-start" style={{ paddingLeft: "0" }}>
+    <span style={{ fontSize: "14px", marginLeft: "7px"}}>
+      {nearbyLab && nearbyLab.rating && (
+        <p>{nearbyLab.rating.toFixed(1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
+      )}
+    </span>
+  </Col>
+</Row>
                               <Link
                                 to={
                                   this.props.match.params.uuid
@@ -7152,26 +7149,26 @@ class NearbyLabs extends Component {
                                   </span>
                                 </div>
                               )}
-                              <Row style={{ display: "flex", justifyContent: "center", marginLeft: "40px" }}>
-                                <Col className="d-flex justify-content-end" style={{ paddingRight: "0" }}>
-                                  <StarRatings
-                                    rating={nearbyLab.rating}
-                                    starRatedColor="#F1B44C"
-                                    starEmptyColor="#2D363F"
-                                    numberOfStars={5}
-                                    name="rating"
-                                    starDimension="12px"
-                                    starSpacing="3px"
-                                  />
-                                </Col>
-                                <Col className="d-flex justify-content-start" style={{ paddingLeft: "0" }}>
-                                  <span style={{ fontSize: "14px", marginLeft: "7px" }}>
-                                    {nearbyLab && nearbyLab.rating && (
-                                      <p>{nearbyLab.rating.toFixed(1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
-                                    )}
-                                  </span>
-                                </Col>
-                              </Row>
+                               <Row style={{ display: "flex", justifyContent: "center", marginLeft: "40px" }}>
+  <Col className="d-flex justify-content-end" style={{ paddingRight: "0" }}>
+    <StarRatings
+      rating={nearbyLab.rating}
+      starRatedColor="#F1B44C"
+      starEmptyColor="#2D363F"
+      numberOfStars={5}
+      name="rating"
+      starDimension="12px"
+      starSpacing="3px"
+    />
+  </Col>
+  <Col className="d-flex justify-content-start" style={{ paddingLeft: "0" }}>
+    <span style={{ fontSize: "14px", marginLeft: "7px"}}>
+      {nearbyLab && nearbyLab.rating && (
+        <p>{nearbyLab.rating.toFixed(1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
+      )}
+    </span>
+  </Col>
+</Row>
                               <Link
                                 to={
                                   this.props.match.params.uuid
@@ -7318,26 +7315,26 @@ class NearbyLabs extends Component {
                                   </span>
                                 </div>
                               )}
-                              <Row style={{ display: "flex", justifyContent: "center", marginLeft: "40px" }}>
-                                <Col className="d-flex justify-content-end" style={{ paddingRight: "0" }}>
-                                  <StarRatings
-                                    rating={nearbyLab.rating}
-                                    starRatedColor="#F1B44C"
-                                    starEmptyColor="#2D363F"
-                                    numberOfStars={5}
-                                    name="rating"
-                                    starDimension="12px"
-                                    starSpacing="3px"
-                                  />
-                                </Col>
-                                <Col className="d-flex justify-content-start" style={{ paddingLeft: "0" }}>
-                                  <span style={{ fontSize: "14px", marginLeft: "7px" }}>
-                                    {nearbyLab && nearbyLab.rating && (
-                                      <p>{nearbyLab.rating.toFixed(1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
-                                    )}
-                                  </span>
-                                </Col>
-                              </Row>
+                               <Row style={{ display: "flex", justifyContent: "center", marginLeft: "40px" }}>
+  <Col className="d-flex justify-content-end" style={{ paddingRight: "0" }}>
+    <StarRatings
+      rating={nearbyLab.rating}
+      starRatedColor="#F1B44C"
+      starEmptyColor="#2D363F"
+      numberOfStars={5}
+      name="rating"
+      starDimension="12px"
+      starSpacing="3px"
+    />
+  </Col>
+  <Col className="d-flex justify-content-start" style={{ paddingLeft: "0" }}>
+    <span style={{ fontSize: "14px", marginLeft: "7px"}}>
+      {nearbyLab && nearbyLab.rating && (
+        <p>{nearbyLab.rating.toFixed(1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
+      )}
+    </span>
+  </Col>
+</Row>
                               <Link
                                 to={
                                   this.props.match.params.uuid
@@ -7484,25 +7481,25 @@ class NearbyLabs extends Component {
                                 </div>
                               )}
                               <Row style={{ display: "flex", justifyContent: "center", marginLeft: "40px" }}>
-                                <Col className="d-flex justify-content-end" style={{ paddingRight: "0" }}>
-                                  <StarRatings
-                                    rating={nearbyLab.rating}
-                                    starRatedColor="#F1B44C"
-                                    starEmptyColor="#2D363F"
-                                    numberOfStars={5}
-                                    name="rating"
-                                    starDimension="12px"
-                                    starSpacing="3px"
-                                  />
-                                </Col>
-                                <Col className="d-flex justify-content-start" style={{ paddingLeft: "0" }}>
-                                  <span style={{ fontSize: "14px", marginLeft: "7px" }}>
-                                    {nearbyLab && nearbyLab.rating && (
-                                      <p>{nearbyLab.rating.toFixed(1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
-                                    )}
-                                  </span>
-                                </Col>
-                              </Row>
+  <Col className="d-flex justify-content-end" style={{ paddingRight: "0" }}>
+    <StarRatings
+      rating={nearbyLab.rating}
+      starRatedColor="#F1B44C"
+      starEmptyColor="#2D363F"
+      numberOfStars={5}
+      name="rating"
+      starDimension="12px"
+      starSpacing="3px"
+    />
+  </Col>
+  <Col className="d-flex justify-content-start" style={{ paddingLeft: "0" }}>
+    <span style={{ fontSize: "14px", marginLeft: "7px"}}>
+      {nearbyLab && nearbyLab.rating && (
+        <p>{nearbyLab.rating.toFixed(1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
+      )}
+    </span>
+  </Col>
+</Row>
                               <Link
                                 to={
                                   this.props.match.params.uuid
@@ -7818,39 +7815,39 @@ class NearbyLabs extends Component {
                   >
                     {({ errors, status, touched }) => (
                       <Form className="form-horizontal">
-                        {/* Type field */}
-                        {/* Type field */}
-                        <h4 style={{ background: "#3B71CA", color: "white", fontWeight: "bold" }}> Search Labs for more result in Pakistan!</h4>
-                        <Row className="g-0">
-                          <Col>
-                            <div>
-                              <Select
-                                type="text"
+                      {/* Type field */}
+                      {/* Type field */}
+                      <h4 style={{ background: "#3B71CA", color: "white", fontWeight: "bold" }}> Search Labs for more result in Pakistan!</h4>
+                      <Row className="g-0">
+                        <Col>
+                          <div>
+                            <Select
+                              type="text"
 
-                                onChange={this.onChangeLabName}
-                                options={labNames}
-                                placeholder="Lab Name..."
-                                styles={{
-                                  control: (provided, state) => ({
-                                    ...provided,
-                                    border: '2px solid blue',
-                                    borderRadius: '5px',
-                                  }),
-                                  // Add more style overrides as needed
-                                }}
-                                isSearchable={true}
-                                isClearable={true}
-                                components={{
-                                  ClearIndicator,
-                                }}
-                              />
+                              onChange={this.onChangeLabName}
+                              options={labNames}
+                              placeholder="Lab Name..."
+                              styles={{
+                                control: (provided, state) => ({
+                                  ...provided,
+                                  border: '2px solid blue',
+                                  borderRadius: '5px',
+                                }),
+                                // Add more style overrides as needed
+                              }}
+                              isSearchable={true}
+                              isClearable={true}
+                              components={{
+                                ClearIndicator,
+                              }}
+                            />
 
-                            </div>
-                          </Col>
-                          {this.state.locationAccessAllowed === true ? (
-                            <Col xs="4" sm="4" md="3" lg="3">
-                              <div className="mb-3">
-                                {/* <Label
+                          </div>
+                        </Col>
+                        {this.state.locationAccessAllowed === true ? (
+                          <Col xs="4" sm="4" md="3" lg="3">
+                            <div className="mb-3">
+                              {/* <Label
                               for="LabType2"
                               className="form-label"
                               style={{
@@ -7861,32 +7858,32 @@ class NearbyLabs extends Component {
                             >
                               Search By Labs Type
                             </Label> */}
-                                <Field
-                                  name="LabType"
-                                  component="select"
-                                  onChange={(e) => this.onChangeType(e)}
-                                  value={this.state.LabType}
-                                  className="form-select"
-                                  style={{
-                                    border: '2px solid blue',
-                                    borderRadius: '5px',
-                                    // Add more style overrides as needed
-                                  }}
-                                >
-                                  <option value="Main">Main Labs</option>
-                                  <option value="Collection">Collection Points</option>
-                                  <option value="Others">Both</option>
-                                </Field>
-                              </div>
-                            </Col>
-                          ) : null}
+                              <Field
+                                name="LabType"
+                                component="select"
+                                onChange={(e) => this.onChangeType(e)}
+                                value={this.state.LabType}
+                                className="form-select"
+                                style={{
+                                  border: '2px solid blue',
+                                  borderRadius: '5px',
+                                  // Add more style overrides as needed
+                                }}
+                              >
+                                <option value="Main">Main Labs</option>
+                                <option value="Collection">Collection Points</option>
+                                <option value="Others">Both</option>
+                              </Field>
+                            </div>
+                          </Col>
+                        ) : null}
 
-                        </Row>
-                        <Row className="g-0">
-                          {this.state.locationAccessAllowed === true ? (
-                            <Col xs="6" sm="6" md="3" lg="3">
-                              <div className="mb-3">
-                                {/* <Label
+                      </Row>
+                      <Row className="g-0">
+                        {this.state.locationAccessAllowed === true ? (
+                          <Col xs="6" sm="6" md="3" lg="3">
+                            <div className="mb-3">
+                              {/* <Label
                                   for="LabType2"
                                   className="form-label"
                                   style={{
@@ -7897,28 +7894,28 @@ class NearbyLabs extends Component {
                                 >
                                   Search Types
                                 </Label> */}
-                                <Field
-                                  name="search_type"
-                                  component="select"
-                                  onChange={e => this.onChangeSearchType(e)}
-                                  value={search_type}
-                                  className="form-select"
-                                  style={{
-                                    border: borderColor,
-                                    borderRadius: '5px',
-                                    // Add more style overrides as needed
-                                  }}
-                                >
-                                  <option value="Current Location">Current Location</option>
-                                  <option value="City">Search By City</option>
-                                  <option value="Custom Address">Custom Address</option>
-                                </Field>
-                              </div>
-                            </Col>
-                          ) : (
-                            <Col xs="6" sm="6" md="3" lg="3">
-                              <div className="mb-3">
-                                {/* <Label
+                              <Field
+                                name="search_type"
+                                component="select"
+                                onChange={e => this.onChangeSearchType(e)}
+                                value={search_type}
+                                className="form-select"
+                                style={{
+                                  border: borderColor,
+                                  borderRadius: '5px',
+                                  // Add more style overrides as needed
+                                }}
+                              >
+                                <option value="Current Location">Current Location</option>
+                                <option value="City">Search By City</option>
+                                <option value="Custom Address">Custom Address</option>
+                              </Field>
+                            </div>
+                          </Col>
+                        ) : (
+                          <Col xs="6" sm="6" md="3" lg="3">
+                            <div className="mb-3">
+                              {/* <Label
                               for="LabType2"
                               className="form-label"
                               style={{
@@ -7929,29 +7926,29 @@ class NearbyLabs extends Component {
                             >
                               Search Types
                             </Label> */}
-                                <Field
-                                  name="search_type"
-                                  component="select"
-                                  onChange={e => this.onChangeSearchType(e)}
-                                  value={search_type}
-                                  className="form-select"
-                                  style={{
-                                    border: borderColor,
-                                    borderRadius: '5px',
-                                    // Add more style overrides as needed
-                                  }}
-                                >
-                                  <option value="">Choose an option</option>
-                                  <option value="Current Location">
-                                    Current Location
-                                  </option>
-                                  <option value="City">Search By City</option>
-                                  <option value="Custom Address">Custom Address</option>
-                                </Field>
-                              </div>
-                            </Col>
-                          )}
-                          {/* <Col xs="6" sm="6" md="3" lg="3">
+                              <Field
+                                name="search_type"
+                                component="select"
+                                onChange={e => this.onChangeSearchType(e)}
+                                value={search_type}
+                                className="form-select"
+                                style={{
+                                  border: borderColor,
+                                  borderRadius: '5px',
+                                  // Add more style overrides as needed
+                                }}
+                              >
+                                <option value="">Choose an option</option>
+                                <option value="Current Location">
+                                  Current Location
+                                </option>
+                                <option value="City">Search By City</option>
+                                <option value="Custom Address">Custom Address</option>
+                              </Field>
+                            </div>
+                          </Col>
+                        )}
+                        {/* <Col xs="6" sm="6" md="3" lg="3">
                           <div className="mb-3">
                             <Field
                               name="search_type"
@@ -7972,95 +7969,95 @@ class NearbyLabs extends Component {
                           </div>
                         </Col> */}
 
-                          {this.state.search_type === "Current Location" && (
-                            <Col xs="2" sm="2" md="2" lg="2">
-                              <div className="mb-3">
-                                <div className="input-group">
-                                  <Input
-                                    defaultValue={this.state.km}
-                                    onChange={e => this.onChangeKm(e)}
-                                    id="pac-input"
-                                    type="number"  // Change "numbers" to "number"
-                                    className="form-control"
-                                    placeholder="Search By Km..."
-                                    style={{
-                                      border: '2px solid red',
-                                      borderRadius: '5px',
-                                      fontSize: '14px'
-                                      // Add more style overrides as needed
-                                    }}
-                                  />
-                                </div>
-                              </div>
-                            </Col>
-                          )}
-                          {this.state.search_type === "Custom Address" && (
-                            <Col xs="2" sm="2" md="2" lg="2">
-                              <div className="mb-3">
-                                <div className="input-group">
-                                  <Input
-                                    defaultValue={this.state.km}
-                                    onChange={e => this.onChangeKm(e)}
-                                    id="pac-input"
-                                    type="number"  // Change "numbers" to "number"
-                                    className="form-control"
-                                    placeholder="Search By Km..."
-                                    style={{
-                                      border: '2px solid yellow',
-                                      borderRadius: '5px',
-                                      fontSize: '14px'
-                                      // Add more style overrides as needed
-                                    }}
-                                  />
-                                </div>
-                              </div>
-                            </Col>
-                          )}
-                          {/* City field */}
-                          {this.state.search_type === "City" && (
-                            <Col xs="4" sm="4" md="3" lg="3">
-                              <div className="mb-3">
-                                <Select
-                                  name="city"
-                                  component="Select"
-                                  onChange={this.onChangeCity}
-                                  className="defautSelectParent is-invalid"
-                                  options={cityList}
-                                  placeholder="City..."
-                                  styles={{
-                                    control: (provided, state) => ({
-                                      ...provided,
-                                      border: '2px solid green',
-                                      borderRadius: '5px',
-                                    }),
+                        {this.state.search_type === "Current Location" && (
+                          <Col xs="2" sm="2" md="2" lg="2">
+                            <div className="mb-3">
+                              <div className="input-group">
+                                <Input
+                                  defaultValue={this.state.km}
+                                  onChange={e => this.onChangeKm(e)}
+                                  id="pac-input"
+                                  type="number"  // Change "numbers" to "number"
+                                  className="form-control"
+                                  placeholder="Search By Km..."
+                                  style={{
+                                    border: '2px solid red',
+                                    borderRadius: '5px',
+                                    fontSize: '14px'
                                     // Add more style overrides as needed
                                   }}
                                 />
                               </div>
-                            </Col>
-                          )}
-                          {/* Custom Address field */}
-                          {this.state.search_type === "Custom Address" && (
-                            <Col xs="4" sm="4" md="3" lg="3">
-                              <div className="mb-3">
+                            </div>
+                          </Col>
+                        )}
+                        {this.state.search_type === "Custom Address" && (
+                          <Col xs="2" sm="2" md="2" lg="2">
+                            <div className="mb-3">
+                              <div className="input-group">
                                 <Input
-                                  defaultValue={this.state.address}
-                                  onChange={e => this.onChangeAddress(e)}
+                                  defaultValue={this.state.km}
+                                  onChange={e => this.onChangeKm(e)}
                                   id="pac-input"
-                                  type="text"
+                                  type="number"  // Change "numbers" to "number"
                                   className="form-control"
-                                  placeholder="Search Location..."
+                                  placeholder="Search By Km..."
                                   style={{
                                     border: '2px solid yellow',
                                     borderRadius: '5px',
+                                    fontSize: '14px'
                                     // Add more style overrides as needed
                                   }}
                                 />
                               </div>
-                            </Col>
-                          )}
-                        </Row>
-                      </Form>
+                            </div>
+                          </Col>
+                        )}
+                        {/* City field */}
+                        {this.state.search_type === "City" && (
+                          <Col xs="4" sm="4" md="3" lg="3">
+                            <div className="mb-3">
+                              <Select
+                                name="city"
+                                component="Select"
+                                onChange={this.onChangeCity}
+                                className="defautSelectParent is-invalid"
+                                options={cityList}
+                                placeholder="City..."
+                                styles={{
+                                  control: (provided, state) => ({
+                                    ...provided,
+                                    border: '2px solid green',
+                                    borderRadius: '5px',
+                                  }),
+                                  // Add more style overrides as needed
+                                }}
+                              />
+                            </div>
+                          </Col>
+                        )}
+                        {/* Custom Address field */}
+                        {this.state.search_type === "Custom Address" && (
+                          <Col xs="4" sm="4" md="3" lg="3">
+                            <div className="mb-3">
+                              <Input
+                                defaultValue={this.state.address}
+                                onChange={e => this.onChangeAddress(e)}
+                                id="pac-input"
+                                type="text"
+                                className="form-control"
+                                placeholder="Search Location..."
+                                style={{
+                                  border: '2px solid yellow',
+                                  borderRadius: '5px',
+                                  // Add more style overrides as needed
+                                }}
+                              />
+                            </div>
+                          </Col>
+                        )}
+                      </Row>
+                    </Form>
                     )}
                   </Formik>
                 </Row>
@@ -8200,26 +8197,26 @@ class NearbyLabs extends Component {
                                   </span>
                                 </div>
                               )}
-                              <Row style={{ display: "flex", justifyContent: "center", marginLeft: "40px" }}>
-                                <Col className="d-flex justify-content-end" style={{ paddingRight: "0" }}>
-                                  <StarRatings
-                                    rating={nearbyLab.rating}
-                                    starRatedColor="#F1B44C"
-                                    starEmptyColor="#2D363F"
-                                    numberOfStars={5}
-                                    name="rating"
-                                    starDimension="12px"
-                                    starSpacing="3px"
-                                  />
-                                </Col>
-                                <Col className="d-flex justify-content-start" style={{ paddingLeft: "0" }}>
-                                  <span style={{ fontSize: "14px", marginLeft: "7px" }}>
-                                    {nearbyLab && nearbyLab.rating && (
-                                      <p>{nearbyLab.rating.toFixed(1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
-                                    )}
-                                  </span>
-                                </Col>
-                              </Row>
+                               <Row style={{ display: "flex", justifyContent: "center", marginLeft: "40px" }}>
+  <Col className="d-flex justify-content-end" style={{ paddingRight: "0" }}>
+    <StarRatings
+      rating={nearbyLab.rating}
+      starRatedColor="#F1B44C"
+      starEmptyColor="#2D363F"
+      numberOfStars={5}
+      name="rating"
+      starDimension="12px"
+      starSpacing="3px"
+    />
+  </Col>
+  <Col className="d-flex justify-content-start" style={{ paddingLeft: "0" }}>
+    <span style={{ fontSize: "14px", marginLeft: "7px"}}>
+      {nearbyLab && nearbyLab.rating && (
+        <p>{nearbyLab.rating.toFixed(1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
+      )}
+    </span>
+  </Col>
+</Row>
                               <Link
                                 to={
                                   this.props.match.params.uuid
@@ -8380,26 +8377,26 @@ class NearbyLabs extends Component {
                                   </span>
                                 </div>
                               )}
-                              <Row style={{ display: "flex", justifyContent: "center", marginLeft: "40px" }}>
-                                <Col className="d-flex justify-content-end" style={{ paddingRight: "0" }}>
-                                  <StarRatings
-                                    rating={nearbyLab.rating}
-                                    starRatedColor="#F1B44C"
-                                    starEmptyColor="#2D363F"
-                                    numberOfStars={5}
-                                    name="rating"
-                                    starDimension="12px"
-                                    starSpacing="3px"
-                                  />
-                                </Col>
-                                <Col className="d-flex justify-content-start" style={{ paddingLeft: "0" }}>
-                                  <span style={{ fontSize: "14px", marginLeft: "7px" }}>
-                                    {nearbyLab && nearbyLab.rating && (
-                                      <p>{nearbyLab.rating.toFixed(1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
-                                    )}
-                                  </span>
-                                </Col>
-                              </Row>
+                               <Row style={{ display: "flex", justifyContent: "center", marginLeft: "40px" }}>
+  <Col className="d-flex justify-content-end" style={{ paddingRight: "0" }}>
+    <StarRatings
+      rating={nearbyLab.rating}
+      starRatedColor="#F1B44C"
+      starEmptyColor="#2D363F"
+      numberOfStars={5}
+      name="rating"
+      starDimension="12px"
+      starSpacing="3px"
+    />
+  </Col>
+  <Col className="d-flex justify-content-start" style={{ paddingLeft: "0" }}>
+    <span style={{ fontSize: "14px", marginLeft: "7px"}}>
+      {nearbyLab && nearbyLab.rating && (
+        <p>{nearbyLab.rating.toFixed(1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
+      )}
+    </span>
+  </Col>
+</Row>
                               <Link
                                 to={
                                   this.props.match.params.uuid
@@ -8546,25 +8543,25 @@ class NearbyLabs extends Component {
                                 </div>
                               )}
                               <Row style={{ display: "flex", justifyContent: "center", marginLeft: "40px" }}>
-                                <Col className="d-flex justify-content-end" style={{ paddingRight: "0" }}>
-                                  <StarRatings
-                                    rating={nearbyLab.rating}
-                                    starRatedColor="#F1B44C"
-                                    starEmptyColor="#2D363F"
-                                    numberOfStars={5}
-                                    name="rating"
-                                    starDimension="12px"
-                                    starSpacing="3px"
-                                  />
-                                </Col>
-                                <Col className="d-flex justify-content-start" style={{ paddingLeft: "0" }}>
-                                  <span style={{ fontSize: "14px", marginLeft: "7px" }}>
-                                    {nearbyLab && nearbyLab.rating && (
-                                      <p>{nearbyLab.rating.toFixed(1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
-                                    )}
-                                  </span>
-                                </Col>
-                              </Row>
+  <Col className="d-flex justify-content-end" style={{ paddingRight: "0" }}>
+    <StarRatings
+      rating={nearbyLab.rating}
+      starRatedColor="#F1B44C"
+      starEmptyColor="#2D363F"
+      numberOfStars={5}
+      name="rating"
+      starDimension="12px"
+      starSpacing="3px"
+    />
+  </Col>
+  <Col className="d-flex justify-content-start" style={{ paddingLeft: "0" }}>
+    <span style={{ fontSize: "14px", marginLeft: "7px"}}>
+      {nearbyLab && nearbyLab.rating && (
+        <p>{nearbyLab.rating.toFixed(1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
+      )}
+    </span>
+  </Col>
+</Row>
                               <Link
                                 to={
                                   this.props.match.params.uuid
@@ -8720,26 +8717,26 @@ class NearbyLabs extends Component {
                                   </span>
                                 </div>
                               )}
-                              <Row style={{ display: "flex", justifyContent: "center", marginLeft: "40px" }}>
-                                <Col className="d-flex justify-content-end" style={{ paddingRight: "0" }}>
-                                  <StarRatings
-                                    rating={nearbyLab.rating}
-                                    starRatedColor="#F1B44C"
-                                    starEmptyColor="#2D363F"
-                                    numberOfStars={5}
-                                    name="rating"
-                                    starDimension="12px"
-                                    starSpacing="3px"
-                                  />
-                                </Col>
-                                <Col className="d-flex justify-content-start" style={{ paddingLeft: "0" }}>
-                                  <span style={{ fontSize: "14px", marginLeft: "7px" }}>
-                                    {nearbyLab && nearbyLab.rating && (
-                                      <p>{nearbyLab.rating.toFixed(1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
-                                    )}
-                                  </span>
-                                </Col>
-                              </Row>
+                               <Row style={{ display: "flex", justifyContent: "center", marginLeft: "40px" }}>
+  <Col className="d-flex justify-content-end" style={{ paddingRight: "0" }}>
+    <StarRatings
+      rating={nearbyLab.rating}
+      starRatedColor="#F1B44C"
+      starEmptyColor="#2D363F"
+      numberOfStars={5}
+      name="rating"
+      starDimension="12px"
+      starSpacing="3px"
+    />
+  </Col>
+  <Col className="d-flex justify-content-start" style={{ paddingLeft: "0" }}>
+    <span style={{ fontSize: "14px", marginLeft: "7px"}}>
+      {nearbyLab && nearbyLab.rating && (
+        <p>{nearbyLab.rating.toFixed(1).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
+      )}
+    </span>
+  </Col>
+</Row>
                               <Link
                                 to={
                                   this.props.match.params.uuid

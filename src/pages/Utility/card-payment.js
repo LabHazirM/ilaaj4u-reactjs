@@ -50,7 +50,7 @@ class CardPayment extends Component {
     this.setState({ encryptedData });
 
     // API endpoint URL
-    const apiUrl = "https://labhazirapi.com/api/patient/paymentsresponse/";
+    const apiUrl = "http://127.0.0.1:8000/api/patient/paymentsresponse/";
 
     // POST request to Django API
     fetch(apiUrl, {

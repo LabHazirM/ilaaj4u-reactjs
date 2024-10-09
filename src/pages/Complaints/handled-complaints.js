@@ -3,10 +3,10 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import MetaTags from "react-meta-tags";
 import { withRouter, Link } from "react-router-dom";
-import filterFactory, { textFilter } from 'react-bootstrap-table2-filter';
+import filterFactory, { textFilter } from "react-bootstrap-table2-filter";
 import { Tooltip } from "@material-ui/core";
-import 'react-datepicker/dist/react-datepicker.css';
-import DatePicker from 'react-datepicker';
+import "react-datepicker/dist/react-datepicker.css";
+import DatePicker from "react-datepicker";
 import {
   Card,
   CardBody,
@@ -27,7 +27,7 @@ import paginationFactory, {
   PaginationProvider,
   PaginationListStandalone,
 } from "react-bootstrap-table2-paginator";
-import moment from 'moment';
+import moment from "moment";
 
 import ToolkitProvider, { Search } from "react-bootstrap-table2-toolkit";
 import BootstrapTable from "react-bootstrap-table-next";
@@ -106,14 +106,14 @@ class handledComplaintsList extends Component {
           formatter: (cellContent, handledComplaint) => (
             <>
               <span>
-                  <Link
-                    to="#"
-                    // onClick={e => this.openPatientModal(e, handledComplaint)}
-                    onMouseEnter={e => this.openPatientModal(e, handledComplaint)}
-                    onPointerLeave={this.handleMouseExit()}
-                  >
-                   {handledComplaint.name}
-                  </Link>
+                <Link
+                  to="#"
+                  // onClick={e => this.openPatientModal(e, handledComplaint)}
+                  onMouseEnter={e => this.openPatientModal(e, handledComplaint)}
+                  onPointerLeave={this.handleMouseExit()}
+                >
+                  {handledComplaint.name}
+                </Link>
               </span>
             </>
           ),
@@ -129,7 +129,7 @@ class handledComplaintsList extends Component {
         //   text: "Phone",
         //   sort: true,
         // },
-       
+
         {
           dataField: "complainee",
           text: "Complaint Against",
@@ -139,35 +139,43 @@ class handledComplaintsList extends Component {
               {unhandledComplaint.lab_name ? (
                 <Link
                   to="#"
-                  onMouseEnter={e => this.openLabMessageModal(e, unhandledComplaint)}
+                  onMouseEnter={e =>
+                    this.openLabMessageModal(e, unhandledComplaint)
+                  }
                   onPointerLeave={this.handleMouseExit()}
                 >
-                  <strong className="text-danger">{unhandledComplaint.complainee}</strong> <br></br>
+                  <strong className="text-danger">
+                    {unhandledComplaint.complainee}
+                  </strong>{" "}
+                  <br></br>
                   {unhandledComplaint.lab_name}
                 </Link>
               ) : (
                 <>
-                  <strong className="text-danger">{unhandledComplaint.complainee}</strong> <br></br>
+                  <strong className="text-danger">
+                    {unhandledComplaint.complainee}
+                  </strong>{" "}
+                  <br></br>
                   {unhandledComplaint.labhazir_complainee}
                 </>
               )}
             </>
           ),
           filter: textFilter(),
-        },      
+        },
         {
           dataField: "city",
           text: "City",
           sort: true,
           filter: textFilter(),
-        },  
+        },
         // {
         //   dataField: "message",
         //   text: "Message",
         //   sort: true,
         //   formatter: (cellContent, complaint) => (
         //     <>
-        //       <Link to="#" 
+        //       <Link to="#"
         //       // onClick={e => this.openMessageModal(e, complaint)}
         //       onMouseEnter={e => this.openMessageModal(e, complaint)}
         //       onPointerLeave={this.handleMouseExit()}
@@ -178,7 +186,7 @@ class handledComplaintsList extends Component {
         //   ),
         //   filter: textFilter(),
         // },
-        
+
         {
           dataField: "time_difference_hours",
           text: "Response Time in Hours",
@@ -214,7 +222,6 @@ class handledComplaintsList extends Component {
     this.toggle = this.toggle.bind(this);
     this.toggleMessageModal.bind(this);
     this.togglePatientModal = this.togglePatientModal.bind(this);
-
   }
   componentDidMount() {
     this.setState({ handledComplaints: [] });
@@ -228,8 +235,7 @@ class handledComplaintsList extends Component {
 
     this.fetchData();
   }
-  
-  
+
   componentDidUpdate(prevProps, prevState) {
     if (
       prevState.startDate !== this.state.startDate ||
@@ -239,11 +245,15 @@ class handledComplaintsList extends Component {
       this.fetchData();
     }
 
-    if (this.props.handledComplaints.length > 0 &&
-      this.props.handledComplaints !== prevProps.handledComplaints) {
-    const lastIndex = this.props.handledComplaints.findIndex((statement) => {
+    if (
+      this.props.handledComplaints.length > 0 &&
+      this.props.handledComplaints !== prevProps.handledComplaints
+    ) {
+      const lastIndex = this.props.handledComplaints.findIndex(statement => {
         const statementDate = new Date(statement.registered_at);
-        const labFilter = !this.state.selectedLab || statement.lab_name === this.state.selectedLab;
+        const labFilter =
+          !this.state.selectedLab ||
+          statement.lab_name === this.state.selectedLab;
         return (
           statementDate >= this.state.startDate &&
           statementDate <= this.state.endDate &&
@@ -268,11 +278,10 @@ class handledComplaintsList extends Component {
       const userId = this.state.user_id;
       const startDate = moment(this.state.startDate).format("YYYY-MM-DD");
       const endDate = moment(this.state.endDate).format("YYYY-MM-DD");
-  
+
       onGetHandledComplaints(userId, startDate, endDate); // Pass startDate and endDate to API call
     }
   };
-  
 
   toggle() {
     this.setState(prevState => ({
@@ -283,7 +292,7 @@ class handledComplaintsList extends Component {
     this.setState({
       PatientModal: true,
       email: arg.email,
-      phone:arg.phone,
+      phone: arg.phone,
     });
   };
   toggleLabMessageModal = () => {
@@ -296,13 +305,13 @@ class handledComplaintsList extends Component {
   };
 
   openLabMessageModal = (e, arg) => {
-    this.setState({ labModal: true, 
+    this.setState({
+      labModal: true,
       lab_email: arg.lab_email,
       lab_phone: arg.lab_phone,
-
-     });
+    });
   };
-  
+
   togglePatientModal = () => {
     this.setState(prevState => ({
       PatientModal: !prevState.PatientModal,
@@ -317,7 +326,6 @@ class handledComplaintsList extends Component {
       messageModal: false,
       isHovered: false,
       labModal: false,
-
     });
   };
 
@@ -328,14 +336,14 @@ class handledComplaintsList extends Component {
   };
 
   openMessageModal = (e, arg) => {
-    this.setState({ messageModal: true, 
+    this.setState({
+      messageModal: true,
       message: arg.message,
       subject: arg.subject,
-     });
+    });
   };
 
   // eslint-disable-next-line no-unused-vars
-  
 
   onPaginationPageChange = page => {
     if (
@@ -356,14 +364,26 @@ class handledComplaintsList extends Component {
     const { onGetHandledComplaints } = this.props;
     const handledComplaint = this.state.handledComplaint;
 
-    const uniqueLabNames = [...new Set(this.props.handledComplaints.map(handledComplaints => handledComplaints.complainant))];
+    const uniqueLabNames = [
+      ...new Set(
+        this.props.handledComplaints.map(
+          handledComplaints => handledComplaints.complainant
+        )
+      ),
+    ];
     const labOptions = uniqueLabNames.map((typeoptions, index) => (
       <option key={index} value={typeoptions}>
         {typeoptions}
       </option>
     ));
-   
-    const uniqueCityNames = [...new Set(this.props.handledComplaints.map(handledComplaints => handledComplaints.city))];
+
+    const uniqueCityNames = [
+      ...new Set(
+        this.props.handledComplaints.map(
+          handledComplaints => handledComplaints.city
+        )
+      ),
+    ];
     const cityOptions = uniqueCityNames.map((cityName, index) => (
       <option key={index} value={cityName}>
         {cityName}
@@ -376,12 +396,17 @@ class handledComplaintsList extends Component {
       custom: true,
     };
 
-    const filteredStatements = handledComplaints.filter((statement) => {
+    const filteredStatements = handledComplaints.filter(statement => {
       const orderedAt = moment(statement.registered_at);
-      const labFilter = !this.state.selectedLab || statement.complainant === this.state.selectedLab;
-      const CorporateFilter = !this.state.selectedCorporate || statement.city === this.state.selectedCorporate;
+      const labFilter =
+        !this.state.selectedLab ||
+        statement.complainant === this.state.selectedLab;
+      const CorporateFilter =
+        !this.state.selectedCorporate ||
+        statement.city === this.state.selectedCorporate;
       return (
-        labFilter && CorporateFilter &&
+        labFilter &&
+        CorporateFilter &&
         (!startDate || orderedAt.isSameOrAfter(startDate)) &&
         (!endDate || orderedAt.isSameOrBefore(endDate))
       );
@@ -411,60 +436,64 @@ class handledComplaintsList extends Component {
               <Col lg="12">
                 <Card>
                   <CardBody>
-                  <Row>
-              <Col lg="3">
-                <div className="mb-3">
-                  <label className="form-label">Start Date:</label>
-                  <DatePicker
-                    selected={startDate}
-                    onChange={(date) => this.setState({ startDate: date })}
-                    className="form-control"
-                    dateFormat="d MMM yyyy"
-
-                  />
-                </div></Col>
-              <Col lg="3">
-                <div className="mb-3">
-                  <label className="form-label">End Date:</label>
-                  <DatePicker
-                    selected={endDate}
-                    onChange={(date) => this.setState({ endDate: date })}
-                    className="form-control"
-                    dateFormat="d MMM yyyy"
-
-                  />
-                </div>
-
-              </Col>
-             <Col lg="3">
-  <div className="mb-3">
-    <label className="form-label">Complainant type</label>
-    <select
-      value={this.state.selectedLab}
-      onChange={(e) => this.setState({ selectedLab: e.target.value })}
-      className="form-control"
-    >
-      <option value="">All</option>
-      {labOptions}
-    </select>
-  </div>
-</Col>
-<Col lg="3">
-  <div className="mb-3">
-    <label className="form-label">City</label>
-    <select
-      value={this.state.selectedCorporate}
-      onChange={(e) => this.setState({ selectedCorporate: e.target.value })}
-      className="form-control"
-    >
-      <option value="">All Cities</option>
-      {cityOptions}
-    </select>
-  </div>
-</Col>
-
-
-            </Row>
+                    <Row>
+                      <Col lg="3">
+                        <div className="mb-3">
+                          <label className="form-label">Start Date:</label>
+                          <DatePicker
+                            selected={startDate}
+                            onChange={date =>
+                              this.setState({ startDate: date })
+                            }
+                            className="form-control"
+                            dateFormat="d MMM yyyy"
+                          />
+                        </div>
+                      </Col>
+                      <Col lg="3">
+                        <div className="mb-3">
+                          <label className="form-label">End Date:</label>
+                          <DatePicker
+                            selected={endDate}
+                            onChange={date => this.setState({ endDate: date })}
+                            className="form-control"
+                            dateFormat="d MMM yyyy"
+                          />
+                        </div>
+                      </Col>
+                      <Col lg="3">
+                        <div className="mb-3">
+                          <label className="form-label">Complainant type</label>
+                          <select
+                            value={this.state.selectedLab}
+                            onChange={e =>
+                              this.setState({ selectedLab: e.target.value })
+                            }
+                            className="form-control"
+                          >
+                            <option value="">All</option>
+                            {labOptions}
+                          </select>
+                        </div>
+                      </Col>
+                      <Col lg="3">
+                        <div className="mb-3">
+                          <label className="form-label">City</label>
+                          <select
+                            value={this.state.selectedCorporate}
+                            onChange={e =>
+                              this.setState({
+                                selectedCorporate: e.target.value,
+                              })
+                            }
+                            className="form-control"
+                          >
+                            <option value="">All Cities</option>
+                            {cityOptions}
+                          </select>
+                        </div>
+                      </Col>
+                    </Row>
                     <PaginationProvider
                       pagination={paginationFactory(pageOptions)}
                       keyField="id"
@@ -551,9 +580,7 @@ class handledComplaintsList extends Component {
                                                   <div className="col-md-9">
                                                     <input
                                                       type="text"
-                                                      value={
-                                                        this.state.email
-                                                      }
+                                                      value={this.state.email}
                                                       className="form-control"
                                                       readOnly={true}
                                                     />
@@ -569,9 +596,7 @@ class handledComplaintsList extends Component {
                                                   <div className="col-md-6">
                                                     <input
                                                       type="text"
-                                                      value={
-                                                        this.state.phone
-                                                      }
+                                                      value={this.state.phone}
                                                       className="form-control"
                                                       readOnly={true}
                                                     />
@@ -583,8 +608,7 @@ class handledComplaintsList extends Component {
                                                       className="btn btn-secondary"
                                                       onClick={() => {
                                                         navigator.clipboard.writeText(
-                                                          this.state
-                                                            .phone
+                                                          this.state.phone
                                                         );
                                                         this.setState({
                                                           btnText1: "Copied",
@@ -606,7 +630,7 @@ class handledComplaintsList extends Component {
                                       onPointerLeave={this.handleMouseExit}
                                       toggle={this.toggleLabMessageModal}
                                     >
-                                    <ModalHeader
+                                      <ModalHeader
                                         toggle={this.toggleLabMessageModal}
                                         tag="h4"
                                       >
@@ -615,9 +639,8 @@ class handledComplaintsList extends Component {
                                       <ModalBody>
                                         <Formik>
                                           <Form>
-                                        <Row>
-                                        <Col className="col-12">
-
+                                            <Row>
+                                              <Col className="col-12">
                                                 <div className="mb-3 row">
                                                   <div className="col-md-3">
                                                     <Label className="form-label">
@@ -671,7 +694,7 @@ class handledComplaintsList extends Component {
                                                   </div>
                                                 </div>
                                               </Col>
-                                        </Row>
+                                            </Row>
                                           </Form>
                                         </Formik>
                                       </ModalBody>
@@ -692,7 +715,7 @@ class handledComplaintsList extends Component {
                                       headerWrapperClasses={"table-light"}
                                       responsive
                                       ref={this.node}
-                                      filter={ filterFactory() }
+                                      filter={filterFactory()}
                                     />
 
                                     <Modal
@@ -729,7 +752,7 @@ class handledComplaintsList extends Component {
                                             <div className="row justify-content-center">
                                               <div className="col-xl-10">
                                                 <h4 className="text-primary">
-                                                {this.state.subject}
+                                                  {this.state.subject}
                                                 </h4>
                                                 <p className="text-muted font-size-14 mb-4">
                                                   {this.state.message}
@@ -743,13 +766,13 @@ class handledComplaintsList extends Component {
                                   </div>
                                 </Col>
                               </Row>
-                              {/* <Row className="align-items-md-center mt-30">
+                              <Row className="align-items-md-center mt-30">
                                 <Col className="pagination pagination-rounded justify-content-end mb-2">
                                   <PaginationListStandalone
                                     {...paginationProps}
                                   />
                                 </Col>
-                              </Row> */}
+                              </Row>
                             </React.Fragment>
                           )}
                         </ToolkitProvider>
@@ -772,7 +795,6 @@ handledComplaintsList.propTypes = {
   className: PropTypes.any,
   onGetHandledComplaints: PropTypes.func,
 };
-
 
 const mapStateToProps = ({ complaints }) => ({
   handledComplaints: complaints.handledComplaints,

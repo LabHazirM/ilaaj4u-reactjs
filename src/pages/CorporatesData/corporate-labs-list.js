@@ -73,17 +73,42 @@ class OfferedTestsList extends Component {
           hidden: true,
           formatter: (cellContent, offeredTest) => <>{offeredTest.id}</>,
         },
+        // {
+        //   dataField: "lab_name",
+        //   text: "Lab Name",
+        //   sort: true,
+        //   formatter: (cellContent, offeredTest) => (
+        //     <>
+        //       <p className="float-start">
+        //         {offeredTest.lab_name}
+        //       </p>
+        //     </>
+        //   ), filter: textFilter(),
+        // },
         {
           dataField: "lab_name",
           text: "Lab Name",
           sort: true,
+          headerFormatter: (column, colIndex, { sortElement, filterElement }) => {
+            return (
+              <div style={{ display: 'flex', flexDirection: 'column-reverse' }}>
+                {filterElement}
+                <div>
+                  {column.text} {sortElement}
+                </div>
+              </div>
+            );
+          },
           formatter: (cellContent, offeredTest) => (
             <>
-              <span className="float-start">
-                {offeredTest.lab_name}
-              </span>
+              <Tooltip title={offeredTest.lab_name}>
+                <p className="font-size-14" style={{ whiteSpace: 'normal', textAlign: 'left', width: 'auto' }}>
+                  {offeredTest.lab_name}
+                </p>
+              </Tooltip>
             </>
-          ), filter: textFilter(),
+          ),
+          filter: textFilter(),
         },
         {
           dataField: "lab_type",
@@ -133,18 +158,43 @@ class OfferedTestsList extends Component {
             </>
           ), filter: textFilter(),
         },
+        // {
+        //   dataField: "lab_address",
+        //   text: "Address",
+        //   sort: true,
+        //   formatter: (cellContent, offeredTest) => (
+        //     <>
+        //      <Tooltip title={offeredTest.lab_address}>
+        //       <span className="font-size-14 " style={{ whiteSpace: 'nowrap', textAlign: 'left', width: '200px', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+        //         {offeredTest.lab_address}
+        //       </span></Tooltip>
+        //     </>
+        //   ), filter: textFilter(),
+        // },
         {
           dataField: "lab_address",
           text: "Address",
           sort: true,
+          headerFormatter: (column, colIndex, { sortElement, filterElement }) => {
+            return (
+              <div style={{ display: 'flex', flexDirection: 'column-reverse' }}>
+                {filterElement}
+                <div>
+                  {column.text} {sortElement}
+                </div>
+              </div>
+            );
+          },
           formatter: (cellContent, offeredTest) => (
             <>
-             <Tooltip title={offeredTest.lab_address}>
-              <span className="font-size-14 " style={{ whiteSpace: 'nowrap', textAlign: 'left', width: '200px', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                {offeredTest.lab_address}
-              </span></Tooltip>
+              <Tooltip title={offeredTest.lab_address}>
+                <p className="font-size-14" style={{ whiteSpace: 'normal', textAlign: 'left', width: 'auto' }}>
+                  {offeredTest.lab_address}
+                </p>
+              </Tooltip>
             </>
-          ), filter: textFilter(),
+          ),
+          filter: textFilter(),
         },
         {
           dataField: "Status",

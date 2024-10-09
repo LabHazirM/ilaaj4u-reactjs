@@ -98,7 +98,8 @@ class OfferedTestsList extends Component {
           text: "Test Name",
           sort: true,
           formatter: (cellContent, offeredTest) => (
-            <span style={{ color: this.state.newEntries.includes(offeredTest.id) && existingEntriesCount > 0 ? 'red' : 'inherit',
+            <span style={{
+              color: this.state.newEntries.includes(offeredTest.id) && existingEntriesCount > 0 ? 'red' : 'inherit',
               width: '140px', // Set your desired width here
               fontSize: '14px',
               textOverflow: 'ellipsis',
@@ -106,7 +107,7 @@ class OfferedTestsList extends Component {
               textAlign: 'left', // Align text to the left
               display: 'block',
             }}>
-                                             {offeredTest.test_name}
+              {offeredTest.test_name}
 
             </span>
 
@@ -120,26 +121,26 @@ class OfferedTestsList extends Component {
             <span>
               {/* {offeredTest.test_name} */}
               {offeredTest.type != "Test" && (
-                              <div>
-                                <Link
-                                to="#"
-                                onClick={e => this.openPatientModal(e, offeredTest)}
-                                // onMouseEnter={e =>  this.openPatientModal(e, offeredTest)}
-                                // onPointerLeave={this.handleMouseExit()}
-                              >
-                                <span>
-                                {offeredTest.type}
-                                </span>
-                              </Link>
-                              </div>
-                            )}
-               {offeredTest.type == "Test" && (
-                              <div>
-                                <span>
-                                {offeredTest.type}
-                                </span>
-                              </div>
-                            )}
+                <div>
+                  <Link
+                    to="#"
+                    onClick={e => this.openPatientModal(e, offeredTest)}
+                  // onMouseEnter={e =>  this.openPatientModal(e, offeredTest)}
+                  // onPointerLeave={this.handleMouseExit()}
+                  >
+                    <span>
+                      {offeredTest.type}
+                    </span>
+                  </Link>
+                </div>
+              )}
+              {offeredTest.type == "Test" && (
+                <div>
+                  <span>
+                    {offeredTest.type}
+                  </span>
+                </div>
+              )}
             </span>
 
           ),
@@ -184,23 +185,23 @@ class OfferedTestsList extends Component {
             const startDate = moment(offeredTest.start_date);
             const endDate = moment(offeredTest.end_date);
             const duration = endDate.diff(startDate);
-      
+
             // If either date is missing, show "--"
             if (!startDate.isValid() || !endDate.isValid()) {
               return "--";
             }
-      
+
             // Calculate the difference in days, hours, and minutes
             const days = moment.duration(duration).days();
             const hours = moment.duration(duration).hours();
             const minutes = moment.duration(duration).minutes();
-      
+
             // Format the duration
             let formattedDuration = "";
             if (days > 0) formattedDuration += `${days}`;
             // if (hours > 0) formattedDuration += `${hours}h `;
             // formattedDuration += `${minutes}m`;
-      
+
             return <span>{formattedDuration}</span>;
           },
         },
@@ -244,10 +245,10 @@ class OfferedTestsList extends Component {
     const userId = id ? id : this.state.user_id;
     onGetCorporateTests(userId);
     this.setState({ user_id: userId });
-  
+
     // Fetch the current timestamp
     const currentTimestamp = Math.floor(Date.now() / 1000);
-  
+
     // Filter new entries based on timestamp comparison
     const newEntries = offeredTests.filter(test => {
       const timestampDifference = currentTimestamp - test.timestamp;
@@ -256,7 +257,7 @@ class OfferedTestsList extends Component {
     console.log("new entries", newEntries)
     // Store the IDs of new entries
     const newEntryIds = newEntries.map(entry => entry.id);
-  
+
     // Update state with new entries and existing entries count
     this.setState({
       newEntries: newEntryIds,
@@ -264,8 +265,8 @@ class OfferedTestsList extends Component {
     }, () => {
       console.log("exist entries", this.state.existingEntriesCount);
     });
-  }    
-  
+  }
+
 
   toggle() {
     this.setState(prevState => ({
@@ -292,7 +293,7 @@ class OfferedTestsList extends Component {
       ? this.setState({ btnText: "Copied" })
       : this.setState({ btnText: "Copy" });
   };
-  
+
 
   // eslint-disable-next-line no-unused-vars
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -361,7 +362,7 @@ class OfferedTestsList extends Component {
     const uniqueCorporateNames = Array.from(new Set(
       offeredTests.map(corporate => corporate.corporate_name).filter(name => name)
     ));
-  
+
     // Extract unique employee codes
     const uniqueEmployeeCodes = Array.from(new Set(
       offeredTests.map(corporate => corporate.employee_code).filter(code => code)
@@ -377,43 +378,43 @@ class OfferedTestsList extends Component {
             {/* Render Breadcrumbs */}
             <Breadcrumbs title="Corporate Offered Tests" breadcrumbItem="Tests List" />
             <Row className="mb-2">
-  <Col lg="6" md="6" sm="12">
-    <div className="text-sm-left text-md-center text-lg-center">
-      {uniqueCorporateNames.length > 0 ? (
-        <div>
-          {uniqueCorporateNames.map((name, index) => (
-            <div key={index}>
-              <span style={{ fontWeight: 'bold' }}>Corporations Name: </span>
-              <span className="text-danger">{name}</span>
-            </div>
-          ))}
-        </div>
-      ) : (
-        <div>No Corporate Names Available</div>
-      )}
-    </div>
-  </Col>
-  <Col lg="6" md="6" sm="12">
-    <div className="text-left">
-      {uniqueEmployeeCodes.length > 0 ? (
-        <div>
-          {uniqueEmployeeCodes.map((code, index) => (
-            <div key={index}>
-              <span style={{ fontWeight: 'bold' }}>Number of Total Employees: </span>
-              <span style={{ color: 'red' }}>{code}</span>
-            </div>
-          ))}
-        </div>
-      ) : (
-        <div>
-                        <span style={{ fontWeight: 'bold' }}>Number of Total Employees: </span>
-                        <span style={{ color: 'red' }}>0</span>
+              <Col lg="6" md="6" sm="12">
+                <div className="text-sm-left text-md-center text-lg-center">
+                  {uniqueCorporateNames.length > 0 ? (
+                    <div>
+                      {uniqueCorporateNames.map((name, index) => (
+                        <div key={index}>
+                          <span style={{ fontWeight: 'bold' }}>Corporations Name: </span>
+                          <span className="text-danger">{name}</span>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div>No Corporate Names Available</div>
+                  )}
+                </div>
+              </Col>
+              <Col lg="6" md="6" sm="12">
+                <div className="text-left">
+                  {uniqueEmployeeCodes.length > 0 ? (
+                    <div>
+                      {uniqueEmployeeCodes.map((code, index) => (
+                        <div key={index}>
+                          <span style={{ fontWeight: 'bold' }}>Number of Total Employees: </span>
+                          <span style={{ color: 'red' }}>{code}</span>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div>
+                      <span style={{ fontWeight: 'bold' }}>Number of Total Employees: </span>
+                      <span style={{ color: 'red' }}>0</span>
 
-          </div>
-      )}
-    </div>
-  </Col>
-</Row>
+                    </div>
+                  )}
+                </div>
+              </Col>
+            </Row>
             <Row>
               <Col lg="12">
                 <Card>
@@ -444,50 +445,50 @@ class OfferedTestsList extends Component {
                                     </div>
                                   </div>
                                 </Col>
-                                
+
                               </Row>
                               <Modal
-                                      isOpen={this.state.PatientModal}
-                                      className={this.props.className}
-                                      // onPointerLeave={this.handleMouseExit}
-                                    >
-                                      <ModalHeader
-                                        toggle={this.togglePatientModal}
-                                        tag="h4"
-                                      >
-                                        <span></span>
-                                      </ModalHeader>
-                                      <ModalBody>
-                                        <Formik>
-                                          <Form>
-                                            <Row>
-                                              <Col className="col-12">
-                                                <div className="mb-3 row">
-                                                  <div className="col-md-3">
-                                                    <Label className="form-label">
-                                                      Included Tests
-                                                    </Label>
-                                                  </div>
-                                                  <div className="col-md-9">
-                                                  <textarea
-                                  name="test_details"
-                                  id="test_details"
-                                  rows="10"
-                                  cols="10"
-                                  value={this.state.test_details}
-                                  className="form-control"
-                                  readOnly={true}
-                                />
-                                                  </div>
-                                                </div>
+                                isOpen={this.state.PatientModal}
+                                className={this.props.className}
+                              // onPointerLeave={this.handleMouseExit}
+                              >
+                                <ModalHeader
+                                  toggle={this.togglePatientModal}
+                                  tag="h4"
+                                >
+                                  <span></span>
+                                </ModalHeader>
+                                <ModalBody>
+                                  <Formik>
+                                    <Form>
+                                      <Row>
+                                        <Col className="col-12">
+                                          <div className="mb-3 row">
+                                            <div className="col-md-3">
+                                              <Label className="form-label">
+                                                Included Tests
+                                              </Label>
+                                            </div>
+                                            <div className="col-md-9">
+                                              <textarea
+                                                name="test_details"
+                                                id="test_details"
+                                                rows="10"
+                                                cols="10"
+                                                value={this.state.test_details}
+                                                className="form-control"
+                                                readOnly={true}
+                                              />
+                                            </div>
+                                          </div>
 
-                                              </Col>
-                                            </Row>
-                                          </Form>
-                                        </Formik>
-                                      </ModalBody>
-                                    </Modal>
-                             
+                                        </Col>
+                                      </Row>
+                                    </Form>
+                                  </Formik>
+                                </ModalBody>
+                              </Modal>
+
                               <Row className="mb-4">
                                 <Col xl="12">
                                   <div className="table-responsive">

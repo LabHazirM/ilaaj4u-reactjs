@@ -81,7 +81,7 @@ class PatientInformation extends Component {
   fetchEmployeeCodes = async () => {
     try {
       const response = await axios.get(
-        `https://labhazirapi.com/api/corporate/employees-list`
+        `http://127.0.0.1:8000/api/corporate/employees-list`
       );
       const employeeData = response.data.data;
 
@@ -273,7 +273,7 @@ class PatientInformation extends Component {
                                   console.log(this.props.match.params.uuid);
                                   this.props.history.push(
                                     this.props.match.params.uuid
-                                      ? `/tests-offered-labhazir/${this.props.match.params.uuid}/${this.props.match.params.id}`
+                                     ? `/tests-offered-labhazir/${this.props.match.params.uuid}/${this.props.match.params.id}`
                                       : `/tests-offered-labhazir/${this.props.match.params.id}`
                                   );
                                 }
