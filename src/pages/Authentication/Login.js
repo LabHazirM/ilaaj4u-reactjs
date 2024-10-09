@@ -166,7 +166,7 @@ class Login extends Component {
                       <span
                         style={{ color: "green", fontSize: "24px", fontWeight: "bold" }}
                       >
-                        Welcome to the Labhazir!
+                        Welcome to the Lab hazir!
                       </span>
                     </div>
                     <strong className="font-size-15 font-weight-bold mb-3">
