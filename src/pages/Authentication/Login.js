@@ -226,7 +226,7 @@ class Login extends Component {
                         <div>
                           <h5 className="text-primary">Welcome Back!</h5>
                           <p className="text-muted">
-                            Sign in to continue to Lab Hazir
+                            Sign in to continue to Lab Hazir!
                           </p>
                         </div>
 
