@@ -55,7 +55,11 @@ class StackedColumnChart extends Component {
   }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   fetchData = (period, labId) => {
+=======
+  fetchData = () => {
+>>>>>>> parent of 5e9e7ad9c... Merge branch 'main' of https://github.com/labhazir/ilaaj4u-reactjs into main
 =======
   fetchData = () => {
 >>>>>>> parent of 5e9e7ad9c... Merge branch 'main' of https://github.com/labhazir/ilaaj4u-reactjs into main
