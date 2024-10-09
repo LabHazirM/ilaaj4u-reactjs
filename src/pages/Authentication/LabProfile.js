@@ -47,7 +47,6 @@ class LabProfile extends Component {
       complaint_handling_email: "",
       complaint_handling_phone: "",
       is_digital_payment_accepted: "",
-      is_Receive_Email_On_Booking:"",
       is_active: "",
       is_blocked: "",
       isProfileUpdated: false,
@@ -106,8 +105,6 @@ class LabProfile extends Component {
         complaint_handling_phone: this.props.success.complaint_handling_phone,
         is_digital_payment_accepted:
           this.props.success.is_digital_payment_accepted,
-        is_Receive_Email_On_Booking:
-          this.props.success.is_Receive_Email_On_Booking,
         is_active: this.props.success.is_active,
       });
     }, 1500);
@@ -178,9 +175,6 @@ class LabProfile extends Component {
                       (this.state && this.state.complaint_handling_phone) || "",
                     is_digital_payment_accepted:
                       (this.state && this.state.is_digital_payment_accepted) ||
-                      "No",
-                    is_Receive_Email_On_Booking:
-                      (this.state && this.state.is_Receive_Email_On_Booking) ||
                       "No",
                     is_active: (this.state && this.state.is_active) || "Yes",
                   }}
