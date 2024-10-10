@@ -1939,7 +1939,7 @@ getCommonPaymentMethods = (checkoutItems) => {
                                     }
                                   )}
                               </div>
-                              <div className="form-check form-check-inline font-size-16">
+                              {/* <div className="form-check form-check-inline font-size-16">
                                 {this.props.donationCheck.map(
                                   (donationcheck, key) => {
                                     return (
@@ -1968,7 +1968,7 @@ getCommonPaymentMethods = (checkoutItems) => {
                                     );
                                   }
                                 )}
-                              </div>
+                              </div> */}
 
                               <div className="d-flex justify-content-center">
                                 {this.state.payment_method === "My Wallet" && (
