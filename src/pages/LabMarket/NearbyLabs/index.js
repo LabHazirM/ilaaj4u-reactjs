@@ -13,9 +13,9 @@ import { Button, Collapse } from "reactstrap";
 import classname from "classnames";
 import logo from "../../../assets/images/logo.svg";
 import mtest from "../../../assets/images/m.test.png";
-import mprofile from "../../../assets/images/m.profile1.jpeg";
-import mpackages from "../../../assets/images/m.package.jpeg";
-import mradiology from "../../../assets/images/m.radiology.jpeg";
+import mprofile from "../../../assets/images/m.profile1.png";
+import mpackages from "../../../assets/images/m.package.png";
+import mradiology from "../../../assets/images/m.radiology.png";
 import mappointment from "../../../assets/images/m.appointment.png";
 import discount from "../../../assets/images/discount.png";
 import logoLight from "../../../assets/images/logo-light.png";
@@ -215,7 +215,7 @@ class NearbyLabs extends Component {
       longitude = parseFloat(longitudeFromUrl);
       console.log("print lat log in app", latitude, longitude);
 
-      const url = `https://labhazirapi.com/nearby-labs/&lat=${latitude}&lon=${longitude}`;
+      const url = `http://localhost:3000/nearby-labs/&lat=${latitude}&lon=${longitude}`;
       const queryString = url.substring(url.indexOf("&") + 1);
       const finalUrl = "&" + queryString; // Remove the leading question mark ('?')
       this.setState({ finalUrl: finalUrl });

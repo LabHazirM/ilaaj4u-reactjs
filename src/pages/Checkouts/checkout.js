@@ -723,10 +723,41 @@ class Checkout extends Component {
       console.error('Error making payment:', error);
   }
 };
+getCommonPaymentMethods = (checkoutItems) => {
+  console.log('checkoutItems:', checkoutItems);
+
+  const allPaymentMethods = checkoutItems.map(item => 
+    item.is_digital_payment_accepted === 'Yes' ? ['Cash', 'Card'] : ['Cash']
+  );
+  
+  console.log('allPaymentMethods:', allPaymentMethods);
+
+  // If checkoutItems is empty, return an empty array
+  if (allPaymentMethods.length === 0) {
+    console.log('No payment methods found. Returning empty array.');
+    return [];
+  }
+
+  // Find the common payment methods across all labs with an initial value
+  const commonMethods = allPaymentMethods.reduce((acc, methods) => {
+    console.log('Current acc:', acc);
+    console.log('Current methods:', methods);
+    const filteredMethods = acc.filter(method => methods.includes(method));
+    console.log('Filtered methods (intersection):', filteredMethods);
+    return filteredMethods;
+  }, allPaymentMethods[0]); // Use the first set of methods as the initial value
+  
+  console.log('Final commonMethods:', commonMethods);
+
+  return commonMethods;
+};
 
 
 
   render() {
+
+
+    console.log("checkoutItems",this.props.checkoutItems);
     const iconStyle = {
       position: 'absolute',
       top: '50%',
@@ -794,6 +825,8 @@ class Checkout extends Component {
       zIndex: 10000,
       display: this.state.PatientModal ? 'block' : 'none',
     };
+
+    const commonPaymentMethods = this.getCommonPaymentMethods(this.props.checkoutItems);
     return (
       console.log("donation check here",this.state.donationCheck),
       (
@@ -1824,52 +1857,53 @@ class Checkout extends Component {
                                 </div>
 
                               ) :  <div>
-                              <div className="form-check form-check-inline font-size-16">
-                                <Input
-                                  type="radio"
-                                  value="Cash"
-                                  // defaultChecked
-                                  name="payment_method"
-                                  id="customRadioInline1"
-                                  className="form-check-input"
-                                  onChange={this.handlePaymentMethodChange}
-
-                                />
-                                <Label
-                                  className="form-check-label font-size-13"
-                                  htmlFor="customRadioInline1"
-                                >
-                                  {/* <i className="far fa-money-bill-alt me-1 font-size-20 align-top" />{" "} */}
-                                  <i className="fas fa-money-bill-alt me-1 font-size-18 align-top" style={{ color: 'green' }} />
-
-                                  Cash on Spot
-                                </Label>
-                              </div>
-                              <div className="form-check form-check-inline font-size-16">
-                                <Input
-                                  type="radio"
-                                  value="Card"
-                                  // defaultChecked
-                                  id="customRadioInline2"
-                                  name="payment_method"
-                                  className="form-check-input"
-                                  onChange={this.handlePaymentMethodChange}
-
-                                />
-                                <Label
-                                  className="form-check-label font-size-13"
-                                  htmlFor="customRadioInline2"
-                                >
-                                  <i
-                                    className="fab fa-cc-mastercard me-1 font-size-20 align-top"
-                                    style={{
-                                      color: 'white', // Set the yellow color for the circles
-                                      background: '#FFA800', // Set the red color for the background
-                                    }}
+                               <div>
+                              {commonPaymentMethods.includes('Cash') && (
+                                <div className="form-check form-check-inline font-size-16">
+                                  <Input
+                                    type="radio"
+                                    value="Cash"
+                                    name="payment_method"
+                                    id="customRadioInline1"
+                                    className="form-check-input"
+                                    onChange={this.handlePaymentMethodChange}
                                   />
-                                  Credit / Debit Card
-                                </Label>
-                              </div>
+                                  <Label
+                                    className="form-check-label font-size-13"
+                                    htmlFor="customRadioInline1"
+                                  >
+                                    <i className="fas fa-money-bill-alt me-1 font-size-18 align-top" style={{ color: 'green' }} />
+                                    Cash on Spot
+                                  </Label>
+                                </div>
+                              )}
+
+                              {commonPaymentMethods.includes('Card') && (
+                                <div className="form-check form-check-inline font-size-16">
+                                  <Input
+                                    type="radio"
+                                    value="Card"
+                                    name="payment_method"
+                                    id="customRadioInline2"
+                                    className="form-check-input"
+                                    onChange={this.handlePaymentMethodChange}
+                                  />
+                                  <Label
+                                    className="form-check-label font-size-13"
+                                    htmlFor="customRadioInline2"
+                                  >
+                                    <i
+                                      className="fab fa-cc-mastercard me-1 font-size-20 align-top"
+                                      style={{
+                                        color: 'white',
+                                        background: '#FFA800',
+                                      }}
+                                    />
+                                    Credit / Debit Card
+                                  </Label>
+                                </div>
+                              )}
+                            </div>
                               <div className="form-check form-check-inline font-size-16">
                                 {!isEmpty(this.props.donationCheck) &&
                                   this.props.donationCheck.map(
