@@ -1983,6 +1983,7 @@ class NearbyLabs extends Component {
                   </Link>
                 ) : null}
               </div>
+              {/* // for mobile app */}
               {isSmallScreen ? (
                 <button
                   type="button"
@@ -3262,6 +3263,7 @@ class NearbyLabs extends Component {
             </Container>
           </div>
         ) : null}
+        
         {!isSmallScreen &&
           (!isEmpty(this.props.advLives) ||
             !isEmpty(regionWiseAdvertisement)) ? (
@@ -4431,152 +4433,97 @@ class NearbyLabs extends Component {
               <title>Nearby Labs | Lab Hazir - Dashboard</title>
             </MetaTags>
             <Row style={{ marginTop: "80px", marginLeft: "20px", marginRight: "20px" }}>
-              <Card className="mini-stats-wid" style={{ marginTop: "4px", marginBottom: "10px", padding: 0, backgroundColor: "#CFE0F6" }}>
-                <CardBody>
-                  <h4>Categories</h4>
-                  <p className={"font-size-10"}>
-                    Sehatmand Pakistan, Khushhaal Pakistan: Aapki Sehat, Hamari
-                    Zimmedari!
-                  </p>
+            <Card className="mini-stats-wid" style={{ marginTop: "4px", marginBottom: "10px", padding: 0, backgroundColor: "transparent" }}>
+  <CardBody>
+    <h4>Categories</h4>
+    <p className={"font-size-10"}>
+      Sehatmand Pakistan, Khushhaal Pakistan: Aapki Sehat, Hamari Zimmedari!
+    </p>
 
-                  {/* First Row */}
-                  <Row>
-                    {/* Column 1 */}
-                    <Col style={{ marginLeft: "20px" }}>
-                      <Link
-                        to={
-                          this.props.match.params.uuid
-                            ? `/nearby-test/${this.props.match.params.uuid}`
-                            : `/nearby-test/`
-                        }
-                      >
-                        <div className="mini-stat-icon avatar-sm rounded-circle bg-white">
-                          <span className="avatar-title">
-                            <img src={mtest} alt="" height="60" />
-                          </span>
-                        </div>
-                        <p
-                          className="font-size-10 mt-1"
-                          style={{ color: "black", marginLeft: "12px" }}
-                        >
-                          Tests
-                        </p>
-                      </Link>
-                    </Col>
+    {/* Horizontal Scrollable Row */}
+    <div style={{ overflowX: "auto", whiteSpace: "nowrap" }}>
+      <Link to={this.props.match.params.uuid ? `/nearby-test/${this.props.match.params.uuid}` : `/nearby-test/`}>
+        <div style={{ display: "inline-block", margin: "0 10px", textAlign: "center" }}>
+          <div className="mini-stat-icon avatar-sm rounded-circle bg-white">
+            <span className="avatar-title">
+              <img src={mtest} alt="" height="60" />
+            </span>
+          </div>
+          <p className="font-size-10 mt-1" style={{ color: "black" }}>
+            Tests
+          </p>
+        </div>
+      </Link>
 
-                    {/* Column 2 */}
-                    <Col>
-                      <Link
-                        to={
-                          this.props.match.params.uuid
-                            ? `/nearby-profiles/${this.props.match.params.uuid}`
-                            : `/nearby-profiles/`
-                        }
-                      >
-                        <div className="mini-stat-icon avatar-sm rounded-circle bg-white">
-                          <span className="avatar-title">
-                            <img src={mprofile} alt="" height="60" />
-                          </span>
-                        </div>
-                        <p
-                          className="font-size-10 mt-1"
-                          style={{ color: "black", marginLeft: "12px" }}
-                        >
-                          Profiles
-                        </p>
-                      </Link>
-                    </Col>
+      <Link to={this.props.match.params.uuid ? `/nearby-profiles/${this.props.match.params.uuid}` : `/nearby-profiles/`}>
+        <div style={{ display: "inline-block", margin: "0 10px", textAlign: "center" }}>
+          <div className="mini-stat-icon avatar-sm rounded-circle bg-white">
+            <span className="avatar-title">
+              <img src={mprofile} alt="" height="60" />
+            </span>
+          </div>
+          <p className="font-size-10 mt-1" style={{ color: "black" }}>
+            Profiles
+          </p>
+        </div>
+      </Link>
 
-                    {/* Column 3 */}
-                    <Col>
-                      <Link
-                        to={
-                          this.props.match.params.uuid
-                            ? `/nearby-packages/${this.props.match.params.uuid}`
-                            : `/nearby-packages/`
-                        }
-                      >
-                        <div className="mini-stat-icon avatar-sm rounded-circle bg-white">
-                          <span className="avatar-title">
-                            <img src={mpackages} alt="" height="60" />
-                          </span>
-                        </div>
-                        <p
-                          className="font-size-10 mt-1"
-                          style={{ color: "black" }}
-                        >
-                          Packages
-                        </p>
-                      </Link>
-                    </Col>
-                  </Row>
-                  <Row>
-                    {/* Column 1 */}
-                    <Col className="mb-2" style={{ marginLeft: "20px" }}>
-                      <Link
-                        to={
-                          this.props.match.params.uuid
-                            ? `/nearby-radiology/${this.props.match.params.uuid}`
-                            : `/nearby-radiology/`
-                        }
-                      >
-                        <div className="mini-stat-icon avatar-sm rounded-circle bg-white">
-                          <span className="avatar-title">
-                            <img src={mradiology} alt="" height="60" />
-                          </span>
-                        </div>
-                        <p
-                          className="font-size-10 mt-1"
-                          style={{ color: "black" }}
-                        >
-                          Radiology
-                        </p>
-                      </Link>
-                    </Col>
+      <Link to={this.props.match.params.uuid ? `/nearby-packages/${this.props.match.params.uuid}` : `/nearby-packages/`}>
+        <div style={{ display: "inline-block", margin: "0 10px", textAlign: "center" }}>
+          <div className="mini-stat-icon avatar-sm rounded-circle bg-white">
+            <span className="avatar-title">
+              <img src={mpackages} alt="" height="60" />
+            </span>
+          </div>
+          <p className="font-size-10 mt-1" style={{ color: "black" }}>
+            Packages
+          </p>
+        </div>
+      </Link>
 
-                    {/* Column 2 */}
+      <Link to={this.props.match.params.uuid ? `/nearby-radiology/${this.props.match.params.uuid}` : `/nearby-radiology/`}>
+        <div style={{ display: "inline-block", margin: "0 10px", textAlign: "center" }}>
+          <div className="mini-stat-icon avatar-sm rounded-circle bg-white">
+            <span className="avatar-title">
+              <img src={mradiology} alt="" height="60" />
+            </span>
+          </div>
+          <p className="font-size-10 mt-1" style={{ color: "black" }}>
+            Radiology
+          </p>
+        </div>
+      </Link>
 
-                    <Col>
-                      <Link
-                        to={
-                          this.props.match.params.uuid
-                            ? `/nearby-packages/${this.props.match.params.uuid}`
-                            : `/nearby-packages/`
-                        }
-                      >
-                        <div className="mini-stat-icon avatar-sm rounded-circle bg-white">
-                          <span className="avatar-title">
-                            <img src={discount} alt="" height="60" />
-                          </span>
-                        </div>
-                        <p
-                          className="font-size-10 mt-1"
-                          style={{ color: "black" }}
-                        >
-                          Discounts
-                        </p>
-                      </Link>
-                    </Col>
-                    {/* Column 3 */}
+      <Link to={this.props.match.params.uuid ? `/nearby-packages/${this.props.match.params.uuid}` : `/nearby-packages/`}>
+        <div style={{ display: "inline-block", margin: "0 10px", textAlign: "center" }}>
+          <div className="mini-stat-icon avatar-sm rounded-circle bg-white">
+            <span className="avatar-title">
+              <img src={discount} alt="" height="60" />
+            </span>
+          </div>
+          <p className="font-size-10 mt-1" style={{ color: "black" }}>
+            Discounts
+          </p>
+        </div>
+      </Link>
 
-                    <Col>
-                      <Link to={"/test-appointments"}>
-                        <div className="mini-stat-icon avatar-sm rounded-circle bg-white">
-                          <span className="avatar-title">
-                            <img src={mappointment} alt="" height="60" />
-                          </span>
-                        </div>
-                        <p
-                          className="font-size-10 mt-1"
-                          style={{ color: "black" }}
-                        >
-                          Appointments
-                        </p>
-                      </Link>
-                    </Col>
-                  </Row>
-                </CardBody>
-              </Card>
+      <Link to={"/test-appointments"}>
+        <div style={{ display: "inline-block", margin: "0 10px", textAlign: "center" }}>
+          <div className="mini-stat-icon avatar-sm rounded-circle bg-white">
+            <span className="avatar-title">
+              <img src={mappointment} alt="" height="60" />
+            </span>
+          </div>
+          <p className="font-size-10 mt-1" style={{ color: "black" }}>
+            Appointments
+          </p>
+        </div>
+      </Link>
+    </div>
+  </CardBody>
+</Card>
+
+
               <Row>
                 <Formik
                   enableReinitialize={true}
@@ -7636,160 +7583,95 @@ class NearbyLabs extends Component {
               </Slider>
             </Row>
             <Row style={{ marginLeft: "20px", marginRight: "20px" }}>
-              <Card
-                className="mini-stats-wid"
-                style={{
-                  marginTop: "4px",
-                  marginBottom: "10px",
-                  padding: 0,
-                  backgroundColor: "#CFE0F6",
-                }}
-              >
-                <CardBody>
-                  <h4>Categories</h4>
-                  <p className={"font-size-10"}>
-                    Sehatmand Pakistan, Khushhaal Pakistan: Aapki Sehat, Hamari
-                    Zimmedari!
-                  </p>
+            <Card className="mini-stats-wid" style={{ marginTop: "4px", marginBottom: "10px", padding: 0, backgroundColor: "transparent" }}>
+  <CardBody>
+    <h4>Categories</h4>
+    <p className={"font-size-10"}>
+      Sehatmand Pakistan, Khushhaal Pakistan: Aapki Sehat, Hamari Zimmedari!
+    </p>
 
-                  {/* First Row */}
-                  <Row>
-                    {/* Column 1 */}
-                    <Col style={{ marginLeft: "20px" }}>
-                      <Link
-                        to={
-                          this.props.match.params.uuid
-                            ? `/nearby-test/${this.props.match.params.uuid}`
-                            : `/nearby-test/`
-                        }
-                      >
-                        <div className="mini-stat-icon avatar-sm rounded-circle bg-white">
-                          <span className="avatar-title">
-                            <img src={mtest} alt="" height="60" />
-                          </span>
-                        </div>
-                        <p
-                          className="font-size-10 mt-1"
-                          style={{ color: "black", marginLeft: "12px" }}
-                        >
-                          Tests
-                        </p>
-                      </Link>
-                    </Col>
+    {/* Horizontal Scrollable Row */}
+    <div style={{ overflowX: "auto", whiteSpace: "nowrap" }}>
+      <Link to={this.props.match.params.uuid ? `/nearby-test/${this.props.match.params.uuid}` : `/nearby-test/`}>
+        <div style={{ display: "inline-block", margin: "0 10px", textAlign: "center" }}>
+          <div className="mini-stat-icon avatar-sm rounded-circle bg-white">
+            <span className="avatar-title">
+              <img src={mtest} alt="" height="60" />
+            </span>
+          </div>
+          <p className="font-size-10 mt-1" style={{ color: "black" }}>
+            Tests
+          </p>
+        </div>
+      </Link>
 
-                    {/* Column 2 */}
-                    <Col>
-                      <Link
-                        to={
-                          this.props.match.params.uuid
-                            ? `/nearby-profiles/${this.props.match.params.uuid}`
-                            : `/nearby-profiles/`
-                        }
-                      >
-                        <div className="mini-stat-icon avatar-sm rounded-circle bg-white">
-                          <span className="avatar-title">
-                            <img src={mprofile} alt="" height="60" />
-                          </span>
-                        </div>
-                        <p
-                          className="font-size-10 mt-1"
-                          style={{ color: "black", marginLeft: "12px" }}
-                        >
-                          Profiles
-                        </p>
-                      </Link>
-                    </Col>
+      <Link to={this.props.match.params.uuid ? `/nearby-profiles/${this.props.match.params.uuid}` : `/nearby-profiles/`}>
+        <div style={{ display: "inline-block", margin: "0 10px", textAlign: "center" }}>
+          <div className="mini-stat-icon avatar-sm rounded-circle bg-white">
+            <span className="avatar-title">
+              <img src={mprofile} alt="" height="60" />
+            </span>
+          </div>
+          <p className="font-size-10 mt-1" style={{ color: "black" }}>
+            Profiles
+          </p>
+        </div>
+      </Link>
 
-                    {/* Column 3 */}
-                    <Col>
-                      <Link
-                        to={
-                          this.props.match.params.uuid
-                            ? `/nearby-packages/${this.props.match.params.uuid}`
-                            : `/nearby-packages/`
-                        }
-                      >
-                        <div className="mini-stat-icon avatar-sm rounded-circle bg-white">
-                          <span className="avatar-title">
-                            <img src={mpackages} alt="" height="60" />
-                          </span>
-                        </div>
-                        <p
-                          className="font-size-10 mt-1"
-                          style={{ color: "black" }}
-                        >
-                          Packages
-                        </p>
-                      </Link>
-                    </Col>
-                  </Row>
-                  <Row>
-                    {/* Column 1 */}
-                    <Col className="mb-2" style={{ marginLeft: "20px" }}>
-                      <Link
-                        to={
-                          this.props.match.params.uuid
-                            ? `/nearby-radiology/${this.props.match.params.uuid}`
-                            : `/nearby-radiology/`
-                        }
-                      >
-                        <div className="mini-stat-icon avatar-sm rounded-circle bg-white">
-                          <span className="avatar-title">
-                            <img src={mradiology} alt="" height="60" />
-                          </span>
-                        </div>
-                        <p
-                          className="font-size-10 mt-1"
-                          style={{ color: "black" }}
-                        >
-                          Radiology
-                        </p>
-                      </Link>
-                    </Col>
+      <Link to={this.props.match.params.uuid ? `/nearby-packages/${this.props.match.params.uuid}` : `/nearby-packages/`}>
+        <div style={{ display: "inline-block", margin: "0 10px", textAlign: "center" }}>
+          <div className="mini-stat-icon avatar-sm rounded-circle bg-white">
+            <span className="avatar-title">
+              <img src={mpackages} alt="" height="60" />
+            </span>
+          </div>
+          <p className="font-size-10 mt-1" style={{ color: "black" }}>
+            Packages
+          </p>
+        </div>
+      </Link>
 
-                    {/* Column 2 */}
+      <Link to={this.props.match.params.uuid ? `/nearby-radiology/${this.props.match.params.uuid}` : `/nearby-radiology/`}>
+        <div style={{ display: "inline-block", margin: "0 10px", textAlign: "center" }}>
+          <div className="mini-stat-icon avatar-sm rounded-circle bg-white">
+            <span className="avatar-title">
+              <img src={mradiology} alt="" height="60" />
+            </span>
+          </div>
+          <p className="font-size-10 mt-1" style={{ color: "black" }}>
+            Radiology
+          </p>
+        </div>
+      </Link>
 
-                    <Col>
-                      <Link
-                        to={
-                          this.props.match.params.uuid
-                            ? `/nearby-packages/${this.props.match.params.uuid}`
-                            : `/nearby-packages/`
-                        }
-                      >
-                        <div className="mini-stat-icon avatar-sm rounded-circle bg-white">
-                          <span className="avatar-title">
-                            <img src={discount} alt="" height="60" />
-                          </span>
-                        </div>
-                        <p
-                          className="font-size-10 mt-1"
-                          style={{ color: "black" }}
-                        >
-                          Discounts
-                        </p>
-                      </Link>
-                    </Col>
-                    {/* Column 3 */}
+      <Link to={this.props.match.params.uuid ? `/nearby-packages/${this.props.match.params.uuid}` : `/nearby-packages/`}>
+        <div style={{ display: "inline-block", margin: "0 10px", textAlign: "center" }}>
+          <div className="mini-stat-icon avatar-sm rounded-circle bg-white">
+            <span className="avatar-title">
+              <img src={discount} alt="" height="60" />
+            </span>
+          </div>
+          <p className="font-size-10 mt-1" style={{ color: "black" }}>
+            Discounts
+          </p>
+        </div>
+      </Link>
 
-                    <Col>
-                      <Link to={"/test-appointments"}>
-                        <div className="mini-stat-icon avatar-sm rounded-circle bg-white">
-                          <span className="avatar-title">
-                            <img src={mappointment} alt="" height="60" />
-                          </span>
-                        </div>
-                        <p
-                          className="font-size-10 mt-1"
-                          style={{ color: "black" }}
-                        >
-                          Appointments
-                        </p>
-                      </Link>
-                    </Col>
-                  </Row>
-                </CardBody>
-              </Card>
+      <Link to={"/test-appointments"}>
+        <div style={{ display: "inline-block", margin: "0 10px", textAlign: "center" }}>
+          <div className="mini-stat-icon avatar-sm rounded-circle bg-white">
+            <span className="avatar-title">
+              <img src={mappointment} alt="" height="60" />
+            </span>
+          </div>
+          <p className="font-size-10 mt-1" style={{ color: "black" }}>
+            Appointments
+          </p>
+        </div>
+      </Link>
+    </div>
+  </CardBody>
+</Card>
               <Col lg="9">
                 <Row>
                   <Formik

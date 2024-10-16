@@ -463,7 +463,7 @@ class Header extends Component {
                             <hr style={{ margin: '0 0' }} />
                           </a>
                           <div id="modal" className="modal mt-4" style={{ display: "none" }}>
-                            <div className="modal-dialog" style={{ width: "500px", height: "300px" }}>
+                            <div className="modal-dialog" style={{ width: "300px", height: "150px" }}>
                               <div className="modal-content">
                                 <div className="modal-header">
                                   <h5 className="modal-title" style={{ textAlign: 'center', fontWeight: 'bold', margin: '0 auto' }}>Available Credit</h5>
@@ -502,7 +502,8 @@ class Header extends Component {
                           </div>
                         </li>
                         <li>
-                          <Link to="/logout" className="dropdown-content text-light">
+                          <Link to={`/logout/${this.props.match.params.id}`} 
+                          className="dropdown-content text-light">
                             <i className="mdi mdi-power align-middle font-size-20" style={{ color: 'blue' }} />{" "}
                             <span className="pt-4 font-size-12" style={{ color: 'blue', marginLeft: '5px' }}>
                               Log Out
@@ -639,7 +640,8 @@ class Header extends Component {
                           </div>
                         </li>
                         <li>
-                          <Link to="/logout" className="dropdown-content text-light">
+                          <Link to={`/logout/${this.props.match.params.id}`} 
+                           className="dropdown-content text-light">
                             <i className="mdi mdi-power align-middle font-size-20" style={{ color: 'blue' }} />{" "}
                             <span className="pt-4 font-size-12" style={{ color: 'blue', marginLeft: '5px' }}>
                               Log Out
