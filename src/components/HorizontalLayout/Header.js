@@ -502,11 +502,7 @@ class Header extends Component {
                           </div>
                         </li>
                         <li>
-                          <Link  to={
-                      this.props.match.params.uuid
-                        ? `/logout/${this.state.finalUrl}/${this.props.match.params.uuid}`
-                        : `/logout`
-                    } 
+                          <Link  to = "/logout" 
                           className="dropdown-content text-light">
                             <i className="mdi mdi-power align-middle font-size-20" style={{ color: 'blue' }} />{" "}
                             <span className="pt-4 font-size-12" style={{ color: 'blue', marginLeft: '5px' }}>
@@ -646,7 +642,7 @@ class Header extends Component {
                         <li>
                           <Link  to={
                       this.props.match.params.uuid
-                        ? `/logout/${this.state.finalUrl}/${this.props.match.params.uuid}`
+                        ? `/logout/${this.props.match.params.uuid}`
                         : `/logout`
                     } 
                            className="dropdown-content text-light">
