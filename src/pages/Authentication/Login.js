@@ -296,7 +296,7 @@ class Login extends Component {
                                     // No error, redirect logic here
                                     const isLargeScreen = window.innerWidth > 470;
 
-                                    if (!isLargeScreen && this.state.finalUrl) {
+                                    if (!isLargeScreen) {
                                       console.log("finalUrl in mobile app else case", this.state.finalUrl);
                                       if (success.account_type === "samplecollector") {
                                         this.props.history.push("/dashboard-samplecollector");
