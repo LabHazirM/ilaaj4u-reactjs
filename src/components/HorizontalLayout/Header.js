@@ -55,7 +55,7 @@ class Header extends Component {
     this.toggleSearch = this.toggleSearch.bind(this);
     console.log("yaha ani chahi hai uuid", this.props.match.params.uuid)
     console.log("yaha ani chahi hai guid", this.props.match.params.guest_id)
-    console.log("yaha ani chahi hai fuid", this.props.match.params.filnalurl)
+    console.log("yaha ani chahi hai fuid", this.props.match.params.finalurl)
 
     console.log(this.state.user_type)
   }
@@ -358,7 +358,7 @@ class Header extends Component {
                     <i className="fas fa-headset align-middle me-1 mt-1 font-size-20" />{" "}
                   </Link> */}
                 </div>
-              ) : this.state.user_type === "patient" ? (
+              ) :  !isSmallScreen && this.state.user_type === "patient" ? (
                 <div className="dropdown d-lg-inline-block ms-4 mt-6">
                   <Tooltip title="Patient Profile">
                     <Link
@@ -463,7 +463,7 @@ class Header extends Component {
                             <hr style={{ margin: '0 0' }} />
                           </a>
                           <div id="modal" className="modal mt-4" style={{ display: "none" }}>
-                            <div className="modal-dialog" style={{ width: "300px", height: "150px" }}>
+                            <div className="modal-dialog" style={{ width: "500px", height: "300px" }}>
                               <div className="modal-content">
                                 <div className="modal-header">
                                   <h5 className="modal-title" style={{ textAlign: 'center', fontWeight: 'bold', margin: '0 auto' }}>Available Credit</h5>
@@ -518,13 +518,13 @@ class Header extends Component {
                     </div>
                   )}
                 </div>
-              ) : this.state.user_type == "patient" && isSmallScreen && this.state.filnalurl ? (
+              ) : this.state.user_type == "patient" && isSmallScreen ? (
                 <div className="dropdown d-lg-inline-block ms-4 mt-6">
                   <Link
                     // to={"/profile"}
                     to={
                       this.props.match.params.uuid
-                        ? `/profile/${this.state.filnalurl}/${this.props.match.params.uuid}`
+                        ? `/profile/${this.state.finalurl}/${this.props.match.params.uuid}`
                         : `/profile`
                     }
                     className="dropdown-content me-2 text-light"
@@ -538,7 +538,7 @@ class Header extends Component {
                   <Link
                     to={
                       this.props.match.params.uuid
-                        ? `/cart/${this.state.filnalurl}/${this.props.match.params.uuid}`
+                        ? `/cart/${this.state.finalurl}/${this.props.match.params.uuid}`
                         : `/cart`
                     }
                     className="dropdown-content me-2 text-light"
@@ -605,7 +605,7 @@ class Header extends Component {
                             <hr style={{ margin: '0 0' }} />
                           </a>
                           <div id="modal" className="modal mt-4" style={{ display: "none" }}>
-                            <div className="modal-dialog" style={{ width: "500px", height: "300px" }}>
+                            <div className="modal-dialog" style={{ width: "300px", height: "150px" }}>
                               <div className="modal-content">
                                 <div className="modal-header">
                                   <h5 className="modal-title" style={{ textAlign: 'center', fontWeight: 'bold', margin: '0 auto' }}>Available Credit</h5>
