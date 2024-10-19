@@ -12,7 +12,13 @@ class Logout extends Component {
   componentDidMount = () => {
     // emit the event
     this.props.logoutUser(this.props.history);
-    this.props.history.push("/login");
+    const isSmallScreen = window.innerWidth < 490;
+    if(isSmallScreen){
+      this.props.history.push("/login");
+    }
+    else{
+    this.props.history.push("/nearby-labs");
+    }
   };
 
   render() {
