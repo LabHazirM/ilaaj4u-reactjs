@@ -55,7 +55,7 @@ class Header extends Component {
     this.toggleSearch = this.toggleSearch.bind(this);
     console.log("yaha ani chahi hai uuid", this.props.match.params.uuid)
     console.log("yaha ani chahi hai guid", this.props.match.params.guest_id)
-    console.log("yaha ani chahi hai fuid", this.props.match.params.finalurl)
+    console.log("yaha ani chahi hai fuid", this.props.match.params.finalUrl)
 
     console.log(this.state.user_type)
   }
@@ -520,7 +520,7 @@ class Header extends Component {
                     // to={"/profile"}
                     to={
                       this.props.match.params.uuid
-                        ? `/profile/${this.state.finalurl}/${this.props.match.params.uuid}`
+                        ? `/profile/${this.state.finalUrl}/${this.props.match.params.uuid}`
                         : `/profile`
                     }
                     className="dropdown-content me-2 text-light"
@@ -534,7 +534,7 @@ class Header extends Component {
                   <Link
                     to={
                       this.props.match.params.uuid
-                        ? `/cart/${this.state.finalurl}/${this.props.match.params.uuid}`
+                        ? `/cart/${this.state.finalUrl}/${this.props.match.params.uuid}`
                         : `/cart`
                     }
                     className="dropdown-content me-2 text-light"
