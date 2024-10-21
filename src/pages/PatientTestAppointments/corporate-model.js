@@ -882,7 +882,6 @@ class TestAppointmentsList extends Component {
     const { isEdit, deleteModal } = this.state;
 
     const { patientProfile } = this.props;
-    const isSmallScreen = window.innerWidth <490;
 
     const { patientTestAppointments } = this.props;
     const feedback = this.state.feedback;
@@ -926,19 +925,6 @@ class TestAppointmentsList extends Component {
       zIndex: 10000,
       display: this.state.PermissionModal ? 'block' : 'none',
     };
-    const modalmobileStyle = {
-      position: 'fixed',
-      top: '50%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)',
-      backgroundColor: 'white',
-      padding: '10px',
-      width: '90%', // Increase width
-      height: 'auto', // Increase height
-      zIndex: 10000,
-      display: this.state.PermissionModal ? 'block' : 'none',
-    };
-
 
     return (
       <React.Fragment>
@@ -952,7 +938,6 @@ class TestAppointmentsList extends Component {
             <Row>
             <div>
             <div style={backdropStyle}></div>
-                {!isSmallScreen?(
                   <div style={modalStyle}>
                   <Col className="col-12 text-center">
                     <div
@@ -1021,77 +1006,6 @@ class TestAppointmentsList extends Component {
 
                   </div>
                 </div>
-                ):null}
-                {isSmallScreen?(
-                  <div style={modalmobileStyle}>
-                  <Col className="col-12 text-center">
-                    <div
-                      style={{
-                        width: "100%",
-                        height: "60px",
-                        // borderRadius: "50%",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        // border: "2px solid green",
-                        margin: "0 auto", // Center the circle
-                        marginBottom: "4px",
-                      }}
-                    >
-                      <span
-                        style={{ color: "green", fontSize: "24px", fontWeight: "bold" }}
-                      >
-                        Welcome to the Labhazir!
-                      </span>
-                    </div>
-                    <strong className="font-size-15 font-weight-bold mb-3">
-                      We would like to inform you that,
-                    </strong><br></br>
-                    <p style={{ fontSize: "14px", color: "gray", margin: "0 auto", textAlign: "center", width: "90%", }}>
-                      since you are affiliated with a corporate entity, you will only be shown the specific tests offered by your corporation. If you wish to view different tests, you will need to create a separate regular account.</p><br></br>
-                    <span className="font-size-15 mb-3">
-                      Click on <strong>&lsquo;Use Another Account&lsquo;</strong> for that, or click <strong>&lsquo;Continue&lsquo;</strong> to proceed.
-                    </span><br></br>
-                    <strong className="font-size-15 font-weight-bold mb-3 text-danger">
-                      Thank You For Choosing Labhazir!
-                    </strong><br></br>
-                  </Col>
-
-                  <div className="d-flex justify-content-center mb-3">
-                    <Link
-                      to="/register"
-                      className="btn mt-2 me-1"
-                      onClick={() => this.setState({ PermissionModal: false })}
-                      style={{
-                        color: "black",
-                        border: "2px solid blue",
-                        // backgroundColor: "white",
-                      }}
-                    >
-                      Use another Account
-                    </Link>
-
-                    <Link
-                      to="#" // Use a dummy link or remove this prop, as it will be replaced by the onClick event
-                      className="btn mt-2 me-1"
-                      style={{
-                        color: "black",
-                        border: "2px solid blue",
-                        backgroundColor: "white",
-                      }}
-                      onClick={() => {
-                        this.setState({ PermissionModal: true });
-                        setTimeout(() => {
-                          this.props.history.push("/corporate-labs");
-                        }, 1000);
-                      }}
-                    >
-                      Continue
-                    </Link>
-
-                  </div>
-                </div>
-                ):null}
               </div>
               <div> <span className="text-danger font-size-12">
                 <strong>
