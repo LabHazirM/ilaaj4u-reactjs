@@ -938,6 +938,7 @@ class TestAppointmentsList extends Component {
             <Breadcrumbs title="Test Appointments" breadcrumbItem="Test Appointments List" />
             <Row>
             <div>
+            <div style={backdropStyle}></div>
                   <div style={modalStyle}>
                   <Col className="col-12 text-center">
                     <div
