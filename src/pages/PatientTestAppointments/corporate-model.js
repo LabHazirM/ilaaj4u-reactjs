@@ -656,33 +656,39 @@ class TestAppointmentsList extends Component {
   }
 
   componentDidMount() {
-    const { onGetPatientTestAppointmentsList, onGetPatientProfile } = this.props;
+    const { patientTestAppointments, onGetPatientTestAppointmentsList } = this.props;
     
-    // Fetch patient test appointments and profile
+    // Fetch patient test appointments
     onGetPatientTestAppointmentsList(this.state.user_id);
+    
+    // Set patientTestAppointments to state
+    this.setState({ patientTestAppointments });
+    const { patientProfile, onGetPatientProfile } = this.props;
     onGetPatientProfile(this.state.user_id);
-}
-
-componentDidUpdate(prevProps) {
-    const { patientProfile, patientTestAppointments } = this.props;
-
-    // Check if patientProfile has been updated and is valid to show the modal
-    if (
-      patientProfile !== prevProps.patientProfile &&  // Ensure the profile has been updated
-      patientProfile.is_assosiatewith_anycorporate && 
-      patientProfile.employee_id_card
-    ) {
-      this.setState({ PermissionModal: true });
+    this.setState({
+      patientProfile
+    });
+    console.log("state", patientProfile);
+    
+    // Check if patientTestAppointments exists and has the required properties
+    if (this.props.patientProfile &&
+        this.props.patientProfile.is_assosiatewith_anycorporate &&
+        this.props.patientProfile.employee_id_card) {
+      this.setState({ PermissionModal: true }); // Show the modal for error
     }
-
-    // Handle updates to patientTestAppointments as before
+    console.log("corporate info", this.props.patientProfile, this.props.patientProfile.is_assosiatewith_anycorporate, this.props.patientProfile.employee_id_card)
+  }
+  
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    const { patientTestAppointments } = this.props;
     if (
       !isEmpty(patientTestAppointments) &&
       size(prevProps.patientTestAppointments) !== size(patientTestAppointments)
     ) {
       this.setState({ patientTestAppointments: {}, isEdit: false });
     }
-}  toggle() {
+  }
+toggle() {
     this.setState(prevState => ({
       modal: !prevState.modal,
     }));
