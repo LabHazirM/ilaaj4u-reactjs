@@ -933,9 +933,9 @@ class TestAppointmentsList extends Component {
       left: '50%',
       transform: 'translate(-50%, -50%)',
       backgroundColor: 'white',
-      padding: '20px',
-      width: '500px', // Increase width
-      height: '400px', // Increase height
+      padding: '10px',
+      width: '90%', // Increase width
+      height: 'auto', // Increase height
       zIndex: 10000,
       display: this.state.PermissionModal ? 'block' : 'none',
     };
