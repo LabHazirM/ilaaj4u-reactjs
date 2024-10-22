@@ -176,6 +176,11 @@ class Header extends Component {
     }
   };
   render() {
+    // Get the latitude and longitude from localStorage
+    const latitude = localStorage.getItem('latitude');
+    const longitude = localStorage.getItem('longitude');
+
+    const finalLogoutUrl = `/logout/${this.state.finalUrl}/${this.props.match.params.uuid}`;
     const { carts } = this.props;
     const { patientProfile } = this.props;
     const { getPatientProfile } = this.props;
@@ -641,10 +646,10 @@ class Header extends Component {
                         </li>
                         <li>
                           <Link  to={
-                      this.props.match.params.uuid
-                        ? `/logout/${this.props.match.params.uuid}`
-                        : `/logout`
-                    } 
+                        this.props.match.params.uuid
+                          ? `${finalLogoutUrl}?lat=${latitude}&lon=${longitude}`
+                          : `/logout?lat=${latitude}&lon=${longitude}`
+                        }
                            className="dropdown-content text-light">
                             <i className="mdi mdi-power align-middle font-size-20" style={{ color: 'blue' }} />{" "}
                             <span className="pt-4 font-size-12" style={{ color: 'blue', marginLeft: '5px' }}>

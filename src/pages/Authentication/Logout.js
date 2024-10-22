@@ -13,8 +13,11 @@ class Logout extends Component {
     // emit the event
     this.props.logoutUser(this.props.history);
     const isSmallScreen = window.innerWidth < 490;
-    if(isSmallScreen){
-      this.props.history.push("/login");
+    if (isSmallScreen) {
+      const latitude = localStorage.getItem('latitude');
+      const longitude = localStorage.getItem('longitude');
+      
+      this.props.history.push(`/login/&lat=${latitude}&lon=${longitude}`);
     }
     else{
     this.props.history.push("/nearby-labs");

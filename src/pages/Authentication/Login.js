@@ -62,6 +62,16 @@ class Login extends Component {
           // Logging the final URL after state update
           console.log("Final URL after state update:", this.state.finalUrl);
       });
+      const latitudeFromUrl = params.get('lat');
+      const longitudeFromUrl = params.get('lon');
+
+      if (latitudeFromUrl && longitudeFromUrl) {
+      localStorage.setItem('latitude', latitudeFromUrl);
+      localStorage.setItem('longitude', longitudeFromUrl);
+      this.setState({ finalUrl: queryString }, () => {
+        console.log("Final URL after state update:", this.state.finalUrl);
+      });
+      }
 
   }
   
