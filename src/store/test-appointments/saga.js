@@ -8,6 +8,7 @@ import {
   UPDATE_TEST_APPOINTMENT,
   GET_LAB_PROFILE,
   ADD_NEW_COLLECTIONPOINT_TESTAPPOINTMENT,
+  GET_LAB_TOKEN,
 } from "./actionTypes";
 
 import {
@@ -23,11 +24,14 @@ import {
   updateTestAppointmentFail,
   addCollectionPointTestAppointmentFail,
   addCollectionPointTestAppointmentSuccess,
+  getLabTokenSuccess,
+  getLabTokenFail,
 } from "./actions";
 
 //Include Both Helper File with needed methods
 import {
   getLabProfile,
+  getLabToken,
   getTestAppointmentsPendingList,
   getTestAppointmentsInProcessList,
   getTestAppointmentsCompletedList,
@@ -43,6 +47,16 @@ function* fetchLabProfile(object) {
 
   } catch (error) {
     yield put(getLabProfileFail(error));
+  }
+}
+
+function* fetchLabToken(object) {
+  try {
+    const response = yield call(getLabToken, object.payload);
+    yield put(getLabTokenSuccess(response));
+
+  } catch (error) {
+    yield put(getLabTokenFail(error));
   }
 }
 
@@ -103,6 +117,7 @@ function* onUpdateTestAppointment({ payload: testAppointment }) {
 
 function* TestAppointmentsSaga() {
   yield takeEvery(GET_LAB_PROFILE, fetchLabProfile);
+  yield takeEvery(GET_LAB_TOKEN, fetchLabToken);  
   yield takeEvery(
     ADD_NEW_COLLECTIONPOINT_TESTAPPOINTMENT,
     onAddNewCollectionPointTestAppointment

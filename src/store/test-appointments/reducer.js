@@ -11,6 +11,8 @@ import {
   ADD_COLLECTIONPOINT_TESTAPPOINTMENT_FAIL,
   GET_LAB_PROFILE_SUCCESS,
   GET_LAB_PROFILE_FAIL,
+  GET_LAB_TOKEN_FAIL,
+  GET_LAB_TOKEN_SUCCESS,
 } from "./actionTypes";
 
 const INIT_STATE = {
@@ -19,7 +21,8 @@ const INIT_STATE = {
   testAppointmentsCompletedList: [],
   error: {},
   labProfiles: [],
-
+  appointments: [], // Initialize appointments as an array
+  lab: null, // Initialize lab to store lab data
 };
 
 const testAppointments = (state = INIT_STATE, action) => {
@@ -35,6 +38,21 @@ const testAppointments = (state = INIT_STATE, action) => {
         ...state,
         error: action.payload,
       };
+    case GET_LAB_TOKEN_SUCCESS:
+      console.log('Success payload in reducer:', action.payload);
+      return {
+        ...state,
+        lab: action.payload.lab, // Store the entire lab object
+        appointments: action.payload.appointments, // Store appointments in state
+      };
+
+    case GET_LAB_TOKEN_FAIL:
+      console.log('Error payload in reducer:', action.payload);
+      return {
+        ...state,
+        error: action.payload, // Store the error in the state
+      };
+
     case ADD_COLLECTIONPOINT_TESTAPPOINTMENT_SUCCESS:
       return {
         ...state,

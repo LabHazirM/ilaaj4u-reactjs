@@ -80,6 +80,7 @@ import SampleCollectorsList from "../pages/SampleCollectors/sample-collectors-li
 import QualityCertificatesList from "../pages/QualityCertificates/quality-certificates-list";
 import PathologistsList from "../pages/Pathologists/pathologists-list";
 import TestAppointmentsPendingList from "../pages/TestAppointments/test-appointments-pending-list";
+import tokendetailpage from "../pages/Authentication/labtokens";
 import TestAppointmentsInProcessList from "../pages/TestAppointments/test-appointments-in-process-list";
 import TestAppointmentsCompletedList from "../pages/TestAppointments/test-appointments-completed-list";
 import FeedbacksList from "../pages/Feedbacks/feedbacks-list";
@@ -439,6 +440,10 @@ const labAuthProtectedRoutes = [
   {
     path: "/pending-test-appointments",
     component: TestAppointmentsPendingList,
+  },
+  {
+   path:"/token-detail-page",
+   component: tokendetailpage,
   },
   {
     path: "/in-process-test-appointments",

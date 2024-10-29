@@ -50,6 +50,8 @@ class LabSettings extends Component {
       lab_experience: "",
       complaint_handling_email: "",
       complaint_handling_phone: "",
+      token_starting_value:"",
+      token_ending_value:"",
       is_digital_payment_accepted: "",
       is_Receive_Email_On_Booking:"",
       is_active: "",
@@ -127,6 +129,8 @@ class LabSettings extends Component {
         type: this.props.success.type,
         complaint_handling_email: this.props.success.complaint_handling_email,
         complaint_handling_phone: this.props.success.complaint_handling_phone,
+        token_starting_value:this.props.success.token_starting_value,
+        token_ending_value: this.props.success.token_ending_value,
         registration_no: this.props.success.registration_no,
         lab_experience: this.props.success.lab_experience,
         license_no: this.props.success.license_no,
@@ -166,6 +170,8 @@ class LabSettings extends Component {
           type: success.type,
           complaint_handling_email: success.complaint_handling_email,
           complaint_handling_phone: success.complaint_handling_phone,
+          token_starting_value:success.token_starting_value,
+          token_ending_value:success.token_ending_value,
           registration_no: success.registration_no,
           lab_experience: success.lab_experience,
           license_no: success.license_no,
@@ -245,6 +251,10 @@ class LabSettings extends Component {
                       (this.state && this.state.complaint_handling_email) || "",
                     complaint_handling_phone:
                       (this.state && this.state.complaint_handling_phone) || "",
+                    token_starting_value:
+                      (this.state && this.state.token_starting_value) || "",
+                    token_ending_value:
+                      (this.state && this.state.token_ending_value) || "",
                     is_digital_payment_accepted:
                       (this.state && this.state.is_digital_payment_accepted) ||
                       "No",
@@ -295,6 +305,12 @@ class LabSettings extends Component {
                       .email("Please enter valid email")
                       .max(255, "Please enter maximum 255 characters"),
                     complaint_handling_phone: Yup.string(),
+                    token_starting_value: Yup.number(
+                      "Please enter number only"
+                    ),
+                    token_ending_value: Yup.number(
+                      "Please enter number only"
+                    ),
                     lab_experience: Yup.number("Please enter number only")
                       .required("Please enter your lab experience")
                       .positive()
@@ -1060,6 +1076,65 @@ class LabSettings extends Component {
                         </div>
                       ) : null}
 
+<div className="mb-3">
+  <Label for="handling_tokens" className="form-label">
+    Generate Token series
+  </Label><span 
+  className="text-primary" 
+  onClick={() => this.props.history.push('/token-detail-page')}
+  style={{ cursor: 'pointer', marginLeft: '8px' }}
+>
+  See Detail
+</span>
+
+  <div className="d-flex align-items-center">
+    {/* From Field */}
+    <div className="d-flex align-items-center me-3">
+      <Label for="token_starting_value" className="form-label me-2 mb-0">
+        From
+      </Label>
+      <Field
+        id="token_starting_value"
+        name="token_starting_value"
+        type="text"
+        onChange={e =>
+          this.setState({
+            token_starting_value: e.target.value,
+          })
+        }
+        value={this.state.token_starting_value}
+        className={
+          "form-control" +
+          (errors.token_starting_value && touched.token_starting_value ? " is-invalid" : "")
+        }
+      />
+      <ErrorMessage name="token_starting_value" component="div" className="invalid-feedback" />
+    </div>
+
+    {/* To Field */}
+    <div className="d-flex align-items-center">
+      <Label for="token_ending_value" className="form-label me-2 mb-0">
+        To
+      </Label>
+      <Field
+        id="token_ending_value"
+        name="token_ending_value"
+        type="text"
+        onChange={e =>
+          this.setState({
+            token_ending_value: e.target.value,
+          })
+        }
+        value={this.state.token_ending_value}
+        className={
+          "form-control" +
+          (errors.token_ending_value && touched.token_ending_value ? " is-invalid" : "")
+        }
+      />
+      <ErrorMessage name="token_ending_value" component="div" className="invalid-feedback" />
+    </div>
+  </div>
+</div>
 
                       {/* Accept Credit Card for Payment field */}
                       <div className="mb-3">
@@ -1177,6 +1252,7 @@ class LabSettings extends Component {
 }
 
 LabSettings.propTypes = {
+  history: PropTypes.any,
   match: PropTypes.object,
   location: PropTypes.object,
   updateLabSettings: PropTypes.func,

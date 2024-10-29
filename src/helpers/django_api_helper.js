@@ -1027,6 +1027,11 @@ export const getLabProfile = id =>
     headers: getHeader(authHeader()),
   });
 
+export const getLabToken = id =>
+  get(`${url.GET_LAB_TOKEN}/${id}`, {
+    headers: getHeader(authHeader()),
+  });
+  
 export const updateLabProfile = (labProfile, id) => {
   let formData = new FormData();
   formData.append("account_id", id);
@@ -1078,6 +1083,14 @@ export const updateLabSettings = (labSettings, id) => {
   formData.append(
     "complaint_handling_phone",
     labSettings.complaint_handling_phone
+  );
+  formData.append(
+    "token_starting_value",
+    labSettings.token_starting_value
+  );
+  formData.append(
+    "token_ending_value",
+    labSettings.token_ending_value
   );
   formData.append("home_sampling_charges", labSettings.home_sampling_charges);
   formData.append("state_sampling_charges", labSettings.state_sampling_charges);

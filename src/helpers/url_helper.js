@@ -236,6 +236,7 @@ export const GET_TEST_DESCRIPTIONS = `${API_ENDPOINT}/api/medicaltest/test`;
 
 // LAB PROFILES
 export const GET_LAB_PROFILE = `${API_ENDPOINT}/api/lab/lab-profile`;
+export const GET_LAB_TOKEN =  `${API_ENDPOINT}/api/lab/lab-tokens`;
 export const UPDATE_LAB_PROFILE = `${API_ENDPOINT}/api/lab/lab-profile`;
 
 // B2b PROFILES

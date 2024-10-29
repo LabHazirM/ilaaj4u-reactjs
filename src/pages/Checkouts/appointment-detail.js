@@ -102,6 +102,8 @@ class InvoiceDetail extends Component {
                             <br />
                             <span className="text-danger">NTN #:</span> {this.props.invoiceDetail[0].lab_ntn}
                             <br />
+                            <span className="text-danger">Token #:</span> {this.props.invoiceDetail[0].token}
+                            <br />
                             <span className="text-danger">Lab Name:</span> {this.props.invoiceDetail[0].lab_name}
                             <br />
                             <span className="text-danger">Lab Email:</span> {this.props.invoiceDetail[0].lab_email}

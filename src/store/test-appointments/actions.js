@@ -17,6 +17,9 @@ import {
   GET_LAB_PROFILE,
   GET_LAB_PROFILE_FAIL,
   GET_LAB_PROFILE_SUCCESS,
+  GET_LAB_TOKEN,
+  GET_LAB_TOKEN_SUCCESS,
+  GET_LAB_TOKEN_FAIL
 } from "./actionTypes";
 
 export const getLabProfile = id => ({
@@ -35,6 +38,32 @@ export const getLabProfileFail = error => ({
   type: GET_LAB_PROFILE_FAIL,
   payload: error,
 });
+
+export const getLabToken = id => ({
+  type: GET_LAB_TOKEN,
+  payload: id,
+});
+
+export const getLabTokenSuccess = labTokens => {
+  console.log("actions lab token success:", labTokens);
+  return {
+    type: GET_LAB_TOKEN_SUCCESS,
+    payload: {
+      lab: labTokens.data.lab,
+      appointments: labTokens.data.appointments,
+      tokens: labTokens.data.tokens, // Make sure to include this
+    },
+  };
+};
+
+
+export const getLabTokenFail = error => {
+  console.log("actions lab token fail:", labTokens);
+  return{
+  type: GET_LAB_TOKEN_FAIL,
+  payload: error,
+  }
+};
 
 export const addNewCollectionPointTestAppointment = (testAppointment, id) => ({
   type: ADD_NEW_COLLECTIONPOINT_TESTAPPOINTMENT,
