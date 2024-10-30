@@ -171,7 +171,7 @@ class App extends Component {
             ))}
 
             {donorAuthProtectedRoutes.map((route) => (
-              <AppRout
+              <AppRoute
                 key={idx}
                 isAuthProtected={true}
                 isLabAuthProtected={false}
