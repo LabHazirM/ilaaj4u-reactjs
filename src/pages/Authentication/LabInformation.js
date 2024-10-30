@@ -74,6 +74,7 @@ class LabInformation extends Component {
       email: "",
       // province: "Punjab",
       is_digital_payment_accepted: "Yes",
+      is_Receive_Email_On_Booking: "Yes",
       registered_by: "Lab",
       is_registering_for_first_time: "No",
       marketer_name: "",
@@ -251,6 +252,10 @@ class LabInformation extends Component {
                               is_digital_payment_accepted:
                                 (this.state &&
                                   this.state.is_digital_payment_accepted) ||
+                                "Yes",
+                                is_Receive_Email_On_Booking:
+                                (this.state &&
+                                  this.state.is_Receive_Email_On_Booking) ||
                                 "Yes",
                               registered_by:
                                 (this.state && this.state.registered_by) ||
