@@ -528,7 +528,6 @@ class App extends Component {
               />
             ))}
 
-            <Route path="*" component={Pages404} />
           </Switch>
         </Router>
       </React.Fragment>
