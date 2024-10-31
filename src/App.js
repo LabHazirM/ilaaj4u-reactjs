@@ -75,8 +75,11 @@ class App extends Component {
       <React.Fragment>
         <Router>
           <Switch>
-            {publicRoutes.map((route) => (
+            {publicRoutes.map((route, idx) => (
               <AppRoute
+                path={route.path}
+                layout={NonAuthLayout}
+                component={route.component}
                 key={idx}
                 isAuthProtected={false}
                 isLabAuthProtected={false}
@@ -98,8 +101,11 @@ class App extends Component {
               />
             ))}
 
-            {authProtectedRoutes.map((route) => (
+            {authProtectedRoutes.map((route, idx) => (
               <AppRoute
+                path={route.path}
+                layout={HorizontalLayout}
+                component={route.component}
                 key={idx}
                 isAuthProtected={true}
                 isLabAuthProtected={false}
@@ -122,8 +128,11 @@ class App extends Component {
               />
             ))}
 
-            {labAuthProtectedRoutes.map((route) => (
+            {labAuthProtectedRoutes.map((route, idx) => (
               <AppRoute
+                path={route.path}
+                layout={VerticalLayout}
+                component={route.component}
                 key={idx}
                 isAuthProtected={true}
                 isLabAuthProtected={true}
@@ -146,8 +155,11 @@ class App extends Component {
               />
             ))}
 
-            {b2bclientAuthProtectedRoutes.map((route) => (
+            {b2bclientAuthProtectedRoutes.map((route, idx) => (
               <AppRoute
+                path={route.path}
+                layout={VerticalLayout}
+                component={route.component}
                 key={idx}
                 isAuthProtected={true}
                 isLabAuthProtected={false}
@@ -170,8 +182,11 @@ class App extends Component {
               />
             ))}
 
-            {donorAuthProtectedRoutes.map((route) => (
+            {donorAuthProtectedRoutes.map((route, idx) => (
               <AppRoute
+                path={route.path}
+                layout={VerticalLayout}
+                component={route.component}
                 key={idx}
                 isAuthProtected={true}
                 isLabAuthProtected={false}
@@ -194,8 +209,11 @@ class App extends Component {
               />
             ))}
 
-            {b2badminAuthProtectedRoutes.map((route) => (
+            {b2badminAuthProtectedRoutes.map((route, idx) => (
               <AppRoute
+                path={route.path}
+                layout={VerticalLayout}
+                component={route.component}
                 key={idx}
                 isAuthProtected={true}
                 isLabAuthProtected={false}
@@ -218,8 +236,11 @@ class App extends Component {
               />
             ))}
 
-            {auditorAuthProtectedRoutes.map((route) => (
+            {auditorAuthProtectedRoutes.map((route, idx) => (
               <AppRoute
+                path={route.path}
+                layout={VerticalLayout}
+                component={route.component}
                 key={idx}
                 isAuthProtected={true}
                 isLabAuthProtected={false}
@@ -242,8 +263,11 @@ class App extends Component {
               />
             ))}
 
-            {csrAuthProtectedRoutes.map((route) => (
+            {csrAuthProtectedRoutes.map((route, idx) => (
               <AppRoute
+                path={route.path}
+                layout={VerticalLayout}
+                component={route.component}
                 key={idx}
                 isAuthProtected={true}
                 isLabAuthProtected={false}
@@ -266,8 +290,11 @@ class App extends Component {
               />
             ))}
 
-            {registrationAdminAuthProtectedRoutes.map((route) => (
+            {registrationAdminAuthProtectedRoutes.map((route, idx) => (
               <AppRoute
+                path={route.path}
+                layout={VerticalLayout}
+                component={route.component}
                 key={idx}
                 isAuthProtected={true}
                 isLabAuthProtected={false}
@@ -290,8 +317,11 @@ class App extends Component {
               />
             ))}
 
-            {csrAdminAuthProtectedRoutes.map((route) => (
+            {csrAdminAuthProtectedRoutes.map((route, idx) => (
               <AppRoute
+                path={route.path}
+                layout={VerticalLayout}
+                component={route.component}
                 key={idx}
                 isAuthProtected={true}
                 isLabAuthProtected={false}
@@ -314,8 +344,11 @@ class App extends Component {
               />
             ))}
 
-            {marketerAdminAuthProtectedRoutes.map((route) => (
+            {marketerAdminAuthProtectedRoutes.map((route, idx) => (
               <AppRoute
+                path={route.path}
+                layout={VerticalLayout}
+                component={route.component}
                 key={idx}
                 isAuthProtected={true}
                 isLabAuthProtected={false}
@@ -338,8 +371,11 @@ class App extends Component {
               />
             ))}
 
-            {auditorAdminAuthProtectedRoutes.map((route) => (
+            {auditorAdminAuthProtectedRoutes.map((route, idx) => (
               <AppRoute
+                path={route.path}
+                layout={VerticalLayout}
+                component={route.component}
                 key={idx}
                 isAuthProtected={true}
                 isLabAuthProtected={false}
@@ -362,8 +398,11 @@ class App extends Component {
               />
             ))}
 
-            {hrAdminAuthProtectedRoutes.map((route) => (
+            {hrAdminAuthProtectedRoutes.map((route, idx) => (
               <AppRoute
+                path={route.path}
+                layout={VerticalLayout}
+                component={route.component}
                 key={idx}
                 isAuthProtected={true}
                 isLabAuthProtected={false}
@@ -386,8 +425,11 @@ class App extends Component {
               />
             ))}
 
-            {sampleCollectorAuthProtectedRoutes.map((route) => (
+            {sampleCollectorAuthProtectedRoutes.map((route, idx) => (
               <AppRoute
+                path={route.path}
+                layout={VerticalLayout}
+                component={route.component}
                 key={idx}
                 isAuthProtected={true}
                 isLabAuthProtected={false}
@@ -409,8 +451,11 @@ class App extends Component {
                 exact
               />
             ))}
-             {financeOfficerAuthProtectedRoutes.map((route) => (
+             {financeOfficerAuthProtectedRoutes.map((route, idx) => (
               <AppRoute
+                path={route.path}
+                layout={VerticalLayout}
+                component={route.component}
                 key={idx}
                 isAuthProtected={true}
                 isLabAuthProtected={false}
@@ -432,8 +477,11 @@ class App extends Component {
                 exact
               />
             ))}
-{financeAdminAuthProtectedRoutes.map((route) => (
+{financeAdminAuthProtectedRoutes.map((route, idx) => (
               <AppRoute
+                path={route.path}
+                layout={VerticalLayout}
+                component={route.component}
                 key={idx}
                 isAuthProtected={true}
                 isLabAuthProtected={false}
@@ -456,8 +504,11 @@ class App extends Component {
               />
             ))}
 
-            {patientAuthProtectedRoutes.map((route) => (
+            {patientAuthProtectedRoutes.map((route, idx) => (
               <AppRoute
+                path={route.path}
+                layout={HorizontalLayout}
+                component={route.component}
                 key={idx}
                 isAuthProtected={true}
                 isLabAuthProtected={false}
@@ -480,8 +531,11 @@ class App extends Component {
               />
             ))}
 
-            {patientPublicRoutes.map((route) => (
+            {patientPublicRoutes.map((route, idx) => (
               <AppRoute
+                path={route.path}
+                layout={HorizontalLayout}
+                component={route.component}
                 key={idx}
                 isAuthProtected={false}
                 isLabAuthProtected={false}
@@ -504,8 +558,11 @@ class App extends Component {
               />
             ))}
 
-            {corporateAuthProtectedRoutes.map((route) => (
+            {corporateAuthProtectedRoutes.map((route, idx) => (
               <AppRoute
+                path={route.path}
+                layout={VerticalLayout}
+                component={route.component}
                 key={idx}
                 isAuthProtected={true}
                 isLabAuthProtected={false}
@@ -528,6 +585,7 @@ class App extends Component {
               />
             ))}
 
+            <Route path="*" component={Pages404} />
           </Switch>
         </Router>
       </React.Fragment>
