@@ -84,6 +84,30 @@ class LabTokens extends Component {
           filter: textFilter(),
         },
         {
+          dataField: "lab_name",
+          text: "Lab Name",
+          sort: true,
+          formatter: (cellContent, token) => (
+            <div style={{ textAlign: "left" }}>
+              {token.lab_name}
+              <br />
+            </div>
+          ),
+          filter: textFilter(),
+        },
+        {
+          dataField: "lab_type",
+          text: "Lab Type",
+          sort: true,
+          formatter: (cellContent, token) => (
+            <div style={{ textAlign: "left" }}>
+              {token.lab_type}
+              <br></br>
+              </div>
+          ),
+          filter: textFilter(),
+        },
+        {
           dataField: "patient_name",
           text: "Patient Name",
           sort: true,

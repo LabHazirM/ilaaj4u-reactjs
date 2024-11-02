@@ -1086,7 +1086,6 @@ class LabSettings extends Component {
 >
   See Detail
 </span>
-
   <div className="d-flex align-items-center">
     {/* From Field */}
     <div className="d-flex align-items-center me-3">
@@ -1107,6 +1106,7 @@ class LabSettings extends Component {
           "form-control" +
           (errors.token_starting_value && touched.token_starting_value ? " is-invalid" : "")
         }
+        disabled={this.state.type === "Collection Point"}
       />
       <ErrorMessage name="token_starting_value" component="div" className="invalid-feedback" />
     </div>
@@ -1130,9 +1130,17 @@ class LabSettings extends Component {
           "form-control" +
           (errors.token_ending_value && touched.token_ending_value ? " is-invalid" : "")
         }
+        disabled={this.state.type === "Collection Point"}
       />
       <ErrorMessage name="token_ending_value" component="div" className="invalid-feedback" />
     </div>
+        
+    <span 
+      className="text-danger" 
+      style={{ marginLeft: '8px' }}
+    >
+      NOTE: Can Only generate tokens if tokens left is zero.
+    </span>
   </div>
 </div>
 
