@@ -252,17 +252,7 @@ class LabTokens extends Component {
             <Row className="justify-content-center">
                 <div> <span className="font-size-13">
                   <strong className="text-danger ">
-                    Total Tokens:{" "}</strong><b>{lab.total_tokens} </b>({lab.token_starting_value}-{lab.token_ending_value})
-                  </span>
-                </div>
-                <div> <span className="font-size-13">
-                  <strong className="text-danger ">
-                    Tokens Used:{" "}</strong><b>{lab.used_tokens_count}</b> ({lab.used_tokens_range ? `${lab.used_tokens_range.min}-${lab.used_tokens_range.max}` : 'N/A'})
-                  </span>
-                </div>
-                <div> <span className="font-size-13">
-                  <strong className="text-danger ">
-                    Tokens Left:{" "}</strong><b>{lab.remaining_tokens}</b>({lab.remaining_tokens_range ? `${lab.remaining_tokens_range.min}-${lab.remaining_tokens_range.max}` : 'N/A'})
+                    last Token Used:{" "}</strong>{lab.last_used_token} 
                   </span>
                 </div>
                 
