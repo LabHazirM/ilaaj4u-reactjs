@@ -250,6 +250,11 @@ class LabTokens extends Component {
               breadcrumbItem="Tokens Detail Page"
             />
             <Row className="justify-content-center">
+            <div> <span className="font-size-13">
+                  <strong className="text-danger ">
+                    last Token Series Generated:{" "}</strong>{lab.token_starting_value} {"-"}{lab.token_ending_value}
+                  </span>
+                </div>
                 <div> <span className="font-size-13">
                   <strong className="text-danger ">
                     last Token Used:{" "}</strong>{lab.last_used_token} 
