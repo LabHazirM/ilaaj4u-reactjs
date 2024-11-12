@@ -1148,6 +1148,14 @@ class SidebarContent extends Component {
                   </Link>
                 </li>
 
+                {/* tokens Links */}
+                <li>
+                  <Link to={"token-detail-page"}>
+                    <i className="fas fa-coins" />
+                    <span>{this.props.t("Tokens Detail")}</span>
+                  </Link>
+                </li>
+
 
                 {/* Feedbacks Links */}
                 <li>

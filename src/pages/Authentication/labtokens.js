@@ -223,7 +223,7 @@ class LabTokens extends Component {
 
     const pageOptions = {
       sizePerPage: 10,
-      totalSize: labTokens.length, // replace later with size(labTokens),
+      totalSize: appointments.length, // replace later with size(labTokens),
       custom: true,
     };
 
@@ -257,7 +257,30 @@ class LabTokens extends Component {
                 </div>
                 <div> <span className="font-size-13">
                   <strong className="text-danger ">
-                    last Token Used:{" "}</strong>{lab.last_used_token} 
+                    Total Tokens:{" "}</strong>{lab.total_tokens} 
+                  </span>
+                </div>
+                <div> <span className="font-size-13">
+                  <strong className="text-danger ">
+                    Used Tokens:{" "}</strong>{lab.used_tokens} 
+                  </span>
+                </div>
+                <div> <span className="font-size-13">
+                  <strong className="text-danger ">
+                    Remaining Tokens:{" "}</strong>{lab.remaining_tokens} 
+                  </span>
+                </div>
+                <div> 
+                  <br></br>
+                </div>
+                <div> <span className="font-size-13">
+                  <strong className="text-danger ">
+                    Total Pending appointments tokens:{" "}</strong>{lab.pending_appointments_count} 
+                  </span>
+                </div>
+                <div> <span className="font-size-13">
+                  <strong className="text-danger ">
+                    Total Confirmed appointments tokens:{" "}</strong>{lab.confirmed_appointments_count} 
                   </span>
                 </div>
                 

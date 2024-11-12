@@ -1079,13 +1079,14 @@ class LabSettings extends Component {
 <div className="mb-3">
   <Label for="handling_tokens" className="form-label">
     Generate Token series
-  </Label><span 
+  </Label>
+  {/* <span 
   className="text-primary" 
   onClick={() => this.props.history.push('/token-detail-page')}
   style={{ cursor: 'pointer', marginLeft: '8px' }}
 >
   See Detail
-</span>
+</span> */}
   <div className="d-flex align-items-center">
     {/* From Field */}
     <div className="d-flex align-items-center me-3">
