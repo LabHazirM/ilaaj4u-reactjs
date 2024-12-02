@@ -665,45 +665,20 @@ class OfferedTestsList extends Component {
                                                   />
 
                                                   <div className="mb-3">
-                                                    <Label
-                                                      className="col-form-label"
-                                                    >
-                                                      Employee Name
-                                                      <span
+                                                    <Label className="col-form-label">Employee Name
+                                                    <span
                                                         style={{ color: "#f46a6a" }}
                                                         className="font-size-18"
                                                       >
                                                         *
                                                       </span>
                                                     </Label>
-                                                    <Input
+                                                    <Field
                                                       type="text"
-                                                      value={this.state.offeredTest.name}
-                                                      onChange={e => {
-                                                        this.setState({
-                                                          offeredTest: {
-                                                            id: offeredTest.id,
-                                                            employee_code:
-                                                              offeredTest.employee_code,
-                                                            status:
-                                                              offeredTest.status,
-                                                              limit:
-                                                              offeredTest.limit,
-                                                              date:
-                                                              offeredTest.date,
-                                                            name:
-                                                              e.target.value,
-                                                          },
-                                                        });
-                                                      }}
-                                                      className={
-                                                        "form-control" +
-                                                        (errors.name &&
-                                                          touched.name
-                                                          ? " is-invalid"
-                                                          : "")
-                                                      }
+                                                      name="name"
+                                                      className={"form-control" + (errors.name && touched.name ? " is-invalid" : "")}
                                                     />
+                                                    <ErrorMessage name="name" component="div" className="invalid-feedback" />
                                                   </div>
 
                                                   <div className="mb-3">
@@ -743,43 +718,15 @@ class OfferedTestsList extends Component {
                                                     <ErrorMessage name="date" component="div" className="invalid-feedback" />
                                                   </div>
                                                   </>)}
-
-
-
                                                   <div className="mb-3">
-                                                    <Label
-                                                      for="status"
-                                                      className="form-label"
-                                                    >
-                                                      Activity Status
-                                                    </Label>
-                                                    <Field
-                                                      name="status"
-                                                      component="select"
-                                                      onChange={e => {
-                                                        this.setState({
-                                                          offeredTest: {
-                                                            id: offeredTest.id,
-                                                            employee_code:
-                                                              offeredTest.employee_code,
-                                                            name:
-                                                              offeredTest.name,
-                                                            status:
-                                                              e.target.value,
-                                                              date:
-                                                              offeredTest.date,
-                                                              limit:
-                                                              offeredTest.limit,
-                                                          },
-                                                        });
-                                                      }}
-                                                      value={this.state.offeredTest.status}
-                                                      className="form-select"
-                                                    >
-                                                      <option value="Active">Active</option>
-                                                      <option value="Inactive">Inactive</option>
-                                                    </Field>
-                                                  </div>
+                                                  <Label htmlFor="status" className="form-label">
+                                                    Activity Status
+                                                  </Label>
+                                                  <Field name="status" as="select" className="form-select">
+                                                    <option value="Active">Active</option>
+                                                    <option value="Inactive">Inactive</option>
+                                                  </Field>
+                                                </div>
                                                 </Col>
                                               </Row>
                                               <Row>
