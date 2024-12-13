@@ -235,10 +235,10 @@ class LabProfile extends Component {
                       .trim()
                       .required("Please enter your district")
                       .max(255, "Please enter maximum 255 characters")
-                      .matches(
-                        /^[a-zA-Z][a-zA-Z ]+$/,
-                        "Please enter only alphabets and spaces"
-                      ),
+                      // .matches(
+                      //   /^[a-zA-Z][a-zA-Z ]+$/,
+                      //   "Please enter only alphabets and spaces"
+                      // ),
                   })}
                   onSubmit={values => {
                     // if no file was selected for logo then get current image from url and convert to file
