@@ -76,19 +76,27 @@ import { CITIES } from "helpers/global_variables_helper";
 import offeredTestsList from "pages/OfferedTests/offered-tests-list";
 import ScrollButton from "components/Common/Scrollbutton";
 
-function formatTime(timeString) {
-  const [hours, minutes] = timeString.split(':');
-  const date = new Date(2000, 0, 1, parseInt(hours), parseInt(minutes), 0);
 
-  // Convert to 12-hour format with AM/PM
-  const formattedTime = date.toLocaleString('en-US', {
-    hour: 'numeric',
-    minute: 'numeric',
-    hour12: true,
-    timeZone: 'Asia/Karachi', // Adjust to the desired time zone (Islamabad)
-  });
+function formatTime(timeString, labId) {
+  if (!timeString || typeof timeString !== "string") {
+    console.warn(`Invalid time for lab ID ${labId}:`, timeString);
+    return "Invalid Time";
+  }
 
-  return formattedTime;
+  try {
+    const [hours, minutes] = timeString.split(":");
+    const date = new Date(2000, 0, 1, parseInt(hours), parseInt(minutes), 0);
+
+    return date.toLocaleString("en-US", {
+      hour: "numeric",
+      minute: "numeric",
+      hour12: true,
+      timeZone: "Asia/Karachi",
+    });
+  } catch (error) {
+    console.error(`Error formatting time for lab ID ${labId}:`, timeString, error);
+    return "Invalid Time";
+  }
 }
 
 class NearbyLabs extends Component {
