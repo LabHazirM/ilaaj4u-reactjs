@@ -130,7 +130,7 @@ class DonorPayment extends Component {
       return;
     }
 
-    const relation = this.state.type === "Family" ? this.state.relation : "Himself";
+    const relation = this.state.type === "Family" ? this.state.relation : "Self";
 
     this.setState(
       {
