@@ -1586,12 +1586,12 @@ getCommonPaymentMethods = (checkoutItems) => {
                                                               Charges{" "}
                                                               <span className="float-end">
                                                                 Rs.{" "}
-                                                                {checkoutItem.total_sampling_charges
+                                                                {checkoutItem.total_sampling_charges?checkoutItem.total_sampling_charges
                                                                   .toString()
                                                                   .replace(
-                                                                    /\B(?=(\d{3})+(?!\d))/g,
-                                                                    ","
-                                                                  )}
+                                                                    /\B(?=(\d{3})+(?!\d))/g,",")
+                                                                    : 
+                                                                    "0"}
                                                               </span>
                                                             </h5>
                                                           </div>
@@ -1610,11 +1610,10 @@ getCommonPaymentMethods = (checkoutItems) => {
                                                               <span className="float-end">
                                                                 Rs.{" "}
                                                                 {checkoutItem.total_sampling_charges
-                                                                  .toString()
-                                                                  .replace(
-                                                                    /\B(?=(\d{3})+(?!\d))/g,
-                                                                    ","
-                                                                  )}
+                                                                    ? checkoutItem.total_sampling_charges
+                                                                        .toString()
+                                                                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                                                                    : "0"}
                                                               </span>
                                                             </h5>
                                                           </div>
@@ -1623,27 +1622,25 @@ getCommonPaymentMethods = (checkoutItems) => {
                                                   </tr>
                                                 )}
 
-                                              {checkoutItem.plateformcharges_roundoff ? (
-                                                <Tr>
-                                                  <Td colSpan="4">
-                                                    <div className="bg-success bg-soft p-3 rounded">
-                                                      <h5 className="font-size-14 text-success mb-0">
-                                                        <i className="mdi mdi-cash-multiple me-2 font-size-22" />{" "}
-                                                        Plateform Charges{" "}
-                                                        <span className="float-end">
-                                                          Rs.{" "}
-                                                          {checkoutItem.plateformcharges_roundoff
-                                                            .toString()
-                                                            .replace(
-                                                              /\B(?=(\d{3})+(?!\d))/g,
-                                                              ","
-                                                            )}
-                                                        </span>
-                                                      </h5>
-                                                    </div>
-                                                  </Td>
-                                                </Tr>
-                                              ) : null}
+                                                {checkoutItem.plateformcharges_roundoff ? (
+                                                  <Tr>
+                                                    <Td colSpan="4">
+                                                      <div className="bg-success bg-soft p-3 rounded">
+                                                        <h5 className="font-size-14 text-success mb-0">
+                                                          <i className="mdi mdi-cash-multiple me-2 font-size-22" />{" "}
+                                                          Plateform Charges{" "}
+                                                          <span className="float-end">
+                                                            Rs.{" "}
+                                                            {(checkoutItem.total_plateformcharges_sum || 0) // Use 0 if undefined
+                                                              .toString()
+                                                              .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                                                          </span>
+                                                        </h5>
+                                                      </div>
+                                                    </Td>
+                                                  </Tr>
+                                                ) : null}
+
                                               
                                                 <Tr>
                                                   <Td colSpan="4">
