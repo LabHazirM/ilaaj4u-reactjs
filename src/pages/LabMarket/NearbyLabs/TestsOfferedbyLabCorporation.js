@@ -862,10 +862,19 @@ class TestsOffered extends Component {
                               className={`btn mt-3 me-1${this.props.carts.some(cartItem => cartItem.offered_test_id === offeredTest.id) ? ' disabled' : ''}`}
                               // onClick={() => this.handleAddToCart(offeredTest)}
                               onClick={() => {
+
+                                //TOTAL BEFORE CLICK
+                                const cartTotalBalance = this.props.carts.reduce((sum, cartItem) => sum + cartItem.total_balance, 0);
+                                console.log("Current cart total:", cartTotalBalance);
+
+                                // Calculate the total after adding the new test
+                                const checktotal = offeredTest.price + cartTotalBalance;
+                                console.log("Total after adding test:", checktotal);
+
                                 if (this.props.carts.some(cartItem => cartItem.test_name === offeredTest.test_name)) {
                                   alert("An item with the same name but from a different lab is already in the cart. Please remove the previous one first.");
                                 } else if (
-                                  this.props.patientProfile && this.props.patientProfile.corporate_id !== "undefined" && this.props.patientProfile.is_assosiatewith_anycorporate == true && this.props.patientProfile.corporate_payment === "Payment by Coorporate to LH" && offeredTest.price > this.props.patientProfile.quota
+                                  this.props.patientProfile && this.props.patientProfile.corporate_id !== "undefined" && this.props.patientProfile.is_assosiatewith_anycorporate == true && this.props.patientProfile.corporate_payment === "Payment by Coorporate to LH" &&  checktotal> this.props.patientProfile.quota
                                 ) {
                                   alert("Unfortunately, there are no funds available in your allocated quota for this test. For more information, please contact your corporation.");
                                 } else {
