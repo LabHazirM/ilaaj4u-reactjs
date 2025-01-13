@@ -545,7 +545,7 @@ class OutPaymentsForm extends Component {
                             outPayment.lab_id ? (
                               <div className="mb-3">
                                 <Label className="form-label">
-                                  Lab name
+                                  Lab nameeeeeeeeeeeeeeee
                                 </Label>
                                 <Field
                                   name="lab_id"
