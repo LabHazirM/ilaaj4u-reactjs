@@ -1,0 +1,16 @@
+/* CARTS */
+export const GET_CARTS = "GET_CARTS";
+export const GET_CARTS_SUCCESS = "GET_CARTS_SUCCESS";
+export const GET_CARTS_FAIL = "GET_CARTS_FAIL";
+
+export const EMPTY_CART = "EMPTY_CART";
+export const EMPTY_CART_SUCCESS = "EMPTY_CART_SUCCESS";
+export const EMPTY_CART_FAIL = "EMPTY_CART_FAIL";
+
+export const DELETE_CART = "DELETE_CART";
+export const DELETE_CART_SUCCESS = "DELETE_CART_SUCCESS";
+export const DELETE_CART_FAIL = "DELETE_CART_FAIL";
+
+export const ADD_TO_CART = "ADD_TO_CART";
+export const ADD_TO_CART_SUCCESS = "ADD_TO_CART_SUCCESS";
+export const ADD_TO_CART_FAIL = "ADD_TO_CART_FAIL";
