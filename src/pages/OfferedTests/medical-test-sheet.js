@@ -24,7 +24,7 @@ class MedicalTestSheet extends Component {
       <React.Fragment>
         <div className="page-content">
           <MetaTags>
-            <title>Offered Testssssssssssssss List | Lab Hazir</title>
+            <title>Offered Tests List | Lab Hazir</title>
           </MetaTags>
           <Container fluid>
             {/* Render Breadcrumbs */}
