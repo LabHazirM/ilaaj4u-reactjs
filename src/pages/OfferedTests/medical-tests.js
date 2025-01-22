@@ -384,7 +384,7 @@ class TestsList extends Component {
                               <div> 
                                   <span className="text-danger font-size-12">
                   <strong>
-                    Note: The Tests, Profile and Packages already added will not be displayed here.........
+                    Note: The Tests, Profile and Packages already added will not be displayed here.
 .
                   </strong>
                   </span>
