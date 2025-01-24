@@ -413,6 +413,7 @@ class OutPaymentsForm extends Component {
             isCorporationValid &&
             isPaymentStatusValid &&
             donation.corporation != null &&
+            donation.status == "Result Uploaded" &&
             hasDues &&
             hasValidLabNameOrBranch
           );
@@ -545,7 +546,7 @@ class OutPaymentsForm extends Component {
                             outPayment.lab_id ? (
                               <div className="mb-3">
                                 <Label className="form-label">
-                                  Lab nameeeeeeeeeeeeeeee
+                                  Lab name
                                 </Label>
                                 <Field
                                   name="lab_id"

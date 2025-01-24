@@ -1569,58 +1569,51 @@ getCommonPaymentMethods = (checkoutItems) => {
                                         {this.state.checkoutItems.slice(-1).map(
                                           (checkoutItem, key) => (
                                             <>
-                                              {checkoutItem.lab_home_sampling_charges !=
-                                                0 && (
-                                                  <tr key={"_checkoutItem_" + key}>
-                                                    <td colSpan="4">
-                                                      {this.state
-                                                        .is_home_sampling_availed !=
-                                                        "Yes" &&
-                                                        this.state
-                                                          .is_state_sampling_availed ==
-                                                        "Yes" && (
-                                                          <div className="bg-primary bg-soft p-3 rounded">
-                                                            <h5 className="font-size-14 text-primary mb-0">
-                                                              <i className="fas fa-shipping-fast me-2" />{" "}
-                                                              Sum of Urgent Sampling
-                                                              Charges{" "}
-                                                              <span className="float-end">
-                                                                Rs.{" "}
-                                                                {checkoutItem.total_sampling_charges?checkoutItem.total_sampling_charges
-                                                                  .toString()
-                                                                  .replace(
-                                                                    /\B(?=(\d{3})+(?!\d))/g,",")
-                                                                    : 
-                                                                    "0"}
-                                                              </span>
-                                                            </h5>
-                                                          </div>
-                                                        )}
-                                                      {this.state
-                                                        .is_home_sampling_availed ==
-                                                        "Yes" &&
-                                                        this.state
-                                                          .is_state_sampling_availed !=
-                                                        "Yes" && (
-                                                          <div className="bg-primary bg-soft p-3 rounded">
-                                                            <h5 className="font-size-14 text-primary mb-0">
-                                                              <i className="fas fa-shipping-fast me-2" />{" "}
-                                                              Sum of Home Sampling
-                                                              Charges{" "}
-                                                              <span className="float-end">
-                                                                Rs.{" "}
-                                                                {checkoutItem.total_sampling_charges
-                                                                    ? checkoutItem.total_sampling_charges
-                                                                        .toString()
-                                                                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-                                                                    : "0"}
-                                                              </span>
-                                                            </h5>
-                                                          </div>
-                                                        )}
-                                                    </td>
-                                                  </tr>
-                                                )}
+                              {
+                                // Check if any lab in the checkout list has sampling enabled or charges greater than 0
+                                this.props.checkoutItems.some(
+                                  (item) =>
+                                    item.lab_home_sampling_charges > 0 ||
+                                    item.lab_state_sampling_charges > 0
+                                ) && (
+                                  <tr key={"_checkoutItem_" + key}>
+                                    <td colSpan="4">
+                                      {this.state.is_home_sampling_availed === "Yes" && (
+                                        <div className="bg-primary bg-soft p-3 rounded">
+                                          <h5 className="font-size-14 text-primary mb-0">
+                                            <i className="fas fa-shipping-fast me-2" /> Sum of Home Sampling Charges{" "}
+                                            <span className="float-end">
+                                              Rs.{" "}
+                                              {checkoutItem.total_sampling_charges
+                                                ? checkoutItem.total_sampling_charges
+                                                    .toString()
+                                                    .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                                                : "0"}
+                                            </span>
+                                          </h5>
+                                        </div>
+                                      )}
+                                      {this.state.is_state_sampling_availed === "Yes" && (
+                                        <div className="bg-primary bg-soft p-3 rounded">
+                                          <h5 className="font-size-14 text-primary mb-0">
+                                            <i className="fas fa-shipping-fast me-2" /> Sum of Urgent Sampling Charges{" "}
+                                            <span className="float-end">
+                                              Rs.{" "}
+                                              {checkoutItem.total_sampling_charges
+                                                ? checkoutItem.total_sampling_charges
+                                                    .toString()
+                                                    .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                                                : "0"}
+                                            </span>
+                                          </h5>
+                                        </div>
+                                      )}
+                                    </td>
+                                  </tr>
+                                )
+                              }
+
+
 
                                                 {checkoutItem.plateformcharges_roundoff ? (
                                                   <Tr>

@@ -114,6 +114,11 @@ class DonorPayment extends Component {
 
     if (!this.state.name) errors.name = "Name is required";
     if (!this.state.employee_code) errors.employee_code = "ID Card No is required";
+    const existingEmployeeCodes = this.state.cemployeeDatas.map((employee) => employee.employee_code);
+    if (existingEmployeeCodes.includes(this.state.employee_code)) {
+      errors.employee_code = "Employee code already exists";
+    }
+    
 
     if (this.state.payment_terms === "Payment by Coorporate to LH") {
       if (!this.state.limit) errors.limit = "Amount Limit is required";

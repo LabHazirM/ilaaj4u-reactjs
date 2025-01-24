@@ -961,21 +961,27 @@ class LabSettings extends Component {
                           Are you Offering Home Sampling?
                         </Label>
                         <Field
-                          name="is_homesampling_offered"
-                          component="select"
-                          defaultValue="No"
-                          onChange={e =>
-                            this.setState({
-                              is_homesampling_offered: e.target.value,
-                            })
-                          }
-                          value={this.state.is_homesampling_offered}
-                          className="form-select"
-                        >
-                          <option value="">--</option>
-                          <option value="Yes">Yes</option>
-                          <option value="No">No</option>
-                        </Field>
+                        name="is_homesampling_offered"
+                        component="select"
+                       defaultValue="No"
+                       onChange={e => {
+                       const value = e.target.value;
+                      this.setState({
+                      is_homesampling_offered: value,
+                       ...(value === "Yes" ? {
+                      home_sampling_charges: null,
+                      state_sampling_charges: null,
+                       state_sampling_time: null
+                       } : {})
+                       });
+                      }}
+                      value={this.state.is_homesampling_offered}
+                      className="form-select"
+                      >
+                     <option value="">--</option>
+                    <option value="Yes">Yes</option> 
+                    <option value="No">No</option>
+                    </Field>
                       </div>
                       {this.state.is_homesampling_offered == "Yes" ? (
                         <div>
