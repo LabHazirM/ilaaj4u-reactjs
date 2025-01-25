@@ -968,7 +968,7 @@ class LabSettings extends Component {
                        const value = e.target.value;
                       this.setState({
                       is_homesampling_offered: value,
-                       ...(value === "Yes" ? {
+                       ...(value === "No" ? {
                       home_sampling_charges: null,
                       state_sampling_charges: null,
                        state_sampling_time: null

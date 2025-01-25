@@ -447,15 +447,16 @@ class OutPaymentsForm extends Component {
     //  }
     // }
     const CardAppointmentList = listDonation
-      .filter(
-        donation =>{
-          const corporationId = String(donation.corporation);
-          const profileId = String(this.props.corporateProfiles.id);
+    .filter(
+      donation =>{
+        const corporationId = String(donation.corporation);
+        const profileId = String(this.props.corporateProfiles.id);
 
-          const isFeesValid = donation.plateform_fees > 0 && donation.plateform_fees !== undefined;
-          const isCorporationValid = corporationId === profileId;
-          return isFeesValid && isCorporationValid;
-  }
+        const isFeesValid = donation.plateform_fees > 0 && donation.plateform_fees !== undefined;
+        const isCorporationValid = corporationId === profileId;
+        return (isFeesValid && isCorporationValid &&
+        donation.status == "Result Uploaded");
+}
       )
       .map(donation => ({
         label: `(Appointment ID: ${donation.order_id}) - (Plateform charges: ${donation.plateform_fees})`,
