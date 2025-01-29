@@ -75,6 +75,7 @@ class OfferedTestsList extends Component {
       selectedType: null,
       modal: false,
       deleteModal: false,
+      isLoading: true,
       user_id: localStorage.getItem("authUser")
         ? JSON.parse(localStorage.getItem("authUser")).user_id
         : "",
@@ -105,6 +106,13 @@ class OfferedTestsList extends Component {
     if (userId) {
       onGetCLabAccountStatements(userId);
     }
+    setTimeout(() => {
+      // After data is fetched, update the state
+      this.setState({
+        b2baccountStatements: [],
+        isLoading: false,
+      });
+    }, 500);
   }
 
     // eslint-disable-next-line no-unused-vars
@@ -264,11 +272,38 @@ class OfferedTestsList extends Component {
         dataField: "relation",
         text: "Relation with Employee",
         sort: true,
-        formatter: (cellContent, offeredTest) => (
-          <span>{offeredTest.relation || "--"}</span>
-        ),
-        filter: textFilter(),
-      },
+        formatter: (cellContent, offeredTest) => {
+          const relation = 
+            offeredTest.type === "Employee" ? (offeredTest.relation || "Self") :
+            offeredTest.type === "Family" ? (offeredTest.relation || "Family") :
+            "--";
+          return <span>{relation}</span>;
+        },
+        filter: selectFilter({
+          options: {
+            '': 'All',
+            'Self': 'Self',
+            'Mother': 'Mother',
+            'Father': 'Father',
+            'Son': 'Son',
+            'Daughter': 'Daughter',
+            'Spouse': 'Spouse',
+            'Sibling': 'Sibling',
+            'Other': 'Other',
+          },
+          defaultValue: 'All',
+          getFilterValue: (filterText, data) => {
+            return data.map(item => ({
+              ...item,
+              relation:
+                item.type === "Employee" ? (item.relation || "Self") :
+                item.type === "Family" ? (item.relation || "Family") :
+                item.relation || "--",
+            }));
+          },
+        }),
+        
+      },      
       {
         dataField: "parent_employee_id",
         text: "Parent Employee",
@@ -280,7 +315,7 @@ class OfferedTestsList extends Component {
         filter: textFilter(),
       },
     ];
-
+ 
     // Conditionally add columns based on payment_terms
     if (payment_terms === "Payment by Coorporate to LH") {
       columns = [
@@ -382,15 +417,15 @@ class OfferedTestsList extends Component {
             {console.log("offeredTest id:", offeredTest.id)}
     {console.log("b2baccountStatements ids:", this.props.b2baccountStatements.map(statement => statement.employee_id))}
 
-    {!this.props.b2baccountStatements.some(statement => statement.employee_id === offeredTest.id) && (
-      <button
-        type="submit"
-        className="btn btn-danger save-user"
-        onClick={() => this.onClickDelete(offeredTest)}
-      >
-        Delete
-      </button>
-)}
+    {!this.props.b2baccountStatements.some(statement => statement.employee_id === offeredTest.id) && ( 
+    <button
+      type="submit"
+      className="btn btn-danger save-user"
+      onClick={() => this.onClickDelete(offeredTest)}
+    >
+      Delete
+    </button>
+    )}
 
             {/* </Tooltip> */}
           </div>
@@ -401,53 +436,42 @@ class OfferedTestsList extends Component {
     return columns;
   }
   render() {
-    const { SearchBar } = Search;
+    const { cemployeeDatas, CorporateProfile,onUpdateCemployee, onGetEmployeeCorporate } = this.props;
+    const { deleteModal, selectedcorporate, selectedType, offeredTest, isEdit,isLoading ,b2baccountStatements } = this.state;
+      if (isLoading) {
+        return <div>Loading...</div>;
+      }
     const columns = this.getColumns();
-    const { cemployeeDatas,CorporateProfile } = this.props;
-    console.log("props on render", this.props.b2baccountStatements);
-    console.log("state on render", this.state.b2baccountStatements);
-
-
     const payment_terms = CorporateProfile?.payment_terms;
-
-    // Log the payment_terms prop
-    console.log("Payment Terms:", payment_terms);
-
-    const { isEdit, deleteModal } = this.state;
-
-    const { onUpdateCemployee, onGetEmployeeCorporate, } =
-      this.props;
-    const uniqueCorporateNames = [...new Set(cemployeeDatas.map(data => data.status
-    ))];
-
-    // Generate labOptions for the <select> dropdown
+  
+    const uniqueCorporateNames = [...new Set(cemployeeDatas.map(data => data.status))];
+  
     const corporateEmployeeOptions = uniqueCorporateNames.map((EmployeeStatus, index) => (
       <option key={index} value={EmployeeStatus}>
         {EmployeeStatus}
       </option>
     ));
-
-    const filteredStatements = cemployeeDatas.filter((statement) => {
-      const { selectedcorporate, selectedType } = this.state;
+  
+    const filteredStatements = cemployeeDatas.filter((statement) => { const {
+       selectedcorporate, selectedType } = this.state;
       const EmployeeFilter = !selectedcorporate || statement.status === selectedcorporate;
       const TypeFilter = !selectedType || statement.type === selectedType;
       return EmployeeFilter && TypeFilter;
     });
-    const offeredTest = this.state.offeredTest;
-
+    
     const pageOptions = {
       sizePerPage: 10000,
-      totalSize: cemployeeDatas.length, // replace later with size(cemployeeDatas),
+      totalSize: cemployeeDatas.length,
       custom: true,
     };
-
+  
     const defaultSorted = [
       {
-        dataField: "id", // if dataField is not match to any column you defined, it will be ignored.
-        order: "desc", // desc or asc
+        dataField: "id",
+        order: "desc",
       },
     ];
-
+  
     return (
       <React.Fragment>
         <DeleteModal
@@ -460,84 +484,337 @@ class OfferedTestsList extends Component {
             <title>Employees List | Lab Hazir</title>
           </MetaTags>
           <Container fluid>
-            {/* Render Breadcrumbs */}
+             {/* Render Breadcrumbs */}
             <Breadcrumbs title="Employees Tests" breadcrumbItem="Employees List" />
             <Row>
-            <div> <span className="text-danger font-size-12">
+              <div>
+                <span className="text-danger font-size-12">
                   <strong>
                     Note: The status will initially be set to inactive and can be activated either through the registration process or by the corporate by edit action on this page.
-
                   </strong>
-                  <br></br>
-                  </span>
-                </div>
+                  <br />
+                </span>
+              </div>
               <Col lg="12">
                 <Card>
                   <CardBody>
                     <Row>
-                    <Col lg="3">
-                      <div className="mb-3">
-                        <label className="form-label">All Employees</label>
-                        <select
-                          value={this.state.selectedcorporate}
-                          onChange={(e) => this.setState({ selectedcorporate: e.target.value })}
-                          className="form-control"
-                        >
-                          <option value="">Select Status</option>
-                          {corporateEmployeeOptions}
-                        </select>
-                      </div>
-                    </Col>
-                    <Col lg="3">
-  <div className="mb-3">
-    <label className="form-label">Type</label>
-    <select
-      value={this.state.selectedType}
-      onChange={(e) => this.setState({ selectedType: e.target.value })}
-      className="form-control"
-    >
-      <option value="">Select type</option>
-      <option value="Employee">Employee</option>
-      <option value="Family">Family and Friends</option>
-    </select>
-  </div>
-</Col>
-</Row>
-
-                    <PaginationProvider
-                      pagination={paginationFactory(pageOptions)}
-                      keyField="id"
-                      columns={this.state.offeredTestListColumns}
-                      data={cemployeeDatas}
-                    >
-                      {({ paginationProps, paginationTableProps }) => (
-                        <ToolkitProvider
+                      <Col lg="3">
+                        <div className="mb-3">
+                          <label className="form-label">All Employees</label>
+                          <select
+                            value={selectedcorporate}
+                            onChange={(e) => this.setState({ selectedcorporate: e.target.value })}
+                            className="form-control"
+                          >
+                            <option value="">Select Status</option>
+                            {corporateEmployeeOptions}
+                          </select>
+                        </div>
+                      </Col>
+                      <Col lg="3">
+                        <div className="mb-3">
+                          <label className="form-label">Type</label>
+                          <select
+                            value={selectedType}
+                            onChange={(e) => this.setState({ selectedType: e.target.value })}
+                            className="form-control"
+                          >
+                            <option value="">Select type</option>
+                            <option value="Employee">Employee</option>
+                            <option value="Family">Family and Friends</option>
+                          </select>
+                        </div>
+                      </Col>
+                    </Row>
+  
+                    {Array.isArray(b2baccountStatements || []) && b2baccountStatements.length > 0 ? (
+                      <div>
+                        <PaginationProvider
+                          pagination={paginationFactory(pageOptions)}
                           keyField="id"
                           columns={this.state.offeredTestListColumns}
                           data={cemployeeDatas}
-                          search
                         >
-                          {toolkitprops => (
-                            <React.Fragment>
+                          {({ paginationProps, paginationTableProps }) => (
+                            <ToolkitProvider
+                              keyField="id"
+                              columns={this.state.offeredTestListColumns}
+                              data={cemployeeDatas}
+                              search
+                            >
+                              {toolkitprops => (
+                                <React.Fragment>
+                                  <Row className="mb-4">
+                                    <Col xl="12">
+                                      <div className="table-responsive">
+                                        <BootstrapTable
+                                          {...toolkitprops.baseProps}
+                                          {...paginationTableProps}
+                                          defaultSorted={defaultSorted}
+                                          classes={"table align-middle table-condensed table-hover"}
+                                          bordered={false}
+                                          striped={true}
+                                          headerWrapperClasses={"table-light"}
+                                          responsive
+                                          ref={this.node}
+                                          filter={filterFactory()}
+                                          data={filteredStatements}
+                                          columns={columns}
+                                        />
+                                         <Modal
+                                      isOpen={this.state.PatientModal}
+                                      className={this.props.className}
+                                    
+                                    >
+                                      <ModalHeader
+                                        toggle={this.togglePatientModal}
+                                        tag="h4"
+                                      >
+                                        <span></span>
+                                      </ModalHeader>
+                                      <ModalBody>
+                                        <Formik>
+                                          <Form>
+                                            <Row>
+                                              <Col className="col-12">
+                                                <div className="mb-3 row">
+                                                  <div className="col-md-3">
+                                                    <Label className="form-label">
+                                                      Included Tests
+                                                    </Label>
+                                                  </div>
+                                                  <div className="col-md-9">
+                                                    <textarea
+                                                      name="test_details"
+                                                      id="test_details"
+                                                      rows="10"
+                                                      cols="10"
+                                                      value={this.state.test_details}
+                                                      className="form-control"
+                                                      readOnly={true}
+                                                    />
+                                                  </div>
+                                                </div>
 
-                              <Row className="mb-4">
-                                <Col xl="12">
-                                  <div className="table-responsive">
-                                    <BootstrapTable
-                                      {...toolkitprops.baseProps}
-                                      {...paginationTableProps}
-                                      defaultSorted={defaultSorted}
-                                      classes={"table align-middle table-condensed table-hover"}
-                                      bordered={false}
-                                      striped={true}
-                                      headerWrapperClasses={"table-light"}
-                                      responsive
-                                      ref={this.node}
-                                      filter={filterFactory()}
-                                      data={filteredStatements}
-                                      columns={columns}
-                                    />
+                                              </Col>
+                                            </Row>
+                                          </Form>
+                                        </Formik>
+                                      </ModalBody>
+                                    </Modal>
+
                                     <Modal
+                                      isOpen={this.state.modal}
+                                      className={this.props.className}
+                                    >
+                                      <ModalHeader
+                                        toggle={this.toggle}
+                                        tag="h4"
+                                      >
+                                        {!!isEdit
+                                          ? "Edit Employee Data"
+                                          : "Add Employee Data"}
+                                      </ModalHeader>
+                                      <ModalBody>
+                                        <Formik
+                                          enableReinitialize={true}
+                                          initialValues={{
+                                            name:
+                                              (this.state.offeredTest &&
+                                                this.state.offeredTest
+                                                  .name) ||
+                                              "",
+                                            employee_code:
+                                              (this.state.offeredTest &&
+                                                this.state.offeredTest
+                                                  .employee_code) ||
+                                              "",
+                                              limit:
+                                              (this.state.offeredTest &&
+                                                this.state.offeredTest
+                                                  .limit) ||
+                                              "",
+                                              date:
+                                              (this.state.offeredTest &&
+                                                this.state.offeredTest
+                                                  .date) ||
+                                              "",
+                                            status:
+                                              (this.state.offeredTest &&
+                                                this.state.offeredTest
+                                                  .status) ||
+                                              "",
+                                          }}
+                                          validationSchema={Yup.object().shape({
+                                            employee_code: Yup.string()
+                                              .required("Employee Code is required")
+                                              .matches(/^\d{13}$/, "Employee Code must be exactly 13 digits")
+                                          })}
+                                          onSubmit={(values, { setSubmitting }) => {
+                                            console.log("Form submitted with values:", values);
+                                            setSubmitting(false);
+
+                                            const updateCemployee =
+                                            {
+                                              id: offeredTest.id,
+                                              name: values.name,
+                                              employee_code:
+                                                values.employee_code,
+                                              status: values.status,
+                                              limit: values.limit,
+                                              date: values.date,
+                                            };
+
+                                            // update PaymentStatus
+                                            onUpdateCemployee(
+                                              updateCemployee
+                                            );
+                                            setTimeout(() => {
+                                              onGetEmployeeCorporate(
+                                                this.state.user_id
+                                              );
+                                            }, 1000);
+                                            this.toggle();
+                                          }}
+                                        >
+                                          {({ errors, status, touched, isValid }) => (
+                                            <Form>
+                                              <Row>
+                                                <Col className="col-12">
+                                                  <Field
+                                                    type="hidden"
+                                                    className="form-control"
+                                                    name="hiddenEditFlag"
+                                                    value={isEdit}
+                                                  />
+
+                                                  <div className="mb-3">
+                                                    <Label className="col-form-label">Employee Name
+                                                    <span
+                                                        style={{ color: "#f46a6a" }}
+                                                        className="font-size-18"
+                                                      >
+                                                        *
+                                                      </span>
+                                                    </Label>
+                                                    <Field
+                                                      type="text"
+                                                      name="name"
+                                                      className={"form-control" + (errors.name && touched.name ? " is-invalid" : "")}
+                                                    />
+                                                    <ErrorMessage name="name" component="div" className="invalid-feedback" />
+                                                  </div>
+
+                                                  <div className="mb-3">
+                                                    <Label className="col-form-label">Employee Code</Label>
+                                                    <Field
+                                                      type="text"
+                                                      name="employee_code"
+                                                      className={"form-control" + (errors.employee_code && touched.employee_code ? " is-invalid" : "")}
+                                                    />
+                                                    <ErrorMessage name="employee_code" component="div" className="invalid-feedback" />
+                                                  </div>
+                                                  {payment_terms === "Payment by Coorporate to LH" && (
+                            <>
+
+                                                  <div className="mb-3">
+                                                    <Label className="col-form-label">Amount Limit</Label>
+                                                    <Field
+                                                      type="text"
+                                                      name="limit"
+                                                      className={"form-control" + (errors.limit && touched.limit ? " is-invalid" : "")}
+                                                    />
+                                                    <ErrorMessage name="limit" component="div" className="invalid-feedback" />
+                                                  </div>
+                                                  <div className="mb-3">
+                                                    <Label className="col-form-label">Expiry Date</Label>
+                                                    <Field
+                                                      type="datetime-local"
+                                                      name="date"
+                                                      min={new Date(
+                                                        new Date().toString().split("GMT")[0] +
+                                                        " UTC"
+                                                      )
+                                                        .toISOString()
+                                                        .slice(0, -8)}
+                                                      className={"form-control" + (errors.date && touched.date ? " is-invalid" : "")}
+                                                    />
+                                                    <ErrorMessage name="date" component="div" className="invalid-feedback" />
+                                                  </div>
+                                                  </>)}
+                                                  <div className="mb-3">
+                                                  <Label htmlFor="status" className="form-label">
+                                                    Activity Status
+                                                  </Label>
+                                                  <Field name="status" as="select" className="form-select">
+                                                    <option value="Active">Active</option>
+                                                    <option value="Inactive">Inactive</option>
+                                                  </Field>
+                                                </div>
+                                                </Col>
+                                              </Row>
+                                              <Row>
+                                                <Col>
+                                                  <div className="text-end">
+                                                    <button
+                                                      type="submit"
+                                                      className="btn btn-success save-user"
+                                                    >
+                                                      Save
+                                                    </button>
+                                                  </div>
+                                                </Col>
+                                              </Row>
+                                            </Form>
+                                          )}
+                                        </Formik>
+                                      </ModalBody>
+                                    </Modal>
+                                      </div>
+                                    </Col>
+                                  </Row>
+                                </React.Fragment>
+                              )}
+                            </ToolkitProvider>
+                          )}
+                        </PaginationProvider>
+                      </div>
+                    ) : (
+                      <div>
+                      <PaginationProvider
+                        pagination={paginationFactory(pageOptions)}
+                        keyField="id"
+                        columns={this.state.offeredTestListColumns}
+                        data={cemployeeDatas}
+                      >
+                        {({ paginationProps, paginationTableProps }) => (
+                          <ToolkitProvider
+                            keyField="id"
+                            columns={this.state.offeredTestListColumns}
+                            data={cemployeeDatas}
+                            search
+                          >
+                            {toolkitprops => (
+                              <React.Fragment>
+                                <Row className="mb-4">
+                                  <Col xl="12">
+                                    <div className="table-responsive">
+                                      <BootstrapTable
+                                        {...toolkitprops.baseProps}
+                                        {...paginationTableProps}
+                                        defaultSorted={defaultSorted}
+                                        classes={"table align-middle table-condensed table-hover"}
+                                        bordered={false}
+                                        striped={true}
+                                        headerWrapperClasses={"table-light"}
+                                        responsive
+                                        ref={this.node}
+                                        filter={filterFactory()}
+                                        data={filteredStatements}
+                                        columns={columns}
+                                      />
+                                       <Modal
                                       isOpen={this.state.PatientModal}
                                       className={this.props.className}
                                     // onPointerLeave={this.handleMouseExit}
@@ -746,14 +1023,349 @@ class OfferedTestsList extends Component {
                                         </Formik>
                                       </ModalBody>
                                     </Modal>
-                                  </div>
-                                </Col>
-                              </Row>
-                            </React.Fragment>
-                          )}
-                        </ToolkitProvider>
-                      )}
-                    </PaginationProvider>
+                                     <Modal
+                                      isOpen={this.state.modal}
+                                      className={this.props.className}
+                                    >
+                                      <ModalHeader
+                                        toggle={this.toggle}
+                                        tag="h4"
+                                      >
+                                        {!!isEdit
+                                          ? "Edit Employee Data"
+                                          : "Add Employee Data"}
+                                      </ModalHeader>
+                                      <ModalBody>
+                                        <Formik
+                                          enableReinitialize={true}
+                                          initialValues={{
+                                            name:
+                                              (this.state.offeredTest &&
+                                                this.state.offeredTest
+                                                  .name) ||
+                                              "",
+                                            employee_code:
+                                              (this.state.offeredTest &&
+                                                this.state.offeredTest
+                                                  .employee_code) ||
+                                              "",
+                                              limit:
+                                              (this.state.offeredTest &&
+                                                this.state.offeredTest
+                                                  .limit) ||
+                                              "",
+                                              date:
+                                              (this.state.offeredTest &&
+                                                this.state.offeredTest
+                                                  .date) ||
+                                              "",
+                                            status:
+                                              (this.state.offeredTest &&
+                                                this.state.offeredTest
+                                                  .status) ||
+                                              "",
+                                          }}
+                                          validationSchema={Yup.object().shape({
+                                            employee_code: Yup.string()
+                                              .required("Employee Code is required")
+                                              .matches(/^\d{13}$/, "Employee Code must be exactly 13 digits")
+                                          })}
+                                          onSubmit={(values, { setSubmitting }) => {
+                                            console.log("Form submitted with values:", values);
+                                            setSubmitting(false);
+
+                                            const updateCemployee =
+                                            {
+                                              id: offeredTest.id,
+                                              name: values.name,
+                                              employee_code:
+                                                values.employee_code,
+                                              status: values.status,
+                                              limit: values.limit,
+                                              date: values.date,
+                                            };
+
+                                            // update PaymentStatus
+                                            onUpdateCemployee(
+                                              updateCemployee
+                                            );
+                                            setTimeout(() => {
+                                              onGetEmployeeCorporate(
+                                                this.state.user_id
+                                              );
+                                            }, 1000);
+                                            this.toggle();
+                                          }}
+                                        >
+                                          {({ errors, status, touched, isValid }) => (
+                                            <Form>
+                                              <Row>
+                                                <Col className="col-12">
+                                                  <Field
+                                                    type="hidden"
+                                                    className="form-control"
+                                                    name="hiddenEditFlag"
+                                                    value={isEdit}
+                                                  />
+
+                                                  <div className="mb-3">
+                                                    <Label className="col-form-label">Employee Name
+                                                    <span
+                                                        style={{ color: "#f46a6a" }}
+                                                        className="font-size-18"
+                                                      >
+                                                        *
+                                                      </span>
+                                                    </Label>
+                                                    <Field
+                                                      type="text"
+                                                      name="name"
+                                                      className={"form-control" + (errors.name && touched.name ? " is-invalid" : "")}
+                                                    />
+                                                    <ErrorMessage name="name" component="div" className="invalid-feedback" />
+                                                  </div>
+
+                                                  <div className="mb-3">
+                                                    <Label className="col-form-label">Employee Code</Label>
+                                                    <Field
+                                                      type="text"
+                                                      name="employee_code"
+                                                      className={"form-control" + (errors.employee_code && touched.employee_code ? " is-invalid" : "")}
+                                                    />
+                                                    <ErrorMessage name="employee_code" component="div" className="invalid-feedback" />
+                                                  </div>
+                                                  {payment_terms === "Payment by Coorporate to LH" && (
+                            <>
+
+                                                  <div className="mb-3">
+                                                    <Label className="col-form-label">Amount Limit</Label>
+                                                    <Field
+                                                      type="text"
+                                                      name="limit"
+                                                      className={"form-control" + (errors.limit && touched.limit ? " is-invalid" : "")}
+                                                    />
+                                                    <ErrorMessage name="limit" component="div" className="invalid-feedback" />
+                                                  </div>
+                                                  <div className="mb-3">
+                                                    <Label className="col-form-label">Expiry Date</Label>
+                                                    <Field
+                                                      type="datetime-local"
+                                                      name="date"
+                                                      min={new Date(
+                                                        new Date().toString().split("GMT")[0] +
+                                                        " UTC"
+                                                      )
+                                                        .toISOString()
+                                                        .slice(0, -8)}
+                                                      className={"form-control" + (errors.date && touched.date ? " is-invalid" : "")}
+                                                    />
+                                                    <ErrorMessage name="date" component="div" className="invalid-feedback" />
+                                                  </div>
+                                                  </>)}
+                                                  <div className="mb-3">
+                                                  <Label htmlFor="status" className="form-label">
+                                                    Activity Status
+                                                  </Label>
+                                                  <Field name="status" as="select" className="form-select">
+                                                    <option value="Active">Active</option>
+                                                    <option value="Inactive">Inactive</option>
+                                                  </Field>
+                                                </div>
+                                                </Col>
+                                              </Row>
+                                              <Row>
+                                                <Col>
+                                                  <div className="text-end">
+                                                    <button
+                                                      type="submit"
+                                                      className="btn btn-success save-user"
+                                                    >
+                                                      Save
+                                                    </button>
+                                                  </div>
+                                                </Col>
+                                              </Row>
+                                            </Form>
+                                          )}
+                                        </Formik>
+                                      </ModalBody>
+                                    </Modal> <Modal
+                                      isOpen={this.state.modal}
+                                      className={this.props.className}
+                                    >
+                                      <ModalHeader
+                                        toggle={this.toggle}
+                                        tag="h4"
+                                      >
+                                        {!!isEdit
+                                          ? "Edit Employee Data"
+                                          : "Add Employee Data"}
+                                      </ModalHeader>
+                                      <ModalBody>
+                                        <Formik
+                                          enableReinitialize={true}
+                                          initialValues={{
+                                            name:
+                                              (this.state.offeredTest &&
+                                                this.state.offeredTest
+                                                  .name) ||
+                                              "",
+                                            employee_code:
+                                              (this.state.offeredTest &&
+                                                this.state.offeredTest
+                                                  .employee_code) ||
+                                              "",
+                                              limit:
+                                              (this.state.offeredTest &&
+                                                this.state.offeredTest
+                                                  .limit) ||
+                                              "",
+                                              date:
+                                              (this.state.offeredTest &&
+                                                this.state.offeredTest
+                                                  .date) ||
+                                              "",
+                                            status:
+                                              (this.state.offeredTest &&
+                                                this.state.offeredTest
+                                                  .status) ||
+                                              "",
+                                          }}
+                                          validationSchema={Yup.object().shape({
+                                            employee_code: Yup.string()
+                                              .required("Employee Code is required")
+                                              .matches(/^\d{13}$/, "Employee Code must be exactly 13 digits")
+                                          })}
+                                          onSubmit={(values, { setSubmitting }) => {
+                                            console.log("Form submitted with values:", values);
+                                            setSubmitting(false);
+
+                                            const updateCemployee =
+                                            {
+                                              id: offeredTest.id,
+                                              name: values.name,
+                                              employee_code:
+                                                values.employee_code,
+                                              status: values.status,
+                                              limit: values.limit,
+                                              date: values.date,
+                                            };
+
+                                            // update PaymentStatus
+                                            onUpdateCemployee(
+                                              updateCemployee
+                                            );
+                                            setTimeout(() => {
+                                              onGetEmployeeCorporate(
+                                                this.state.user_id
+                                              );
+                                            }, 1000);
+                                            this.toggle();
+                                          }}
+                                        >
+                                          {({ errors, status, touched, isValid }) => (
+                                            <Form>
+                                              <Row>
+                                                <Col className="col-12">
+                                                  <Field
+                                                    type="hidden"
+                                                    className="form-control"
+                                                    name="hiddenEditFlag"
+                                                    value={isEdit}
+                                                  />
+
+                                                  <div className="mb-3">
+                                                    <Label className="col-form-label">Employee Name
+                                                    <span
+                                                        style={{ color: "#f46a6a" }}
+                                                        className="font-size-18"
+                                                      >
+                                                        *
+                                                      </span>
+                                                    </Label>
+                                                    <Field
+                                                      type="text"
+                                                      name="name"
+                                                      className={"form-control" + (errors.name && touched.name ? " is-invalid" : "")}
+                                                    />
+                                                    <ErrorMessage name="name" component="div" className="invalid-feedback" />
+                                                  </div>
+
+                                                  <div className="mb-3">
+                                                    <Label className="col-form-label">Employee Code</Label>
+                                                    <Field
+                                                      type="text"
+                                                      name="employee_code"
+                                                      className={"form-control" + (errors.employee_code && touched.employee_code ? " is-invalid" : "")}
+                                                    />
+                                                    <ErrorMessage name="employee_code" component="div" className="invalid-feedback" />
+                                                  </div>
+                                                  {payment_terms === "Payment by Coorporate to LH" && (
+                            <>
+
+                                                  <div className="mb-3">
+                                                    <Label className="col-form-label">Amount Limit</Label>
+                                                    <Field
+                                                      type="text"
+                                                      name="limit"
+                                                      className={"form-control" + (errors.limit && touched.limit ? " is-invalid" : "")}
+                                                    />
+                                                    <ErrorMessage name="limit" component="div" className="invalid-feedback" />
+                                                  </div>
+                                                  <div className="mb-3">
+                                                    <Label className="col-form-label">Expiry Date</Label>
+                                                    <Field
+                                                      type="datetime-local"
+                                                      name="date"
+                                                      min={new Date(
+                                                        new Date().toString().split("GMT")[0] +
+                                                        " UTC"
+                                                      )
+                                                        .toISOString()
+                                                        .slice(0, -8)}
+                                                      className={"form-control" + (errors.date && touched.date ? " is-invalid" : "")}
+                                                    />
+                                                    <ErrorMessage name="date" component="div" className="invalid-feedback" />
+                                                  </div>
+                                                  </>)}
+                                                  <div className="mb-3">
+                                                  <Label htmlFor="status" className="form-label">
+                                                    Activity Status
+                                                  </Label>
+                                                  <Field name="status" as="select" className="form-select">
+                                                    <option value="Active">Active</option>
+                                                    <option value="Inactive">Inactive</option>
+                                                  </Field>
+                                                </div>
+                                                </Col>
+                                              </Row>
+                                              <Row>
+                                                <Col>
+                                                  <div className="text-end">
+                                                    <button
+                                                      type="submit"
+                                                      className="btn btn-success save-user"
+                                                    >
+                                                      Save
+                                                    </button>
+                                                  </div>
+                                                </Col>
+                                              </Row>
+                                            </Form>
+                                          )}
+                                        </Formik>
+                                      </ModalBody>
+                                    </Modal>
+                                    </div>
+                                  </Col>
+                                </Row>
+                              </React.Fragment>
+                            )}
+                          </ToolkitProvider>
+                        )}
+                      </PaginationProvider>
+                    </div>
+)}
                   </CardBody>
                 </Card>
               </Col>
@@ -763,8 +1375,8 @@ class OfferedTestsList extends Component {
       </React.Fragment>
     );
   }
-}
 
+}  
 OfferedTestsList.propTypes = {
   match: PropTypes.object,
   tests: PropTypes.array,
