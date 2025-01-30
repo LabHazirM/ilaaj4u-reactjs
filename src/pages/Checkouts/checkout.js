@@ -1202,6 +1202,16 @@ getCommonPaymentMethods = (checkoutItems) => {
                                       Please choose if you want to avail Routine / Urgent Home Sampling services for the following tests
                                     </strong>
                                   </span>
+                                  <span><br></br></span>
+                                  {this.props.patientProfile && this.props.patientProfile.corporate_payment === "Payment by Coorporate to LH" && (
+                                    <span className="text-danger font-size-12">
+                                      <strong>
+                                        <span className="text-danger">Note:</span>
+                                      </strong>{" "}
+                                      <strong>Your test may not be booked if total sum exceeds Available Credit.</strong>
+                                    </span>
+                                  )}
+
                                   <div className="d-flex" style={{ marginBottom: '20px', marginTop: '20px' }}>
                                     <strong>Home Sampling: </strong>
                                     {this.state.homeSampledTests.find(homeSampledTest => homeSampledTest.is_homesampling_offered == "Yes") ? (
