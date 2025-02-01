@@ -205,6 +205,15 @@ class Checkout extends Component {
   handleFullProceedClick = () => {
     const canProceed = this.checkForFullValidations();
     if (canProceed) {
+      // Get total appointment cost
+    const totalAppointmentCost = this.state.checkoutItems.reduce((acc, item) => acc + (item.total_test_cost || 0), 0);
+    const walletBalance = this.props.donationCheck.length > 0 ? this.props.donationCheck[0].available_credit : 0;
+
+    // Prevent booking if corporate and wallet balance is insufficient
+    if (this.props.patientProfile.corporate_payment === "Payment by Coorporate to LH" && totalAppointmentCost > walletBalance) {
+      alert("Insufficient wallet balance to book this appointment.");
+      return;
+    }
       let paymentMethod;
       if (this.state.user_id && this.state.user_type !== "CSR") {
         paymentMethod =
@@ -1766,16 +1775,18 @@ getCommonPaymentMethods = (checkoutItems) => {
                                 {this.state.payment_method !== "Card" ? (
                                   <Col sm="6">
                                   <div className="text-end">
-                                    <button
-                                      component={Link}
-                                      onClick={this.handleFullProceedClick}
-                                      to="/checkout"
-                                      className="btn btn-success mb-4"
-                                      disabled={this.state.checkoutSuccess}
-                                    >
-                                      <i className="mdi mdi-truck-fast me-1" />{" "}
-                                      Book Appointment{" "}
-                                    </button>
+                                   <button
+  className="btn btn-success mb-4"
+  onClick={this.handleFullProceedClick}
+  disabled={
+    this.props.patientProfile.corporate_payment === "Payment by Coorporate to LH" &&
+    this.state.checkoutItems.reduce((acc, item) => acc + (item.total_test_cost || 0), 0) >
+    (this.props.donationCheck.length > 0 ? this.props.donationCheck[0].available_credit : 0)
+  }
+>
+  <i className="mdi mdi-truck-fast me-1" /> Book Appointment
+</button>
+
                                   </div>
                                 </Col>
                                 ) : (
