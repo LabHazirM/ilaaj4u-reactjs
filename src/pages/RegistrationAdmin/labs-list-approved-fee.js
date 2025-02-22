@@ -186,7 +186,7 @@ class LabsLists extends Component {
   {(currentItems || []).map((lab_list, key) => (
     <tr key={key}>
       <td className="text-start">{lab_list?.city || "N/A"}</td>
-      <td className="text-start">
+      <td className="text-start" style={{ whiteSpace: 'pre-wrap', width: '200px' }}>
         <b>
           <Link to={`/shared-percentage-approved-Fee/${lab_list?.id || 0}`}>
             {lab_list?.name || "N/A"}
@@ -196,7 +196,7 @@ class LabsLists extends Component {
       <td className="text-start">{lab_list?.type || "N/A"}</td>
       <td className="text-start">{lab_list?.landline || "N/A"}</td>
       <td className="text-start">{lab_list?.email || "N/A"}</td>
-      <td className="text-start">{lab_list?.address || "N/A"}</td>
+      <td className="text-start" style={{ whiteSpace: 'pre-wrap' }}>{lab_list?.address || "N/A"}</td>
     </tr>
   ))}
 </tbody>
