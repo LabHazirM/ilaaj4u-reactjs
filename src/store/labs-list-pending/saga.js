@@ -22,9 +22,10 @@ function* fetchLabsListPendingFee(object) {
   }
 }
 
-function* fetchLabsListApprovedFee(object) {
+function* fetchLabsListApprovedFee(action) {
   try {
-    const response = yield call(getLabsListApprovedFee, object.payload);
+    const { id, page, limit, filters } = action.payload;
+    const response = yield call(getLabsListApprovedFee, id, page, limit, filters);
     yield put(getLabsListApprovedFeeSuccess(response));
   } catch (error) {
     yield put(getLabsListApprovedFeeFail(error));

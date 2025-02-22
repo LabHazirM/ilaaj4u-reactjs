@@ -48,23 +48,12 @@ class LabsLists extends Component {
     };
   }
 
-  // componentDidMount() {
-  //   const { labsListApprovedFee, onGetLabsListApprovedFee } = this.props;
-  //   console.log(onGetLabsListApprovedFee());
-  //   this.setState({ labsListApprovedFee });
-  // }
   componentDidMount() {
-    const { labsListApprovedFee, onGetLabsListApprovedFee } = this.props;
-    onGetLabsListApprovedFee(this.state.user_id);
-    console.log(onGetLabsListApprovedFee());
-    this.setState({ labsListApprovedFee });
+    const { onGetLabsListApprovedFee } = this.props;
+    const { user_id, currentPage, itemsPerPage } = this.state;
+    onGetLabsListApprovedFee(user_id, currentPage, itemsPerPage);
   }
-  // componentDidMount() {
-  //   const { b2bAllClients, onGetB2bAllClientsList } = this.props;
-  //   onGetB2bAllClientsList(this.state.user_id);
-  //   this.setState({ b2bAllClients });
-  // }
-
+  
   toggle() {
     this.setState(prevState => ({
       modal: !prevState.modal,
@@ -82,38 +71,45 @@ class LabsLists extends Component {
     }
   };
   handleFilterChange = (field, value) => {
-    this.setState((prevState) => ({
-      filters: {
-        ...prevState.filters,
-        [field]: value,
-      },
-    }));
+    this.setState(
+      (prevState) => ({
+        filters: {
+          ...prevState.filters,
+          [field]: value,
+        },
+        currentPage: 1, // Reset to first page on new filter
+      }),
+      () => {
+        const { onGetLabsListApprovedFee } = this.props;
+        const { user_id, currentPage, itemsPerPage, filters } = this.state;
+        onGetLabsListApprovedFee(user_id, currentPage, itemsPerPage, filters);
+      }
+    );
   };
-
   handlePageChange = (pageNumber) => {
-    this.setState({
-      currentPage: pageNumber,
+    this.setState({ currentPage: pageNumber }, () => {
+      const { onGetLabsListApprovedFee } = this.props;
+      const { user_id, currentPage, itemsPerPage } = this.state;
+      onGetLabsListApprovedFee(user_id, currentPage, itemsPerPage);
     });
   };
 
   render() {
     const { filters, currentPage, itemsPerPage  } = this.state;
     const { labsListApprovedFee } = this.props;
-    const indexOfLastItem = currentPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const filteredLabsList = labsListApprovedFee.filter((lab) => {
-      return lab.lab_list.some((lab_list) => {
-        return (
-          (lab_list.city && lab_list.city.toLowerCase().includes(filters.city.toLowerCase())) &&
-          (lab_list.name && lab_list.name.toLowerCase().includes(filters.name.toLowerCase())) &&
-          (lab_list.type && lab_list.type.toLowerCase().includes(filters.type.toLowerCase())) &&
-          (lab_list.landline && lab_list.landline.includes(filters.landline)) &&
-          (lab_list.email && lab_list.email.toLowerCase().includes(filters.email.toLowerCase())) &&
-          (lab_list.address && lab_list.address.toLowerCase().includes(filters.address.toLowerCase()))
-        );
-      });
+    // const indexOfLastItem = currentPage * itemsPerPage;
+    // const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const filteredLabsList = (labsListApprovedFee?.data || []).filter((lab_list) => {
+      return (
+        (lab_list.city && lab_list.city.toLowerCase().includes(filters.city.toLowerCase())) &&
+        (lab_list.name && lab_list.name.toLowerCase().includes(filters.name.toLowerCase())) &&
+        (lab_list.type && lab_list.type.toLowerCase().includes(filters.type.toLowerCase())) &&
+        (lab_list.landline && lab_list.landline.includes(filters.landline)) &&
+        (lab_list.email && lab_list.email.toLowerCase().includes(filters.email.toLowerCase())) &&
+        (lab_list.address && lab_list.address.toLowerCase().includes(filters.address.toLowerCase()))
+      );
     });
-
+    
     const columns = [
       { dataField: 'city', text: 'City' },
       { dataField: 'name', text: 'Lab Name' },
@@ -122,8 +118,9 @@ class LabsLists extends Component {
       { dataField: 'email', text: 'Email' },
       { dataField: 'address', text: 'Address' },
     ];
-    const currentItems = filteredLabsList.slice(indexOfFirstItem, indexOfLastItem);
-    const totalPages = Math.ceil(filteredLabsList.length / itemsPerPage);
+    const currentItems = filteredLabsList;
+
+    const totalPages = labsListApprovedFee.total_pages;
 
     // Calculate the range of page numbers to display
     const pageRange = 3; // Adjust this value based on your requirement
@@ -185,28 +182,25 @@ class LabsLists extends Component {
                           </thead>
                          
                           <tbody>
-                            {currentItems.map((lab, key) => (
-                              <React.Fragment key={key}>
-                                {lab.lab_list.map((lab_list, key) => (
-                                  <tr key={key}>
-                                    <td className="text-start">{lab_list.city}</td>
-                                    <td className="text-start" style={{ whiteSpace: 'pre-wrap', width: '200px' }}>
-                                      <b>
-                                        <Link to={`/shared-percentage-approved-Fee/${lab_list.id}`}>{lab_list.name}</Link>
-                                      </b>
-                                    </td>
-                                    <td className="text-start">{lab_list.type}</td>
-                                    <td className="text-start">{lab_list.landline}</td>
-                                    <td className="text-start">{lab_list.email}</td>
-                                    <td className="text-start" style={{ whiteSpace: 'pre-wrap' }}>
-                                      {lab_list.address}
-                                    </td>
-                                  </tr>
-                                ))}
-                              </React.Fragment>
-                            ))}
-                          </tbody>
-                      
+                            
+  {(currentItems || []).map((lab_list, key) => (
+    <tr key={key}>
+      <td className="text-start">{lab_list?.city || "N/A"}</td>
+      <td className="text-start">
+        <b>
+          <Link to={`/shared-percentage-approved-Fee/${lab_list?.id || 0}`}>
+            {lab_list?.name || "N/A"}
+          </Link>
+        </b>
+      </td>
+      <td className="text-start">{lab_list?.type || "N/A"}</td>
+      <td className="text-start">{lab_list?.landline || "N/A"}</td>
+      <td className="text-start">{lab_list?.email || "N/A"}</td>
+      <td className="text-start">{lab_list?.address || "N/A"}</td>
+    </tr>
+  ))}
+</tbody>
+
               
                         </Table>
                     </div>
@@ -261,8 +255,9 @@ const mapStateToProps = ({ labsListPendingFee}) => ({
   labsListApprovedFee: labsListPendingFee.labsListApprovedFee,
 });
 
-const mapDispatchToProps = (dispatch, ownProps) => ({
-  onGetLabsListApprovedFee: id => dispatch(getLabsListApprovedFee(id)),
+const mapDispatchToProps = (dispatch) => ({
+  onGetLabsListApprovedFee: (id, page, limit, filters) =>
+    dispatch(getLabsListApprovedFee(id, page, limit, filters)),
 });
 
 export default connect(

@@ -24,11 +24,11 @@ const labsListPendingFee = (state = INIT_STATE, action) => {
         ...state,
         error: action.payload,
       };
-    case GET_LABS_LIST_APPROVED_FEE_SUCCESS:
-      return {
-        ...state,
-        labsListApprovedFee: action.payload.data,
-      };
+      case GET_LABS_LIST_APPROVED_FEE_SUCCESS:
+        return {
+          ...state,
+          labsListApprovedFee: action.payload || [], 
+        };
 
     case GET_LABS_LIST_APPROVED_FEE_FAIL:
       return {

@@ -2261,12 +2261,12 @@ export const getLabsListPendingFee = ()=>
   get(`${url.GET_LABS_LIST_PENDING_FEE}`, {
     headers: getHeader(authHeader()),
   });
-export const getLabsListApprovedFee = ()=>
-  get(`${url.GET_LABS_LIST_APPROVED_FEE}`, {
-    headers: getHeader(authHeader()),
-  });
-
-
+  export const getLabsListApprovedFee = (id, page, limit, filters = {}) => {
+    const queryParams = new URLSearchParams({ id, page, limit, ...filters }).toString();
+    return get(`${url.GET_LABS_LIST_APPROVED_FEE}?${queryParams}`, {
+      headers: getHeader(authHeader()),
+    });
+  };
 export const getSharedPercentagePendingFeeTests = id =>
   get(`${url.GET_SHARED_PERCENTAGE_PENDING_FEE}/${id}`, {
     headers: getHeader(authHeader()),
