@@ -27,8 +27,8 @@ class ReviewPerformance extends Component {
   constructor(props) {
     super(props);
     const today = new Date();
-    const startOfDay = new Date(today.setHours(0, 0, 0, 0));
-    const endOfDay = new Date(today.setHours(23, 59, 59, 999));
+    const startOfDay = new Date(Date.UTC(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0));
+    const endOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59);
 
     this.state = {
       ReviewPerformance: [],
@@ -53,16 +53,23 @@ class ReviewPerformance extends Component {
   };
 
   handleDateChange = (date, field) => {
-    this.setState(
-      { [field]: date },
-      () => {
+    if (date) {
+      const utcDate = new Date(Date.UTC(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate(),
+        0, 0, 0
+      ));
+  
+      this.setState({ [field]: utcDate }, () => {
         const { start_date, end_date } = this.state;
         if (start_date && end_date && start_date <= end_date) {
           this.fetchPerformanceData();
         }
-      }
-    );
+      });
+    }
   };
+  
   
   render() {
     const { ReviewPerformance,ReviewPerformanceTest } = this.props;
@@ -89,7 +96,8 @@ class ReviewPerformance extends Component {
                             placeholder="dd M yyyy"
                             options={{
                               dateFormat: "d M Y",
-                              defaultDate: this.state.start_date
+                              defaultDate: this.state.start_date,
+                              utc: false, // Make sure UTC mode is off
                             }}
                             onChange={date => this.handleDateChange(date[0], 'start_date')}
                           />
@@ -104,7 +112,7 @@ class ReviewPerformance extends Component {
                             placeholder="dd M yyyy"
                             options={{
                               dateFormat: "d M Y",
-                              defaultDate: this.state.end_date
+                              defaultDate: this.state.end_date,
                             }}
                             onChange={date => this.handleDateChange(date[0], 'end_date')}
                           />
