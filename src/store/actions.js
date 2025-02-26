@@ -27,7 +27,7 @@ export * from "./auth/patientprofile/actions";
 export * from "./auth/corporateprofile/actions";
 // lab market
 export * from "./labmarket/actions";
-
+export * from "./review-performance/actions";
 // test market
 export * from "./testmarket/actions";
 export * from "./profilemarket/actions";

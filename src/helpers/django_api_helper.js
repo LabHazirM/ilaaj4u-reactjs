@@ -2257,16 +2257,20 @@ export const approveUnapproveB2BClient = data => {
 };
 // Pending offered test labs list
 
-export const getLabsListPendingFee = ()=>
-  get(`${url.GET_LABS_LIST_PENDING_FEE}`, {
+
+export const getLabsListPendingFee = (id, page, limit, filters = {}) => {
+  const queryParams = new URLSearchParams({ id, page, limit, ...filters }).toString();
+  return get(`${url.GET_LABS_LIST_PENDING_FEE}?${queryParams}`, {
     headers: getHeader(authHeader()),
   });
-export const getLabsListApprovedFee = ()=>
-  get(`${url.GET_LABS_LIST_APPROVED_FEE}`, {
-    headers: getHeader(authHeader()),
-  });
+};
 
-
+  export const getLabsListApprovedFee = (id, page, limit, filters = {}) => {
+    const queryParams = new URLSearchParams({ id, page, limit, ...filters }).toString();
+    return get(`${url.GET_LABS_LIST_APPROVED_FEE}?${queryParams}`, {
+      headers: getHeader(authHeader()),
+    });
+  };
 export const getSharedPercentagePendingFeeTests = id =>
   get(`${url.GET_SHARED_PERCENTAGE_PENDING_FEE}/${id}`, {
     headers: getHeader(authHeader()),
@@ -2601,6 +2605,22 @@ export const getReferrelFeeLabs = () =>
   get(`${url.GET_REFERREL_FEES}`, {
     headers: getHeader(authHeader()),
   });
+  
+  export const getReviewPerformance = (start_date, end_date) => {
+    return get(`${url.GET_REVIEW_PERFORMANCE}`, {
+      headers: getHeader(authHeader()),
+      params: { start_date, end_date },
+    });
+    
+  };
+
+  export const getReviewPerformanceTest = (start_date, end_date) => {
+    return get(`${url.GET_REVIEW_PERFORMANCE_TEST}`, {
+      headers: getHeader(authHeader()),
+      params: { start_date, end_date },
+    });
+    
+  };  
   
 export const updateReferrelFeeLab = referrelLabFee => {
     let formData = new FormData();

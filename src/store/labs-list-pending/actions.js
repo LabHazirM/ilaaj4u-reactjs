@@ -6,10 +6,12 @@ import {
   GET_LABS_LIST_APPROVED_FEE_SUCCESS,
   GET_LABS_LIST_APPROVED_FEE_FAIL,
 } from "./actionTypes";
-export const getLabsListApprovedFee = () => ({
-  type: GET_LABS_LIST_APPROVED_FEE,
-  payload: {},
-});
+export const getLabsListApprovedFee = (id, page, limit, filters) => {
+  return {
+    type: GET_LABS_LIST_APPROVED_FEE,
+    payload: { id, page, limit, filters },
+  };
+};
 
 export const getLabsListApprovedFeeSuccess =
   labsListApprovedFee => ({
@@ -22,9 +24,9 @@ export const getLabsListApprovedFeeFail = error => ({
   payload: error,
 });
 
-export const getLabsListPendingFee = () => ({
+export const getLabsListPendingFee = (id, page, limit, filters) => ({
   type: GET_LABS_LIST_PENDING_FEE,
-  payload: {},
+  payload: { id, page, limit, filters},
 });
 
 export const getLabsListPendingFeeSuccess =

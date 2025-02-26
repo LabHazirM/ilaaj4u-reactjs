@@ -37,47 +37,56 @@ class LabsLists extends Component {
       itemsPerPage: 10,
     };
   }
-
+  
   componentDidMount() {
     const { onGetLabsListPendingFee } = this.props;
-    onGetLabsListPendingFee(this.state.user_id);
+    const { user_id, currentPage, itemsPerPage } = this.state;
+    onGetLabsListPendingFee(user_id, currentPage, itemsPerPage);
   }
 
   handleFilterChange = (field, value) => {
-    this.setState((prevState) => ({
-      filters: {
-        ...prevState.filters,
-        [field]: value,
-      },
-    }));
+    this.setState(
+      (prevState) => ({
+        filters: {
+          ...prevState.filters,
+          [field]: value,
+        },
+        currentPage: 1, // Reset to first page on new filter
+      }),
+      () => {
+        const { onGetLabsListPendingFee } = this.props;
+        const { user_id, currentPage, itemsPerPage, filters } = this.state;
+        onGetLabsListPendingFee(user_id, currentPage, itemsPerPage, filters);
+      }
+    );
   };
-
   handlePageChange = (pageNumber) => {
-    this.setState({
-      currentPage: pageNumber,
+    this.setState({ currentPage: pageNumber }, () => {
+      const { onGetLabsListPendingFee } = this.props;
+      const { user_id, currentPage, itemsPerPage } = this.state;
+      onGetLabsListPendingFee(user_id, currentPage, itemsPerPage);
     });
   };
 
   render() {
     const { filters, currentPage, itemsPerPage } = this.state;
     const { labsListPendingFee } = this.props;
-    const indexOfLastItem = currentPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const filteredLabsList = labsListPendingFee.filter((lab) => {
-      return lab.lab_list.some((lab_list) => {
-        return (
-          lab_list.city.toLowerCase().includes(filters.city.toLowerCase()) &&
-          lab_list.name.toLowerCase().includes(filters.name.toLowerCase()) &&
-          lab_list.type.toLowerCase().includes(filters.type.toLowerCase()) &&
-          lab_list.landline.includes(filters.landline) &&
-          lab_list.email.toLowerCase().includes(filters.email.toLowerCase()) &&
-          lab_list.address.toLowerCase().includes(filters.address.toLowerCase())
-        );
-      });
+    // const indexOfLastItem = currentPage * itemsPerPage;
+    // const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const filteredLabsList = (labsListPendingFee?.data || []).filter((lab_list) => {
+      return (
+        (lab_list.city && lab_list.city.toLowerCase().includes(filters.city.toLowerCase())) &&
+        (lab_list.name && lab_list.name.toLowerCase().includes(filters.name.toLowerCase())) &&
+        (lab_list.type && lab_list.type.toLowerCase().includes(filters.type.toLowerCase())) &&
+        (lab_list.landline && lab_list.landline.includes(filters.landline)) &&
+        (lab_list.email && lab_list.email.toLowerCase().includes(filters.email.toLowerCase())) &&
+        (lab_list.address && lab_list.address.toLowerCase().includes(filters.address.toLowerCase()))
+      );
     });
 
-    const currentItems = filteredLabsList.slice(indexOfFirstItem, indexOfLastItem);
-    const totalPages = Math.ceil(filteredLabsList.length / itemsPerPage);
+    const currentItems = filteredLabsList;
+
+    const totalPages = labsListPendingFee.total_pages;
 
     // Calculate the range of page numbers to display
     const pageRange = 3; // Adjust this value based on your requirement
@@ -143,27 +152,33 @@ class LabsLists extends Component {
                           <tr>{headerCells}</tr>
                         </thead>
                         <tbody>
-                          {currentItems.map((lab, key) => (
-                            <React.Fragment key={key}>
-                              {lab.lab_list.map((lab_list, key) => (
-                                <tr key={key}>
-                                  <td className="text-start">{lab_list.city}</td>
-                                  <td className="text-start" style={{ whiteSpace: 'pre-wrap', width: '200px' }}>
-                                    <b>
-                                      <Link to={`/shared-percentage-pending-Fee/${lab_list.id}`}>{lab_list.name}</Link>
-                                    </b>
-                                  </td>
-                                  <td className="text-start">{lab_list.type}</td>
-                                  <td className="text-start">{lab_list.landline}</td>
-                                  <td className="text-start">{lab_list.email}</td>
-                                  <td className="text-start" style={{ whiteSpace: 'pre-wrap' }}>
-                                    {lab_list.address}
-                                  </td>
-                                </tr>
-                              ))}
-                            </React.Fragment>
-                          ))}
+                          {(currentItems || []).length > 0 ? (
+                            currentItems.map((lab_list, key) => (
+                              <tr key={key}>
+                                <td className="text-start">{lab_list?.city || "N/A"}</td>
+                                <td className="text-start" style={{ whiteSpace: 'pre-wrap', width: '200px' }}>
+                                  <b>
+                                    <Link to={`/shared-percentage-approved-Fee/${lab_list?.id || 0}`}>
+                                      {lab_list?.name || "N/A"}
+                                    </Link>
+                                  </b>
+                                </td>
+                                <td className="text-start">{lab_list?.type || "N/A"}</td>
+                                <td className="text-start">{lab_list?.landline || "N/A"}</td>
+                                <td className="text-start">{lab_list?.email || "N/A"}</td>
+                                <td className="text-start" style={{ whiteSpace: 'pre-wrap' }}>{lab_list?.address || "N/A"}</td>
+                              </tr>
+                            ))
+                          ) : (
+                            <tr>
+                              <td colSpan="6" className="text-center">
+                                No data available
+                              </td>
+                            </tr>
+                          )}
                         </tbody>
+
+                        
                       </Table>
                     </div>
                     <br/>
@@ -218,7 +233,7 @@ const mapStateToProps = ({ labsListPendingFee }) => ({
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-  onGetLabsListPendingFee: (id) => dispatch(getLabsListPendingFee(id)),
+  onGetLabsListPendingFee: (id, page, limit, filters) => dispatch(getLabsListPendingFee(id, page, limit, filters)),
 });
 
 export default connect(

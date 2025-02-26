@@ -13,18 +13,20 @@ import {
 //Include Both Helper File with needed methods
 import { getLabsListPendingFee, getLabsListApprovedFee } from "../../helpers/django_api_helper";
 
-function* fetchLabsListPendingFee(object) {
+function* fetchLabsListPendingFee(action) {
   try {
-    const response = yield call(getLabsListPendingFee, object.payload);
+    const { id,page, limit, filters }= action.payload;
+    const response = yield call(getLabsListPendingFee,id, page, limit, filters);
     yield put(getLabsListPendingFeeSuccess(response));
   } catch (error) {
     yield put(getLabsListPendingFeeFail(error));
   }
 }
 
-function* fetchLabsListApprovedFee(object) {
+function* fetchLabsListApprovedFee(action) {
   try {
-    const response = yield call(getLabsListApprovedFee, object.payload);
+    const { id, page, limit, filters } = action.payload;
+    const response = yield call(getLabsListApprovedFee, id, page, limit, filters);
     yield put(getLabsListApprovedFeeSuccess(response));
   } catch (error) {
     yield put(getLabsListApprovedFeeFail(error));

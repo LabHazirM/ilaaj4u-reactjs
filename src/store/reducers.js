@@ -194,12 +194,13 @@ import bankAccount from "./bankaccount/reducer";
 // Corporate
 import cemployeeData from "./corporatedata/reducer";
 import activitylogauditor from "./activtylogAuditor/reducer";
-
+import ReviewPerformance from "./review-performance/reducer";
 
 
 const rootReducer = combineReducers({
   // public
   Dashboard,
+  ReviewPerformance,
   activitylogauditor,
   donorsaccountStatements,
   referrelFeeLabs,

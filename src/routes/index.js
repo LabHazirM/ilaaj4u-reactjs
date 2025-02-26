@@ -202,6 +202,7 @@ import DashboardSampleCollector from "pages/Dashboard-SampleCollector";
 
 // registration admin
 import PendingCorporate from "pages/RegistrationAdmin/pending-corporate";
+import ReviewPerformance from "../pages/RegistrationAdmin/review-performance";
 import ApprovedCorporate from "pages/RegistrationAdmin/approved-corporate";
 import UnapprovedCorporate from "pages/RegistrationAdmin/unapproved-corporate";
 
@@ -726,6 +727,7 @@ const auditorAuthProtectedRoutes = [
 
 const registrationAdminAuthProtectedRoutes = [
   { path: "/pending-corporate", component: PendingCorporate },
+  { path: "/review-performance", component: ReviewPerformance },
   { path: "/approved-corporate", component: ApprovedCorporate },
   { path: "/unapproved-corporate", component: UnapprovedCorporate },
   { path: "/pending-labs", component: PendingLabs },
