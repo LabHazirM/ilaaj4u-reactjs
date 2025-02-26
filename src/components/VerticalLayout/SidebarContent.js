@@ -732,6 +732,12 @@ class SidebarContent extends Component {
                           {this.props.t("Corporates Reffrel Fee")}
                         </Link>
                       </li>
+                      <li>
+                        <Link to={"/review-performance"}>
+                          <i className="mdi mdi-chart-line" />
+                          <span>{this.props.t("Review Performance")}</span> 
+                        </Link>
+                      </li>
 
                     </ul>
                   </li>
