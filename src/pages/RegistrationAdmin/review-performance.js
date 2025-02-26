@@ -51,17 +51,29 @@ class ReviewPerformance extends Component {
     onGetReviewPerformance({ start_date, end_date });
     onGetReviewPerformanceTest({ start_date, end_date });
   };
-
   handleDateChange = (date, field) => {
     if (date) {
-      const utcDate = new Date(Date.UTC(
-        date.getFullYear(),
-        date.getMonth(),
-        date.getDate(),
-        0, 0, 0
-      ));
+      let adjustedDate;
   
-      this.setState({ [field]: utcDate }, () => {
+      if (field === 'end_date') {
+        // Set end date to 23:59:59
+        adjustedDate = new Date(Date.UTC(
+          date.getFullYear(),
+          date.getMonth(),
+          date.getDate(),
+          23, 59, 59
+        ));
+      } else {
+        // Set start date to 00:00:00
+        adjustedDate = new Date(Date.UTC(
+          date.getFullYear(),
+          date.getMonth(),
+          date.getDate(),
+          0, 0, 0
+        ));
+      }
+  
+      this.setState({ [field]: adjustedDate }, () => {
         const { start_date, end_date } = this.state;
         if (start_date && end_date && start_date <= end_date) {
           this.fetchPerformanceData();
@@ -69,7 +81,6 @@ class ReviewPerformance extends Component {
       });
     }
   };
-  
   
   render() {
     const { ReviewPerformance,ReviewPerformanceTest } = this.props;
