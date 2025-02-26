@@ -25,12 +25,13 @@ import {
   CardTitle,
   Alert,
 } from "reactstrap";
+import * as XLSX from "xlsx";
 
 import classnames from "classnames";
 
 import { isEmpty, map, size } from "lodash";
 
-//Import Breadcrumb
+// Import Breadcrumb
 import Breadcrumbs from "../../components/Common/Breadcrumb";
 
 import {
@@ -49,7 +50,7 @@ class DonorPayment extends Component {
       user_id: localStorage.getItem("authUser")
         ? JSON.parse(localStorage.getItem("authUser")).user_id
         : "",
-      excel_file: "",
+      excel_file: null, // Changed to null to signify no file initially
       corporate_id: "",
       isDisabled: true,
       isRequiredFilled: true,
@@ -65,44 +66,187 @@ class DonorPayment extends Component {
   };
 
   handleProceedClick = () => {
+  if (!this.state.excel_file) {
+    this.setState({ complaintSuccess: "Error: No file uploaded." });
+    setTimeout(() => {
+      this.setState({ complaintSuccess: "" });
+    }, 30000); // Clear message after 30 seconds
+    return;
+  }
+
+  const file = this.state.excel_file;
+  const reader = new FileReader();
+  reader.onload = () => {
+    const data = reader.result;
+    const workbook = XLSX.read(data, { type: 'binary' });
+    const sheet = workbook.Sheets[workbook.SheetNames[0]];
+    const excelData = XLSX.utils.sheet_to_json(sheet);
+
+    // Validate file
+    const validationErrors = this.validateFile(excelData);
+
+    if (validationErrors.length > 0) {
+      this.setState({ 
+        errorMessage: `Error: ${validationErrors.join(', ')}`, 
+        complaintSuccess: "" 
+      });
+
+      // Hide error message after 30 seconds
+      setTimeout(() => {
+        this.setState({ errorMessage: "" });
+      }, 30000);
+      
+      return;
+    }
+
     this.setState({
-      cemployeeData: {
-        excel_file: this.state.excel_file,
-        corporate_id: this.state.user_id,
-      },
+      cemployeeData: { 
+        excel_file: this.state.excel_file, 
+        corporate_id: this.state.user_id 
+      }
     });
 
-    // API call to get the checkout items
-    const { onAddcemployeefile } = this.props;setTimeout(() => {
-      console.log(
-        onAddcemployeefile(this.state.cemployeeData)
-      );
+    // API call
+    const { onAddcemployeefile } = this.props;
+    setTimeout(() => {
+      console.log(onAddcemployeefile(this.state.cemployeeData));
     }, 1000);
-        // If no error messages then show wait message
+
+    setTimeout(() => {
+      if (this.state.cemployeeData) {
+        this.setState({ complaintSuccess: "Employee Added Successfully", errorMessage: "" });
+
         setTimeout(() => {
-          if (this.state.cemployeeData) {
-            this.setState({
-              complaintSuccess: "Employee Added Successfully",
-            });
-            
-            // Navigate to "/employee-list" route
-            setTimeout(() => {
-              this.props.history.push("/employee-list");
-            }, 3000);
-          } else {
-            this.setState({
-              complaintSuccess: "Please Provide Correct data",
-            });
-          }
-        }, 1000);
-        
-        setTimeout(() => {
-          this.setState({
-            complaintSuccess: "",
-            excel_file: "",
-          });
-        }, 5000);        
+          this.props.history.push("/employee-list");
+        }, 3000);
+      } else {
+        this.setState({ errorMessage: "Please Provide Correct Data", complaintSuccess: "" });
+      }
+    }, 1000);
+
+    setTimeout(() => {
+      this.setState({ complaintSuccess: "", excel_file: null });
+    }, 5000);
   };
+
+  reader.readAsBinaryString(file);
+};
+handleProceedClick = () => {
+  if (!this.state.excel_file) {
+    this.setState({ complaintSuccess: "No file uploaded." });
+    setTimeout(() => {
+      this.setState({ complaintSuccess: "" });
+    }, 10000); // Hide after 10 seconds
+    return;
+  }
+
+  const file = this.state.excel_file;
+  const reader = new FileReader();
+  reader.onload = () => {
+    const data = reader.result;
+    const workbook = XLSX.read(data, { type: 'binary' });
+    const sheet = workbook.Sheets[workbook.SheetNames[0]];
+    const excelData = XLSX.utils.sheet_to_json(sheet);
+
+    // Validate file
+    const validationErrors = this.validateFile(excelData);
+
+    if (validationErrors.length > 0) {
+      this.setState({ 
+        errorMessage: validationErrors.join(', '), 
+        complaintSuccess: "" 
+      });
+
+      // Hide error message after 10 seconds
+      setTimeout(() => {
+        this.setState({ errorMessage: "" });
+      }, 3000);
+      
+      return;
+    }
+
+    this.setState({
+      cemployeeData: { 
+        excel_file: this.state.excel_file, 
+        corporate_id: this.state.user_id 
+      }
+    });
+
+    // API call
+    const { onAddcemployeefile } = this.props;
+    setTimeout(() => {
+      console.log(onAddcemployeefile(this.state.cemployeeData));
+    }, 1000);
+
+    setTimeout(() => {
+      if (this.state.cemployeeData) {
+        this.setState({ complaintSuccess: "Employee Added Successfully", errorMessage: "" });
+
+        setTimeout(() => {
+          this.props.history.push("/employee-list");
+        }, 3000);
+      } else {
+        this.setState({ errorMessage: "Please Provide Correct Data", complaintSuccess: "" });
+      }
+    }, 1000);
+
+    setTimeout(() => {
+      this.setState({ complaintSuccess: "", excel_file: null });
+    }, 5000);
+  };
+
+  reader.readAsBinaryString(file);
+};
+
+validateFile = (excelData) => {
+  const requiredFields = ['name', 'employee_code', 'type'];
+  const missingFields = [];
+
+  if (excelData) {
+    excelData.forEach((row, index) => {
+      requiredFields.forEach((field) => {
+        if (!row[field] || row[field] === "") {
+          missingFields.push(`${field} is missing in Row ${index + 1}`);
+        }
+      });
+      if (row["employee_code"] && row["employee_code"] .toString().length > 13) {
+        missingFields.push(`Employee_code in Row ${index + 1} exceeds 13 digits`);
+      } 
+      if (row["parent_employee_id"] && row["parent_employee_id"] .toString().length > 13) {
+        missingFields.push(`Parent_employee_id in Row ${index + 1} exceeds 13 digits`);
+      } 
+
+      if (row["type"] && !["Employee", "Family"].includes(row["type"])) {
+        missingFields.push(`Invalid Type in Row ${index + 1}. Expected 'Employee' or 'Family', found '${row["type"]}'`);
+      }
+
+      if (row["type"] === "Family") {
+        if (!row["relation"] || row["relation"] === "") {
+          missingFields.push(`Relation is missing in Row ${index + 1}`);
+        }
+        if (!row["parent_employee_id"] || row["parent_employee_id"] === "") {
+          missingFields.push(`Parent_employee_id is missing in Row ${index + 1}`);
+        }
+      }
+
+      if (this.props.CorporateProfile?.payment_terms === "Payment by Coorporate to LH") {
+        if (!row["limit"] || row["limit"] === "") {
+          missingFields.push(`limit is required in Row ${index + 1}`);
+        }
+        if (!row["date"] || row["date"] === "") {
+          missingFields.push(`Date is required in Row ${index + 1}`);
+        }
+      }
+    });
+  } else {
+    console.error("Excel data is not in the expected format:", excelData);
+  }
+
+  return missingFields;
+};
+
+  
+
   async componentDidMount() {
     const { getCorporateProfile } = this.props;
     try {
@@ -117,11 +261,9 @@ class DonorPayment extends Component {
     } catch (error) {
       console.error('Error fetching corporate profile:', error);
     }
-  
   }
-  // eslint-disable-next-line no-unused-vars
+ // eslint-disable-next-line no-unused-vars
   componentDidUpdate(prevProps, prevState, snapshot) {
-
     const { cemployeeDatas } = this.props;
     if (
       isEmpty(prevProps.cemployeeDatas) &&
@@ -147,51 +289,49 @@ class DonorPayment extends Component {
             <Formik>
               <div className="checkout-tabs">
                 <Row>
-                  <Col lg="1" sm="1">
-                  </Col>
+                  <Col lg="1" sm="1"></Col>
                   <Col lg="10" sm="9">
-                    {!this.state.isRequiredFilled ? (
-                      <Alert color="danger" className="col-md-5">
-                        Please fill the required fields.
-                      </Alert>
-                    ) : null}
+                  {this.state.errorMessage && (
+                   <Alert color="danger" className="col-md-8">
+                    {this.state.errorMessage}
+                    </Alert>
+                    )}
                     {this.state.complaintSuccess && (
                       <Alert color="success" className="col-md-8">
                         {this.state.complaintSuccess}
                       </Alert>
                     )}
                     <div className="mb-3" style={{ marginLeft: "80%" }}>
-  {this.props.CorporateProfile.payment_terms === "Payment by Coorporate to LH" ? (
-    <Link
-      className="btn btn-primary"
-      to={{
-        pathname: `${process.env.REACT_APP_BACKENDURL}/media/public/employee-data-list.xlsx`,
-      }}
-      target="_blank"
-    >
-      <i className="mdi mdi-download me-1" />
-      Download File Format
-    </Link>
-  ) : (
-    <Link
-      className="btn btn-primary"
-      to={{
-        pathname: `${process.env.REACT_APP_BACKENDURL}/media/public/employee-data-list-patient-to-lab.xlsx`,
-      }}
-      target="_blank"
-    >
-      <i className="mdi mdi-download me-1" />
-      Download File Format
-    </Link>
-  )}
-</div>
-                     
+                      {this.props.CorporateProfile.payment_terms === "Payment by Coorporate to LH" ? (
+                        <Link
+                          className="btn btn-primary"
+                          to={{
+                            pathname: `${process.env.REACT_APP_BACKENDURL}/media/public/employee-data-list.xlsx`,
+                          }}
+                          target="_blank"
+                        >
+                          <i className="mdi mdi-download me-1" />
+                          Download File Format
+                        </Link>
+                      ) : (
+                        <Link
+                          className="btn btn-primary"
+                          to={{
+                            pathname: `${process.env.REACT_APP_BACKENDURL}/media/public/employee-data-list-patient-to-lab.xlsx`,
+                          }}
+                          target="_blank"
+                        >
+                          <i className="mdi mdi-download me-1" />
+                          Download File Format
+                        </Link>
+                      )}
+                    </div>
                     <Card>
                       <CardBody>
-                      <div className="w-100">
-                        <h4><b>Instructions to fill the excel sheet:</b></h4>
-                        <div>
-                          <ol>
+                        <div className="w-100">
+                          <h4><b>Instructions to fill the excel sheet:</b></h4>
+                          <div>
+                            <ol>
                             <li>
                               Create a file whose format is, .xlsx, .xls, .csv, .ods, .xml, .html, .txt, .dbf
                             </li>
@@ -211,58 +351,52 @@ class DonorPayment extends Component {
                               If you want to get more information, contact
                               us at <strong>labhazir@gmail.com</strong>
                             </li>
-                          </ol>
+                            </ol>
+                          </div>
                         </div>
-                      </div>
-                      <div>
-                        <Col lg="3">
-                          <FormGroup className=" mt-4 mb-0">
-                            <Label htmlFor="expirydateInput" className="fw-bolder">
-                              Upload File
-                              <span
-                                style={{ color: "#f46a6a" }}
-                                className="font-size-18"
-                              >
-                                *
-                              </span>
-                            </Label>
-                            <Input
-                              id="formFile"
-                              name="excel_file"
-                              type="file"
-                              multiple={false}
-                              accept=".xlsx, .xls, .csv, .ods, .xml, .html, .txt, .dbf"
-                              onChange={e => {
-                                const file = e.target.files[0];
-                                if (file) {
-                                  const allowedTypes = [".xlsx", ".xls", ".csv", ".ods", ".xml", ".html", ".txt", ".dbf"];
-                                  const fileType = file.name.split(".").pop(); // Get the file extension
-                                  if (allowedTypes.includes("." + fileType.toLowerCase())) {
+                        <div>
+                          <Col lg="3">
+                            <FormGroup className=" mt-4 mb-0">
+                              <Label htmlFor="expirydateInput" className="fw-bolder">
+                                Upload File
+                                <span 
+                                style={{ color: "#f46a6a" }} className="font-size-18">
+                                   *
+                                   </span>
+                              </Label>
+                              <Input
+                                id="formFile"
+                                name="excel_file"
+                                type="file"
+                                multiple={false}
+                                accept=".xlsx, .xls, .csv, .ods, .xml, .html, .txt, .dbf"
+                                onChange={e => {
+                                  const file = e.target.files[0];
+                                  if (file) {
+                                    const allowedTypes = [".xlsx", ".xls", ".csv", ".ods", ".xml", ".html", ".txt", ".dbf"];
+                                    const fileType = file.name.split(".").pop(); // Get the file extension
+                                    if (allowedTypes.includes("." + fileType.toLowerCase())) {
                                     this.setState({ excel_file: file });
-                                  } else {
-                                    alert("Only XLSX, XLS, CSV, ODS, XML, HTML, TXT, and DBF file types are allowed.");
-                                    e.target.value = null; // Clear the file input
-                                    this.setState({ excel_file: null });
+                                     } else {
+                                      alert("Only XLSX, XLS, CSV, ODS, XML, HTML, TXT, and DBF file types are allowed.");
+                                      e.target.value = null; // Clear the file input
+                                      this.setState({ excel_file: null });
+                                    }
                                   }
-                                }
-                              }}
-                              className="form-control"
-                            />
-
-                          </FormGroup>
-                        </Col></div>
+                                }}
+                                className="form-control"
+                              />
+                            </FormGroup>
+                          </Col>
+                        </div>
                       </CardBody>
                     </Card>
-                   
                     <Row className="mt-4">
-                      <Col sm="6">
-                      </Col>
+                      <Col sm="6"></Col>
                       <Col sm="6">
                         <div className="text-end">
                           <button
-                            component={Link}
                             onClick={this.handleProceedClick}
-                            // to="/donor-appointment"
                             className="btn btn-success mb-4"
                           >
                             <i className="mdi mdi-truck-fast me-1" /> Upload{" "}
@@ -271,9 +405,6 @@ class DonorPayment extends Component {
                       </Col>
                     </Row>
                   </Col>
-                </Row>
-                <Row>
-
                 </Row>
               </div>
             </Formik>
@@ -288,7 +419,7 @@ DonorPayment.propTypes = {
   match: PropTypes.object,
   history: any,
   cemployeeDatas: PropTypes.array,
-  // onGetDonorPaymentItems: PropTypes.func,
+  // onGetDonorPaymentItems: PropTypes.func, 
   onAddcemployeefile: PropTypes.func,
   cemployeeData: PropTypes.array,
   getCorporateProfile: PropTypes.func.isRequired,
@@ -302,8 +433,7 @@ const mapStateToProps = ({ cemployeeData,CorporateProfile }) => ({
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-
-  onAddcemployeefile: (cemployeeData) =>
+  onAddcemployeefile: (cemployeeData) => 
     dispatch(addNewCemployeefile(cemployeeData)),
   getCorporateProfile: (id) => dispatch(getCorporateProfile(id)),
 });
@@ -312,4 +442,3 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(withRouter(DonorPayment));
-

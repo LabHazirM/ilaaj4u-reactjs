@@ -127,9 +127,6 @@ export const UPDATE_DISCOUNT_ALL_LABHAZIRTOLAB = `${API_ENDPOINT}/api/marketer-a
 
 
 export const GET_REFERREL_FEES = `${API_ENDPOINT}/api/registration-admin/referrel-fee-labhazir`;
-export const GET_REVIEW_PERFORMANCE = `${API_ENDPOINT}/api/registration-admin/totallabsView-labs`;
-export const GET_REVIEW_PERFORMANCE_TEST = `${API_ENDPOINT}/api/registration-admin/totalofferedtestsView-tests`;
-
 export const GET_PUT_REFERREL_FEES = `${API_ENDPOINT}/api/registration-admin/approve-referrel-fee-labhazir`;
 export const UPDATE_REFERREL_FEE = `${API_ENDPOINT}/api/registration-admin/update-referrel-fee-labhazir`;
 export const UPDATE_REFERREL_ALL_FEE = `${API_ENDPOINT}/api/registration-admin/all-referrel-fee-labhazir`;

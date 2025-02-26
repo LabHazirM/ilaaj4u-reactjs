@@ -278,9 +278,29 @@ class Register extends Component {
                             }}
                             validationSchema={Yup.object().shape({
                               username: Yup.string()
-                                .trim()
-                                .required("Please enter your username"),
-                               
+                              .test(
+                                "no-leading-trailing-spaces-patient", 
+                                "Username should not contain spaces at the beginning or end", 
+                                value => value && value.trim() === value
+                              )
+                              .matches(
+                                /^[^\s]+$/,
+                                "Username should not contain spaces"
+                              ) 
+                              .required("Please enter your username")
+                              .when("account_type", {
+                                is: "patient",
+                                then: Yup.string()
+                                  .test(
+                                    "no-leading-trailing-spaces-patient",
+                                    "Username  should not contain spaces at the beginning or end",
+                                    value => value && value.trim() === value
+                                  )
+                                  .matches(
+                                    /^[^\s]+$/,
+                                    "Username  should not contain spaces"
+                                  ), 
+                              }),
                               // email: Yup.string()
                               //   .required("Please enter your email")
                               //   .email("Please enter valid email"),

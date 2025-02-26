@@ -269,6 +269,9 @@ class LabSettings extends Component {
                       (this.state && this.state.account_number) || "",
                   }}
                   validationSchema={Yup.object().shape({
+                    health_dept_certified: Yup.string()
+                   .required
+                   ("Certified Health Department is required."),
                     state_sampling_charges: Yup.number(
                       "Please enter number only"
                     )
@@ -695,15 +698,14 @@ class LabSettings extends Component {
                             })
                           }
                           value={this.state.health_dept_certified}
-                          className="form-select"
+                          className={
+                            "form-select" +
+                            (errors.health_dept_certified && touched.health_dept_certified
+                              ? " is-invalid"
+                              : "")
+                          }
                         >
-                          <option
-                            value=""
-                            selected={
-                              this.props.success.health_dept_certified === ""
-                            }
-                          >
-                            --- Please select the certified health department
+                          <option value="">--- Please select the certified health department
                             ---
                           </option>
                           <option value="Islamabad Health Regulatory Authority">
@@ -728,6 +730,11 @@ class LabSettings extends Component {
                             Gilgit Baltistan Health Department
                           </option>
                         </Field>
+                        <ErrorMessage
+        name="health_dept_certified"
+        component="div"
+        className="invalid-feedback"
+    />
                       </div>
 
                       {this.state.health_dept_certified && (
@@ -961,21 +968,27 @@ class LabSettings extends Component {
                           Are you Offering Home Sampling?
                         </Label>
                         <Field
-                          name="is_homesampling_offered"
-                          component="select"
-                          defaultValue="No"
-                          onChange={e =>
-                            this.setState({
-                              is_homesampling_offered: e.target.value,
-                            })
-                          }
-                          value={this.state.is_homesampling_offered}
-                          className="form-select"
-                        >
-                          <option value="">--</option>
-                          <option value="Yes">Yes</option>
-                          <option value="No">No</option>
-                        </Field>
+                        name="is_homesampling_offered"
+                        component="select"
+                       defaultValue="No"
+                       onChange={e => {
+                       const value = e.target.value;
+                      this.setState({
+                      is_homesampling_offered: value,
+                       ...(value === "No" ? {
+                      home_sampling_charges: null,
+                      state_sampling_charges: null,
+                       state_sampling_time: null
+                       } : {})
+                       });
+                      }}
+                      value={this.state.is_homesampling_offered}
+                      className="form-select"
+                      >
+                     <option value="">--</option>
+                    <option value="Yes">Yes</option> 
+                    <option value="No">No</option>
+                    </Field>
                       </div>
                       {this.state.is_homesampling_offered == "Yes" ? (
                         <div>
