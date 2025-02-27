@@ -157,11 +157,11 @@ class LabsLists extends Component {
                               <tr key={key}>
                                 <td className="text-start">{lab_list?.city || "N/A"}</td>
                                 <td className="text-start" style={{ whiteSpace: 'pre-wrap', width: '200px' }}>
-                                  <b>
-                                    <Link to={`/shared-percentage-approved-Fee/${lab_list?.id || 0}`}>
+                                <b>
+                                    <Link to={`/shared-percentage-pending-Fee/${lab_list?.id || 0}`}>
                                       {lab_list?.name || "N/A"}
                                     </Link>
-                                  </b>
+                                </b>
                                 </td>
                                 <td className="text-start">{lab_list?.type || "N/A"}</td>
                                 <td className="text-start">{lab_list?.landline || "N/A"}</td>
