@@ -102,7 +102,7 @@ class OfferedTestsList extends Component {
               {/* <span>
               {offeredTest.offered_tests}
               </span> */}
-              <Link to={`/corporate-offered-tests/${offeredTest.account_id}`}>{offeredTest.offered_tests}</Link>
+              <Link to={`/corporate-offered-tests-regadmin/${offeredTest.account_id}`}>{offeredTest.offered_tests}</Link>
 
             </>
           ),

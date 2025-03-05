@@ -733,6 +733,10 @@ const registrationAdminAuthProtectedRoutes = [
   { path: "/pending-labs", component: PendingLabs },
   { path: "/labs-list-approved-fee", component: labsListApprovedFeeOffered },
   { path: "/labs-list-pending-fee", component: labsListPendingFeeOffered },
+   {
+    path: "/corporate-offered-tests-regadmin/:id",
+    component: CorporateOfferedTestsListForLab,
+  },
   {
     path: "/shared-percentage-pending-Fee/:id",component: sharedPercentagePendingFeeTests,
   },
