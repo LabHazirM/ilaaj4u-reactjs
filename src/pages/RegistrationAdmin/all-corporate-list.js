@@ -100,7 +100,7 @@ class OfferedTestsList extends Component {
           formatter: (cellContent, offeredTest) => (
             <>
               {/* <span>
-              {offeredTest.offered_tests}
+              {offeredTest.offered_tests} 
               </span> */}
               <Link to={`/corporate-offered-tests-regadmin/${offeredTest.account_id}`}>{offeredTest.offered_tests}</Link>
 
@@ -199,7 +199,7 @@ class OfferedTestsList extends Component {
       PatientModal: true,
       phone: arg.phone,
       city: arg.city,
-      address: arg.location,
+      address: arg.address,
 
     });
   };

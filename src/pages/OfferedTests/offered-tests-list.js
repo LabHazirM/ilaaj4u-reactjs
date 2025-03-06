@@ -915,7 +915,10 @@ class OfferedTestsList extends Component {
                                                           multiple={false}
                                                         >
                                                           <option value="">
-                                                            ---- Days/Hours ----
+                                                            ---- Week/Days/Hours ----
+                                                          </option>
+                                                          <option value="week">
+                                                            Week
                                                           </option>
                                                           <option value="days">
                                                             days

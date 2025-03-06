@@ -328,11 +328,11 @@ class OfferedTestsList extends Component {
       <React.Fragment>
         <div className="page-content">
           <MetaTags>
-            <title>Corporate Offered Tests List | Lab Hazir</title>
+            <title>Corporate Referral Fee | Lab Hazir</title>
           </MetaTags>
           <Container fluid>
             {/* Render Breadcrumbs */}
-            <Breadcrumbs title="Corporate Offered Tests" breadcrumbItem="Tests List" />
+            <Breadcrumbs title="Corporate Referral Fee" breadcrumbItem="Referral Fee" />
             <Row>
               {/* <div> <span className="text-danger font-size-12">
                                     <strong> 
