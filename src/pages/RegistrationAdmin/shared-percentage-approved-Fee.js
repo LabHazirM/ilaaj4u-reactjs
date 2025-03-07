@@ -100,8 +100,10 @@ class SharedPercentageLabHazirList extends Component {
             // } 
             formatter: (cellContent, sharedPercentageApprovedFeeTests) => (
               <>
-              <div className="text-start">
-                   {sharedPercentageApprovedFeeTests.test_categories}
+              <div
+                className={sharedPercentageApprovedFeeTests?.test_categories ? "text-start" : "text-center"}
+              >
+              {sharedPercentageApprovedFeeTests?.test_categories || "-"}
               </div>
               </>
             ),filter: textFilter(),

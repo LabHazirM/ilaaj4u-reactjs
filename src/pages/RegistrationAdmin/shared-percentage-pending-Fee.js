@@ -100,8 +100,10 @@ class SharedPercentageLabHazirList extends Component {
             // } 
             formatter: (cellContent, sharedPercentageApprovedFeeTests) => (
               <>
-              <div className="text-start">
-                   {sharedPercentageApprovedFeeTests.test_categories}
+              <div
+                className={sharedPercentageApprovedFeeTests?.test_categories ? "text-start" : "text-center"}
+              >
+              {sharedPercentageApprovedFeeTests?.test_categories || "-"}
               </div>
               </>
             ),filter: textFilter(),
@@ -113,7 +115,7 @@ class SharedPercentageLabHazirList extends Component {
             formatter: (cellContent, sharedPercentageApprovedFeeTests) => (
               <>
               <div className="text-end">
-                   {/* {sharedPercentageApprovedFeeTests.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} */}
+                   {sharedPercentageApprovedFeeTests.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
               </div>
               </>
             ),filter: textFilter(),

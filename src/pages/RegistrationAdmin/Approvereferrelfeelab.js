@@ -224,7 +224,15 @@ class ReferrelLabFee extends Component {
         dataField: "test_categories",
         text: "Test Categories",
         sort: true,
-        filter: textFilter(),
+        formatter: (cellContent, referrelFeeLab) => (
+          <>
+          <div
+            className={referrelFeeLab?.test_categories ? "text-start" : "text-center"}
+          >
+          {referrelFeeLab?.test_categories || "-"}
+          </div>
+          </>
+        ),filter: textFilter(),
       },
       {
         dataField: "lab_city",
@@ -246,10 +254,12 @@ class ReferrelLabFee extends Component {
             textAlign: 'left', // Align text to the left
             display: 'block',
           }}>
-            {referrelFeeLab.lab_name}
-
+            <Link to={`/shared-percentage-approved-Fee/${referrelFeeLab?.lab_id || 0}`}>
+                                              {referrelFeeLab?.lab_name || "N/A"}
+                                            </Link>
           </span>
         ), filter: textFilter(),
+       
       },
       {
         dataField: "type",
@@ -289,7 +299,15 @@ class ReferrelLabFee extends Component {
         dataField: "is_eqa_participation",
         text: "Is EQA Participation",
         sort: true,
-        filter: textFilter(),
+        formatter: (cellContent, referrelFeeLab) => (
+          <>
+          <div
+            className={referrelFeeLab?.is_eqa_participation ? "text-start" : "text-center"}
+          >
+          {referrelFeeLab?.is_eqa_participation || "-"}
+          </div>
+          </>
+        ),filter: textFilter(),
       },
       {
         dataField: "is_home_sampling_available",
@@ -301,6 +319,15 @@ class ReferrelLabFee extends Component {
         dataField: "is_test_performed",
         text: "Is Test Performed",
         sort: true,
+        formatter: (cellContent, referrelFeeLab) => (
+          <>
+          <div
+            className={referrelFeeLab?.is_test_performed ? "text-start" : "text-center"}
+          >
+          {referrelFeeLab?.is_test_performed || "-"}
+          </div>
+          </>
+        ),
         filter: textFilter(),
       },
       {

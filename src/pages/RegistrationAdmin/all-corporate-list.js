@@ -549,7 +549,13 @@ class OfferedTestsList extends Component {
                                                     min="0.00"
                                                     max="1.00"
                                                     value={this.state.plateform_charges}
-                                                    onChange={e => this.setState({ plateform_charges: e.target.value })}
+                                                    onChange={e => {
+                                                      let value = parseFloat(e.target.value);
+                                                      if (value > 1) {
+                                                        value = 1;
+                                                      }
+                                                      this.setState({ plateform_charges: value });
+                                                    }}
                                                     className={
                                                       "form-control" +
                                                       (errors.plateform_charges &&

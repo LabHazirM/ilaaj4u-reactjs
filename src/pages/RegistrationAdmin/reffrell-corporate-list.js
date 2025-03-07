@@ -551,7 +551,13 @@ class OfferedTestsList extends Component {
                                                     min="0.00"
                                                     max="1.00"
                                                     value={this.state.shared_percentage}
-                                                    onChange={e => this.setState({ shared_percentage: e.target.value })}
+                                                    onChange={e => {
+                                                      let value = parseFloat(e.target.value);
+                                                      if (value > 1) {
+                                                        value = 1;
+                                                      }
+                                                      this.setState({ shared_percentage: value });
+                                                    }}
                                                     className={
                                                       "form-control" +
                                                       (errors.shared_percentage &&
