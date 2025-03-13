@@ -404,8 +404,8 @@ class TestsList extends Component {
                                                 "Please enter a number greater than or equal to 0"
                                               )
                                               .max(
-                                                50000,
-                                                "Please enter a number less than or equal to 50000"
+                                                150000,
+                                                "Please enter a number less than or equal to 150000"
                                               ),
                                             // start_date: Yup.string(
                                             //   Yup.number()
