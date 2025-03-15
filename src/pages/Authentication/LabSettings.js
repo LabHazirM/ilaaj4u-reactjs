@@ -55,6 +55,7 @@ class LabSettings extends Component {
       is_digital_payment_accepted: "",
       is_Receive_Email_On_Booking:"",
       is_active: "",
+      is_radiologyservices_active: "",
       account_number: "",
       type: "",
       branch_code: "",
@@ -142,6 +143,7 @@ class LabSettings extends Component {
         is_Receive_Email_On_Booking:
           this.props.success.is_Receive_Email_On_Booking,
         is_active: this.props.success.is_active,
+        is_radiologyservices_active: this.props.success.is_radiologyservices_active,
         is_homesampling_offered: this.props.success.is_homesampling_offered,
         bank: this.props.success.bank,
         branch_code: this.props.success.branch_code,
@@ -179,6 +181,7 @@ class LabSettings extends Component {
           is_digital_payment_accepted: success.is_digital_payment_accepted,
           is_Receive_Email_On_Booking: success.is_Receive_Email_On_Booking,
           is_active: success.is_active,
+          is_radiologyservices_active: success.is_radiologyservices_active,
           is_homesampling_offered: success.is_homesampling_offered,
           bank: success.bank,
           branch_code: success.branch_code,
@@ -262,6 +265,7 @@ class LabSettings extends Component {
                       (this.state && this.state.is_Receive_Email_On_Booking) ||
                       "No",
                     is_active: (this.state && this.state.is_active) || "Yes",
+                    is_radiologyservices_active:  (this.state && this.state.is_radiologyservices_active) || "Yes",
                     is_homesampling_offered: (this.state && this.state.is_homesampling_offered) || "",
                     bank: (this.state && this.state.bank) || "",
                     branch_code: (this.state && this.state.branch_code) || "",
@@ -1230,8 +1234,31 @@ class LabSettings extends Component {
     <option value="Collection Point">Collection Point</option> */}
                         </Field>
                       </div>
-
+                      {/* Is radiology Active */}
+                      {this.state.type === "Collection Point" &&(
+                      <div className="mb-3">
+                        <Label for="is_radiologyservices_active" className="form-label">
+                          Are you providing radiology services?
+                        </Label>
+                        <Field
+                          name="is_radiologyservices_active"
+                          component="select"
+                          defaultValue="No"
+                          onChange={e =>
+                            this.setState({
+                              is_radiologyservices_active: e.target.value,
+                            })
+                          }
+                          value={this.state.is_radiologyservices_active}
+                          className="form-select"
+                        >
+                          <option value="Yes">Yes</option>
+                          <option value="No">No</option>
+                        </Field>
+                      </div>
+                 ) }
                       {/* Is Active */}
+                      
                       <div className="mb-3">
                         <Label for="is_active" className="form-label">
                           Are you active for providing services?

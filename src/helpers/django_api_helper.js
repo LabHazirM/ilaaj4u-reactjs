@@ -1105,6 +1105,7 @@ export const updateLabSettings = (labSettings, id) => {
     labSettings.is_Receive_Email_On_Booking
   );
   formData.append("is_active", labSettings.is_active);
+  formData.append("is_radiologyservices_active", labSettings.is_radiologyservices_active);
   formData.append("bank", labSettings.bank);
   formData.append("account_number", labSettings.account_number);
   formData.append("branch_code", labSettings.branch_code);

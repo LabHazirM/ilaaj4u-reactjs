@@ -386,7 +386,7 @@ class OfferedTestsList extends Component {
         is_eqa_participation: offeredTest.is_eqa_participation,
         is_home_sampling_available: offeredTest.is_home_sampling_available,
         is_test_performed: offeredTest.is_test_performed,
-        is_active:'Yes',
+        is_active:offeredTest.is_active,
       },
       isEdit: true,
     });
@@ -1088,7 +1088,7 @@ class OfferedTestsList extends Component {
                                                   </div>
                                                   <div className="mb-3">
                                                     <Label className="form-label">
-                                                    Is this test?
+                                                    Status
                                                     </Label>
                                                     <Field
                                                       name="is_active"
