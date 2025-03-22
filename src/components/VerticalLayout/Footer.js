@@ -98,7 +98,7 @@ const Footer = () => {
           </Col>
           <Col xs="auto" sm="auto" md="auto" lg="auto">
             <div className="text-sm-end">
-            <p><a href="/LabHazir - Terms & Conditions.pdf" target="_blank" rel="noopener noreferrer">Terms</a></p>
+            <p><a href="/LabHazir-Terms-Conditions.pdf" target="_blank" rel="noopener noreferrer">Terms</a></p>
 
             </div>
           </Col>
@@ -145,7 +145,7 @@ const Footer = () => {
           </Col>
           <Col xs="auto" sm="auto" md="auto" lg="auto">
             <div className="text-sm-end">
-            <p><a href="/LabHazir - Terms & Conditions.pdf" target="_blank" rel="noopener noreferrer">Terms</a></p>
+            <p><a href="/LabHazir-Terms-Conditions.pdf" target="_blank" rel="noopener noreferrer">Terms</a></p>
 
             </div>
           </Col>
