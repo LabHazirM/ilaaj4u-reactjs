@@ -253,7 +253,7 @@ class LabInformation extends Component {
                                 (this.state &&
                                   this.state.is_digital_payment_accepted) ||
                                 "Yes",
-                                is_Receive_Email_On_Booking:
+                              is_Receive_Email_On_Booking:
                                 (this.state &&
                                   this.state.is_Receive_Email_On_Booking) ||
                                 "Yes",
@@ -791,25 +791,18 @@ class LabInformation extends Component {
                                     name="landline"
                                     type="text"
                                     placeholder="Please enter your landline no."
-                                    onChange={e =>
-                                      this.setState({
-                                        landline: e.target.value,
-                                      })
-                                    }
+                                    onChange={e => {
+                                      let value = e.target.value.replace(/\s+/g, ""); // Remove spaces
+                                      this.setState({ landline: value });
+                                    }}
                                     value={this.state.landline}
                                     className={
-                                      "form-control" +
-                                      (errors.landline && touched.landline
-                                        ? " is-invalid"
-                                        : "")
+                                      "form-control" + (errors.landline && touched.landline ? " is-invalid" : "")
                                     }
                                   />
-                                  <ErrorMessage
-                                    name="landline"
-                                    component="div"
-                                    className="invalid-feedback"
-                                  />
+                                  <ErrorMessage name="landline" component="div" className="invalid-feedback" />
                                 </div>
+
 
                                 {/* Address field */}
                                 <div className="mb-3">
