@@ -1028,13 +1028,13 @@ class QualityCertificatesList extends Component {
                                                         </Label>
                                                         <Field
                                                           name="start_date"
-                                                          type="datetime-local"
+                                                          type="date"
                                                           max={new Date(
                                                             new Date().toString().split("GMT")[0] +
                                                             " UTC"
                                                           )
                                                             .toISOString()
-                                                            .slice(0, -8)}
+                                                            .slice(0, -14)}
                                                           value={
                                                             this.state
                                                               .qualityCertificate
