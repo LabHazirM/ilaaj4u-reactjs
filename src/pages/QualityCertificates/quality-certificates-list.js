@@ -784,6 +784,9 @@ class QualityCertificatesList extends Component {
                                                           <option value="Molecular">
                                                             Molecular
                                                           </option>
+                                                          <option value="Molecular">
+                                                            Hemoglobin
+                                                          </option>
                                                         </Field>
                                                         <ErrorMessage
                                                           name="sub_certificate_type"
