@@ -76,7 +76,6 @@ import { CITIES } from "helpers/global_variables_helper";
 import offeredTestsList from "pages/OfferedTests/offered-tests-list";
 import ScrollButton from "components/Common/Scrollbutton";
 
-
 function formatTime(timeString, labId) {
   if (!timeString || typeof timeString !== "string") {
     console.warn(`Invalid time for lab ID ${labId}:`, timeString);
@@ -3594,7 +3593,39 @@ class NearbyLabs extends Component {
                                 </Field>
                               </div>
                             </Col>
-                          ) : null
+                          ) : (
+                            <Col xs="3" sm="3" md="2" lg="2">
+                              <div className="mb-3">
+                                {/* <Label
+                                for="LabType2"
+                                className="form-label"
+                                style={{
+                                  fontSize: window.innerWidth <= 576 ? '7px' : '12px',
+                                  color: 'black',
+                                  fontWeight: "bold",
+                                }}
+                              >
+                                Search By Labs Type
+                              </Label> */}
+                                <Field
+                                  name="LabType"
+                                  component="select"
+                                  onChange={(e) => this.onChangeType(e)}
+                                  value={this.state.LabType}
+                                  className="form-select"
+                                  style={{
+                                    border: '2px solid blue',
+                                    borderRadius: '5px',
+                                    // Add more style overrides as needed
+                                  }}
+                                >
+                                  <option value="Main">Main Labs</option>
+                                  <option value="Collection">Collection Points</option>
+                                  <option value="Others">Both</option>
+                                </Field>
+                              </div>
+                            </Col>
+                          ) 
                             // (
                             //   <Col xs="3" sm="3" md="2" lg="2">
                             //     <div className="mb-3">
