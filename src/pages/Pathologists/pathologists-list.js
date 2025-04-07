@@ -502,11 +502,11 @@ class PathologistsList extends Component {
                                             //   .required(
                                             //     "Please enter your speciality"
                                             //   ),
-                                            pmdc_reg_no: Yup.string()
-                                              .trim()
-                                              .required(
-                                                "Please enter your pmdc reg no."
-                                              ),
+                                            // pmdc_reg_no: Yup.string()
+                                            //   .trim()
+                                            //   .required(
+                                            //     "Please enter your pmdc reg no."
+                                            //   ),
                                             // designation: Yup.string()
                                             //   .trim()
                                             //   .required(
@@ -1160,11 +1160,11 @@ class PathologistsList extends Component {
                                                         })
                                                       }
                                                     />
-                                                    <ErrorMessage
+                                                    {/* <ErrorMessage
                                                       name="pmdc_reg_no"
                                                       component="div"
                                                       className="invalid-feedback"
-                                                    />
+                                                    /> */}
                                                   </div>
 
                                                   <div className="mb-3">
