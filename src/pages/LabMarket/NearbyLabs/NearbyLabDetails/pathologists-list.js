@@ -184,7 +184,7 @@ class LabPathologists extends Component {
                                 style={{
                                   width: "300px",
                                   height: "200px",
-                                  objectFit: "cover",
+                                  objectFit: "contain",
                                 }}
                                 className="img-fluid mx-auto d-block"
                               />
