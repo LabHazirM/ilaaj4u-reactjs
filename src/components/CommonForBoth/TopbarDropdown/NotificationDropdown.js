@@ -160,14 +160,14 @@ class NotificationDropdown extends Component {
   item.actions === "Updated" && (
     <div>
     <i className="fas fa-exchange-alt font-size-18"></i>{" "}
-    {item.lab_name} Changed{" "}
-    <b>{item.test_name} </b>{" "}
-    {item.field_name} from{" "}
+    {item.lab_name} Changed Status of appointment with Order Id{" "}
+    <b>{item.order_id} </b>{" "}
+    {/* {item.field_name} from{" "}
     {item.old_value} to {item.new_value}{" "}
     on{" "}
     {new Date(
       notification.created_at
-    ).toLocaleDateString("en-US")}{" "}
+    ).toLocaleDateString("en-US")}{" "} */}
     at{" "}
     {new Date(
       notification.created_at
