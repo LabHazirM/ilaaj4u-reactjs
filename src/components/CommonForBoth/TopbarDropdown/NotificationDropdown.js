@@ -170,7 +170,7 @@ class NotificationDropdown extends Component {
     ).toLocaleDateString("en-US")}{" "} */}
     at{" "}
     {new Date(
-      notification.created_at
+      item.created_at
     ).toLocaleTimeString("en-US")}
     .
   </div>
