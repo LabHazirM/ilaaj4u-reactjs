@@ -108,10 +108,10 @@ class Login extends Component {
 
     if (passwordInput && passwordInput.type === 'password') {
       passwordInput.type = 'text';
-      eyeIcon.className = 'mdi mdi-eye-off-outline';
+      eyeIcon.className = 'mdi mdi-eye-outline';
     } else if (passwordInput) {
       passwordInput.type = 'password';
-      eyeIcon.className = 'mdi mdi-eye-outline';
+      eyeIcon.className = 'mdi mdi-eye-off-outline';
     }
   };
 
