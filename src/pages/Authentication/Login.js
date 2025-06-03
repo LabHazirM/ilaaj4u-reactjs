@@ -463,7 +463,7 @@ class Login extends Component {
                                       id="password-addon"
                                       onClick={this.togglePasswordVisibility}
                                     >
-                                      <i id="eye-icon" className="mdi mdi-eye-outline"></i>
+                                      <i id="eye-icon" className="mdi mdi-eye-off-outline"></i>
                                     </button>
                                   </div>
                                   <ErrorMessage
