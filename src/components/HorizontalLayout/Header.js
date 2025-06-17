@@ -644,6 +644,14 @@ class Header extends Component {
                             </div>
                           </div>
                         </li>
+                         <li>
+                          <Link to="/delete-a-user" className="dropdown-content me-2 text-light">
+                            <i className="fas fa-user-times align-middle me-1 mt-1 font-size-20" style={{ color: 'blue' }} />{" "}
+                            <span className="pt-4 font-size-12" style={{ color: 'blue' }}>
+                              Delete Profile Request                  </span>
+                            <hr style={{ margin: '0 0' }} />
+                          </Link>
+                        </li>
                         <li>
                           <Link  to={
                         this.props.match.params.uuid

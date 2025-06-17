@@ -336,6 +336,7 @@ import advLabChatBox from "pages/LabAdvertisements/adv-lab-chat-box";
 import advmadminChatBox from "pages/LabAdvertisements/adv-lab-chat-box";
 import labCorporateStatement from "pages/FinanceAdmin/lab-corporate-statement";
 import { components } from "react-select/dist/react-select.cjs.prod";
+import deleteAUser from "pages/DeleteAUser/delete-a-user";
 // All general public routes will be listed here
 const publicRoutes = [
   
@@ -802,7 +803,10 @@ const csrAuthProtectedRoutes = [
   { path: "/reduce-tests/:id", component: reduceTests },
   { path: "/csr-notes-list/:id", component: NotesList },
   { path: "/csr-notes-complains/:id", component: NotesComplains },
-
+  {
+    path: "/invoice-detail/:id",
+    component: InvoiceDetail,
+  },
   {
     path: "/csr-invoice-detail/:id",
     component: CsrInvoiceDetail,
@@ -872,6 +876,7 @@ const hrAdminAuthProtectedRoutes = [
 const patientAuthProtectedRoutes = [
   { path: "/dashboard-patient/:uuid?", component: DashboardPatient },
   { path: "/csr-patient-notes-list/:id", component: PatientCsrNotesList },
+  { path: "/delete-a-user", component: deleteAUser },
   {
     path: "/test-appointments/:uuid?",
     component: TestAppointmentsList,
@@ -922,6 +927,7 @@ const patientAuthProtectedRoutes = [
 const patientPublicRoutes = [
   { path: "/change-password", component: ChangePassword },
   { path: "/contact-us", component: ContactUs },
+  
 
   { path: "/b2b-affiliate", component: B2bAffiliate },
 
