@@ -193,6 +193,7 @@ import csrCheckout from "pages/Complaints/csr-checkout";
 import Patientslist from "pages/Dashboard-Csr/patients-list";
 import Patient from "pages/Dashboard-Csr/patients-list";
 import Disclaimer from "pages/Public/disclaimer";
+import PrivacyPolicy from "pages/Public/privacy-policy";
 import AboutUs from "pages/Public/about-us";
 // import ChatBox from "pages/Public/chat";
 // import TermsConditions from "pdf/LabHazir - Terms & Conditions.pdf";
@@ -930,7 +931,7 @@ const patientPublicRoutes = [
   
 
   { path: "/b2b-affiliate", component: B2bAffiliate },
-
+  { path: "/privacypolicy", component: PrivacyPolicy },
   { path: "/disclaimer", component: Disclaimer },
   { path: "/about-us", component: AboutUs },
   { path: "/chat-box", component: ChatBox },

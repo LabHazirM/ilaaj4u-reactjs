@@ -49,7 +49,7 @@ const Footer = () => {
               <div className="mb-2">
                 {/* Add your Terms, Privacy Policy, and Disclaimer links here */}
                 <a
-                  href="https://labhazirapi.com/media/public/labhazir_terms_conditions.pdf"
+                  href="/LabHazir - Terms & Conditions.pdf"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -57,7 +57,7 @@ const Footer = () => {
                 </a>{" "}
                 |{" "}
                 <a
-                  href="https://labhazirapi.com/media/public/labhazir_terms_conditions.pdf"
+                  href="/privacypolicy"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -234,7 +234,7 @@ const Footer = () => {
                 </a>{" "}
                 |{" "}
                 <a
-                  href="https://labhazirapi.com/media/public/labhazir_terms_conditions.pdf"
+                  href="/LabHazir - Terms & Conditions.pdf"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -242,7 +242,7 @@ const Footer = () => {
                 </a>{" "}
                 |{" "}
                 <a
-                  href="https://labhazirapi.com/media/public/labhazir_terms_conditions.pdf"
+                  href="/privacypolicy"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -315,7 +315,7 @@ const Footer = () => {
                 </a>{" "}
                 |{" "}
                 <a
-                  href="https://labhazirapi.com/media/public/labhazir_terms_conditions.pdf"
+                  href="/LabHazir - Terms & Conditions.pdf"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -323,7 +323,7 @@ const Footer = () => {
                 </a>{" "}
                 |{" "}
                 <a
-                  href="https://labhazirapi.com/media/public/labhazir_terms_conditions.pdf"
+                  href="/privacypolicy"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
