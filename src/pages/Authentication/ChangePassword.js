@@ -45,10 +45,10 @@ class ChangePassword extends Component {
 
     if (passwordInput && passwordInput.type === 'password') {
       passwordInput.type = 'text';
-      eyeIcon.className = 'mdi mdi-eye-off-outline';
+      eyeIcon.className = 'mdi mdi-eye-outline';
     } else if (passwordInput) {
       passwordInput.type = 'password';
-      eyeIcon.className = 'mdi mdi-eye-outline';
+      eyeIcon.className = 'mdi mdi-eye-off-outline';
     }
   };
   togglePassword2Visibility = () => {
@@ -57,10 +57,10 @@ class ChangePassword extends Component {
 
     if (passwordInput && passwordInput.type === 'password') {
       passwordInput.type = 'text';
-      eyeIcon2.className = 'mdi mdi-eye-off-outline';
+      eyeIcon2.className = 'mdi mdi-eye-outline';
     } else if (passwordInput) {
       passwordInput.type = 'password';
-      eyeIcon2.className = 'mdi mdi-eye-outline';
+      eyeIcon2.className = 'mdi mdi-eye-off-outline';
     }
   };
 
@@ -70,10 +70,10 @@ class ChangePassword extends Component {
 
     if (passwordInput && passwordInput.type === 'password') {
       passwordInput.type = 'text';
-      eyeIcon3.className = 'mdi mdi-eye-off-outline';
+      eyeIcon3.className = 'mdi mdi-eye-outline';
     } else if (passwordInput) {
       passwordInput.type = 'password';
-      eyeIcon3.className = 'mdi mdi-eye-outline';
+      eyeIcon3.className = 'mdi mdi-eye-off-outline';
     }
   };
   render() {
@@ -205,7 +205,7 @@ const validationSchema = Yup.object().shape({
                               id="password-addon"
                               onClick={this.togglePassword3Visibility}
                             >
-                              <i id="eye-icon3" className="mdi mdi-eye-outline"></i>
+                              <i id="eye-icon3" className="mdi mdi-eye-off-outline"></i>
                             </button>
                           </div>
                         </div>
@@ -247,7 +247,7 @@ const validationSchema = Yup.object().shape({
                                   id="password-addon"
                                   onClick={this.togglePasswordVisibility}
                                 >
-                                  <i id="eye-icon" className="mdi mdi-eye-outline"></i>
+                                  <i id="eye-icon" className="mdi mdi-eye-off-outline"></i>
                                 </button>
                               </div>
                             <ErrorMessage
@@ -277,7 +277,7 @@ const validationSchema = Yup.object().shape({
                                     id="password-addon"
                                     onClick={this.togglePassword2Visibility}
                                   >
-                                    <i id="eye-icon2" className="mdi mdi-eye-outline"></i>
+                                    <i id="eye-icon2" className="mdi mdi-eye-off-outline"></i>
                                   </button>
                                 </div>
                               </div>
