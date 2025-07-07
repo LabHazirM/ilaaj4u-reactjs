@@ -550,22 +550,24 @@ class BanksList extends Component {
                                                       as="select"
                                                       className={
                                                         "form-control" +
-                                                        (errors.status &&
-                                                          touched.status
-                                                          ? " is-invalid"
-                                                          : "")
+                                                        (errors.status && touched.status ? " is-invalid" : "")
                                                       }
-                                                      multiple={false}
-                                                      value={
-                                                        this.state
-                                                          .bankaccount
-                                                          .status
-                                                      }
+                                                      value={this.state.bankaccount.status || ""}
+                                                      onChange={(e) => {
+                                                        const value = e.target.value;
+                                                        this.setState(prevState => ({
+                                                          bankaccount: {
+                                                            ...prevState.bankaccount,
+                                                            status: value,
+                                                          }
+                                                        }));
+                                                        setFieldValue("status", value); // ← This is important
+                                                      }}
                                                     >
                                                       <option value="ACTIVE">Active</option>
                                                       <option value="IN_ACTIVE">In_Active</option>
-
                                                     </Field>
+
                                                     <ErrorMessage
                                                       name="status"
                                                       component="div"

@@ -2957,8 +2957,12 @@ export const updateBankaccount = bankAccount => {
   formData.append("id", bankAccount.id);
   formData.append("account_no", bankAccount.account_no);
   formData.append("status", bankAccount.status);
-  formData.append("creating_at", bankAccount.creating_at);
-
+  if (bankAccount.creating_at) {
+    formData.append(
+      "creating_at",
+      new Date(bankAccount.creating_at).toISOString()
+    );
+  }
   return axios.put(`${url.UPDATE_BANKACCOUNT}/${bankAccount.id}`, formData, {
     headers: getHeader(authHeader()),
   });
