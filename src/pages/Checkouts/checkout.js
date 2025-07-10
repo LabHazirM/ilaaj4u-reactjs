@@ -716,7 +716,7 @@ class Checkout extends Component {
     //     console.error('Error making payment:', error);
     // }
     try {
-      const response = await axios.post('https://labhazirapi.com/api/patient/hblcartpayments', paymentData);
+      const response = await axios.post('http://13.215.175.176/api/hbl-payment/', paymentData);
       console.log('Response:', response); // Log the response for debugging
 
       if (response.data.message === 'Success') {
