@@ -12,6 +12,8 @@ export const POST_CHANGE_PASSWORD = `${API_ENDPOINT}/api/account/change-password
 
 export const POST_PATIENT_INFORMATION = `${API_ENDPOINT}/api/patient/patient-information`;
 export const POST_B2BCLIENT_INFORMATION = `${API_ENDPOINT}/api/b2bclient/register-b2bclient`;
+export const POST_DOCTOR_INFORMATION = `${API_ENDPOINT}/api/b2bclient/register-doctor`;
+
 export const POST_DONOR_INFORMATION = `${API_ENDPOINT}/api/donor/register-donor`;
 export const POST_LAB_INFORMATION = `${API_ENDPOINT}/api/lab/lab-information`;
 export const POST_CORPORATE_INFORMATION = `${API_ENDPOINT}/api/corporate/corporate-information`;
@@ -247,6 +249,10 @@ export const GET_B2B_PROFILE = `${API_ENDPOINT}/api/b2bclient/b2b-profile`;
 export const UPDATE_B2B_PROFILE = `${API_ENDPOINT}/api/b2bclient/b2b-profile`;
 
 // Donor PROFILES
+export const GET_DOCTOR_PROFILE = `${API_ENDPOINT}/api/b2bclient/doctor-profile`;
+export const UPDATE_DOCTOR_PROFILE = `${API_ENDPOINT}/api/b2bclient/doctor-profile`;
+
+// Donor PROFILES
 export const GET_DONOR_PROFILE = `${API_ENDPOINT}/api/donor/profile-donor`;
 export const UPDATE_DONOR_PROFILE = `${API_ENDPOINT}/api/donor/profile-donor`;
 
@@ -446,7 +452,11 @@ export const GET_UNAPPROVED_DONORS = `${API_ENDPOINT}/api/registration-admin/una
 export const APPROVE_UNAPPROVE_DONOR = `${API_ENDPOINT}/api/registration-admin/approve-unapprove-donor`;
 export const GET_LABS_RATING = `${API_ENDPOINT}/api/registration-admin/labs-rating`;
 export const GET_LABS_TESTING = `${API_ENDPOINT}/api/marketer-admin/labs-list`;
-
+//Doctor
+export const GET_PENDING_DOCTORS = `${API_ENDPOINT}/api/registration-admin/pending-doctors`;
+export const GET_APPROVED_DOCTORS = `${API_ENDPOINT}/api/registration-admin/approved-doctors`;
+export const GET_UNAPPROVED_DOCTORS = `${API_ENDPOINT}/api/registration-admin/unapproved-doctors`;
+export const APPROVE_UNAPPROVE_DOCTOR = `${API_ENDPOINT}/api/registration-admin/approve-unapprove-doctor`;
 // FINANCE ADMIN
 
 

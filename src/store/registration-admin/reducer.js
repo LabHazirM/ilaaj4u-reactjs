@@ -32,6 +32,14 @@ import {
   GET_UNAPPROVED_DONORS_FAIL,
   APPROVE_UNAPPROVE_DONOR_SUCCESS,
   APPROVE_UNAPPROVE_DONOR_FAIL,
+  GET_PENDING_DOCTORS_FAIL,
+  GET_PENDING_DOCTORS_SUCCESS,
+  GET_APPROVED_DOCTORS_SUCCESS,
+  GET_APPROVED_DOCTORS_FAIL,
+  GET_UNAPPROVED_DOCTORS_SUCCESS,
+  GET_UNAPPROVED_DOCTORS_FAIL,
+  APPROVE_UNAPPROVE_DOCTOR_SUCCESS,
+  APPROVE_UNAPPROVE_DOCTOR_FAIL,
 } from "./actionTypes";
 
 const INIT_STATE = {
@@ -46,6 +54,7 @@ const INIT_STATE = {
   approvedB2BClients: [],
   unapprovedB2BClients: [],
   pendingDonors: [],
+  pendingDoctors: [],
   approvedDonors: [],
   unapprovedDonors: [],
   success: [],
@@ -240,6 +249,55 @@ const registrationAdmin = (state = INIT_STATE, action) => {
       };
 
     case APPROVE_UNAPPROVE_DONOR_FAIL:
+      return {
+        ...state,
+        error: action.payload,
+      };
+
+    //DOCTOR SECTION STARTED
+    case GET_PENDING_DOCTORS_SUCCESS:
+      return {
+        ...state,
+        pendingDoctors: action.payload.data,
+      };
+
+    case GET_PENDING_DOCTORS_FAIL:
+      return {
+        ...state,
+        error: action.payload,
+      };
+
+    case GET_APPROVED_DOCTORS_SUCCESS:
+      return {
+        ...state,
+        approvedDoctors: action.payload.data,
+      };
+
+    case GET_APPROVED_DOCTORS_FAIL:
+      return {
+        ...state,
+        error: action.payload,
+      };
+
+    case GET_UNAPPROVED_DOCTORS_SUCCESS:
+      return {
+        ...state,
+        unapprovedDoctors: action.payload.data,
+      };
+
+    case GET_UNAPPROVED_DOCTORS_FAIL:
+      return {
+        ...state,
+        error: action.payload,
+      };
+
+    case APPROVE_UNAPPROVE_DOCTOR_SUCCESS:
+      return {
+        ...state,
+        success: [...state.success, action.payload],
+      };
+
+    case APPROVE_UNAPPROVE_DOCTOR_FAIL:
       return {
         ...state,
         error: action.payload,

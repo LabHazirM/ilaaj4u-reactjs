@@ -1,3 +1,4 @@
+import { APPROVE_UNAPPROVE_DOCTOR } from "helpers/url_helper";
 import {
   GET_PENDING_CORPORATE,
   GET_PENDING_CORPORATE_SUCCESS,
@@ -48,6 +49,17 @@ import {
   APPROVE_UNAPPROVE_DONOR,
   APPROVE_UNAPPROVE_DONOR_SUCCESS,
   APPROVE_UNAPPROVE_DONOR_FAIL,
+  GET_APPROVED_DOCTORS,
+  GET_APPROVED_DOCTORS_SUCCESS,
+  GET_APPROVED_DOCTORS_FAIL,
+  GET_PENDING_DOCTORS,
+  GET_PENDING_DOCTORS_SUCCESS,
+  GET_PENDING_DOCTORS_FAIL,
+  GET_UNAPPROVED_DOCTORS,
+  GET_UNAPPROVED_DOCTORS_SUCCESS,
+  GET_UNAPPROVED_DOCTORS_FAIL,
+  APPROVE_UNAPPROVE_DOCTOR_SUCCESS,
+  APPROVE_UNAPPROVE_DOCTOR_FAIL,
 } from "./actionTypes";
 
 export const getApprovedCorporate = () => ({
@@ -288,5 +300,66 @@ export const approveUnapproveDonorSuccess = success => ({
 
 export const approveUnapproveDonorFail = error => ({
   type: APPROVE_UNAPPROVE_DONOR_FAIL,
+  payload: error,
+});
+
+// -------------------- DOCTOR ACTIONS --------------------
+export const getPendingDoctors = () => ({
+  type: GET_PENDING_DOCTORS,
+  payload: {},
+});
+
+export const getPendingDoctorsSuccess = pendingDoctors => ({
+  type: GET_PENDING_DOCTORS_SUCCESS,
+  payload: pendingDoctors,
+});
+
+export const getPendingDoctorsFail = error => ({
+  type: GET_PENDING_DOCTORS_FAIL,
+  payload: error,
+});
+
+export const getApprovedDoctors = () => ({
+  type: GET_APPROVED_DOCTORS,
+  payload: {},
+});
+
+export const getApprovedDoctorsSuccess = approvedDoctors => ({
+  type: GET_APPROVED_DOCTORS_SUCCESS,
+  payload: approvedDoctors,
+});
+
+export const getApprovedDoctorsFail = error => ({
+  type: GET_APPROVED_DOCTORS_FAIL,
+  payload: error,
+});
+
+export const getUnapprovedDoctors = () => ({
+  type: GET_UNAPPROVED_DOCTORS,
+  payload: {},
+});
+
+export const getUnapprovedDoctorsSuccess = unapprovedDoctors => ({
+  type: GET_UNAPPROVED_DOCTORS_SUCCESS,
+  payload: unapprovedDoctors,
+});
+
+export const getUnapprovedDoctorsFail = error => ({
+  type: GET_UNAPPROVED_DOCTORS_FAIL,
+  payload: error,
+});
+
+export const approveUnapproveDoctor = data => ({
+  type: APPROVE_UNAPPROVE_DOCTOR,
+  payload: { data },
+});
+
+export const approveUnapproveDoctorSuccess = success => ({
+  type: APPROVE_UNAPPROVE_DOCTOR_SUCCESS,
+  payload: success,
+});
+
+export const approveUnapproveDoctorFail = error => ({
+  type: APPROVE_UNAPPROVE_DOCTOR_FAIL,
   payload: error,
 });

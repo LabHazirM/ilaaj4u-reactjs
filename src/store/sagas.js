@@ -17,6 +17,7 @@ import ChangeSaga from "./auth/changepwd/saga";
 import LabProfileSaga from "./auth/labprofile/saga";
 import B2bProfileSaga from "./auth/b2bprofile/saga";
 import DonorProfileSaga from "./auth/donorprofile/saga";
+import doctorProfileSaga from "./auth/doctorprofile/saga";
 import StaffProfileSaga from "./auth/staffprofile/saga";
 import SampleCollectorProfileSaga from "./auth/samplecollectorprofile/saga";
 import LabSettingsSaga from "./auth/labsettings/saga";
@@ -108,11 +109,12 @@ import CSRAdminSaga from "./csr-admin/saga";
 import AuditorAdminSaga from "./auditor-admin/saga";
 import activitylogauditorSaga from "./activtylogAuditor/saga"
 import ReviewPerformanceSaga from "./review-performance/saga";
-
+import DoctorInformationSaga from "./auth/doctorinformation/saga";
 
 export default function* rootSaga() {
   yield all([
     //public
+    fork(DoctorInformationSaga),
     fork(ReviewPerformanceSaga),
     fork(activitylogauditorSaga),
     fork(DonorsAccountStatementsSaga),
@@ -138,6 +140,7 @@ export default function* rootSaga() {
     fork(LabProfileSaga),
     fork(B2bProfileSaga),
     fork(DonorProfileSaga),
+    fork(doctorProfileSaga),
     fork(referrelFeeLabsSaga),
     fork(LabSettingsSaga),
     fork(LabNamesListSaga),

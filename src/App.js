@@ -12,6 +12,7 @@ import {
   corporateAuthProtectedRoutes,
   b2bclientAuthProtectedRoutes,
   donorAuthProtectedRoutes,
+  doctorAuthProtectedRoutes,
   sampleCollectorAuthProtectedRoutes,
   financeOfficerAuthProtectedRoutes,
   financeAdminAuthProtectedRoutes,
@@ -92,6 +93,7 @@ class App extends Component {
                 isB2BAdminAuthProtected={false}
                 isAuditorAuthProtected={false}
                 isDonorAuthProtected={false}
+                isDoctorAuthProtected={false}
                 isRegistrationAdminAuthProtected={false}
                 isMarketerAdminAuthProtected={false}
                 isCSRAdminAuthProtected={false}
@@ -112,6 +114,7 @@ class App extends Component {
                 isPatientAuthProtected={false}
                 isCorporateAuthProtected={false}
                 isB2BClientAuthProtected={false}
+                isDoctorAuthProtected={false}
                 isSampleCollectorAuthProtected={false}
                 isfinanceOfficerAuthProtected={false}
                 isfinanceAdminAuthProtected={false}
@@ -142,6 +145,7 @@ class App extends Component {
                 isSampleCollectorAuthProtected={false}
                 isfinanceOfficerAuthProtected={false}
                 isfinanceAdminAuthProtected={false}
+                isDoctorAuthProtected={false}
                 isB2BAdminAuthProtected={false}
                 isAuditorAuthProtected={false}
                 isDonorAuthProtected={false}
@@ -168,6 +172,7 @@ class App extends Component {
                 isB2BClientAuthProtected={true}
                 isSampleCollectorAuthProtected={false}
                 isfinanceOfficerAuthProtected={false}
+                isDoctorAuthProtected={false}
                 isfinanceAdminAuthProtected={false}
                 isB2BAdminAuthProtected={false}
                 isAuditorAuthProtected={false}
@@ -196,6 +201,7 @@ class App extends Component {
                 isSampleCollectorAuthProtected={false}
                 isfinanceOfficerAuthProtected={false}
                 isfinanceAdminAuthProtected={false}
+                isDoctorAuthProtected={false}
                 isB2BAdminAuthProtected={false}
                 isAuditorAuthProtected={false}
                 isDonorAuthProtected={true}
@@ -208,6 +214,35 @@ class App extends Component {
                 exact
               />
             ))}
+
+            {doctorAuthProtectedRoutes.map((route, idx) => (
+              <AppRoute
+                path={route.path}
+                layout={VerticalLayout}
+                component={route.component}
+                key={idx}
+                isAuthProtected={true}
+                isLabAuthProtected={false}
+                isPatientAuthProtected={false}
+                isCorporateAuthProtected={false}
+                isB2BClientAuthProtected={false}
+                isSampleCollectorAuthProtected={false}
+                isfinanceOfficerAuthProtected={false}
+                isfinanceAdminAuthProtected={false}
+                isB2BAdminAuthProtected={false}
+                isAuditorAuthProtected={false}
+                isDonorAuthProtected={false}
+                isDoctorAuthProtected={true}
+                isRegistrationAdminAuthProtected={false}
+                isMarketerAdminAuthProtected={false}
+                isCSRAdminAuthProtected={false}
+                isCSRAuthProtected={false}
+                isAuditorAdminAuthProtected={false}
+                isHRAdminAuthProtected={false}
+                exact
+              />
+            ))}
+
 
             {b2badminAuthProtectedRoutes.map((route, idx) => (
               <AppRoute
@@ -222,6 +257,7 @@ class App extends Component {
                 isB2BClientAuthProtected={false}
                 isSampleCollectorAuthProtected={false}
                 isfinanceOfficerAuthProtected={false}
+                isDoctorAuthProtected={false}
                 isfinanceAdminAuthProtected={false}
                 isB2BAdminAuthProtected={true}
                 isAuditorAuthProtected={false}
@@ -251,6 +287,7 @@ class App extends Component {
                 isfinanceOfficerAuthProtected={false}
                 isfinanceAdminAuthProtected={false}
                 isB2BAdminAuthProtected={false}
+                isDoctorAuthProtected={false}
                 isAuditorAuthProtected={true}
                 isDonorAuthProtected={false}
                 isRegistrationAdminAuthProtected={false}
@@ -279,6 +316,7 @@ class App extends Component {
                 isfinanceAdminAuthProtected={false}
                 isB2BAdminAuthProtected={false}
                 isAuditorAuthProtected={false}
+                isDoctorAuthProtected={false}
                 isDonorAuthProtected={false}
                 isRegistrationAdminAuthProtected={false}
                 isMarketerAdminAuthProtected={false}
@@ -306,6 +344,7 @@ class App extends Component {
                 isfinanceAdminAuthProtected={false}
                 isB2BAdminAuthProtected={false}
                 isAuditorAuthProtected={false}
+                isDoctorAuthProtected={false}
                 isDonorAuthProtected={false}
                 isRegistrationAdminAuthProtected={true}
                 isMarketerAdminAuthProtected={false}
@@ -329,6 +368,7 @@ class App extends Component {
                 isCorporateAuthProtected={false}
                 isB2BClientAuthProtected={false}
                 isSampleCollectorAuthProtected={false}
+                isDoctorAuthProtected={false}
                 isfinanceOfficerAuthProtected={false}
                 isfinanceAdminAuthProtected={false}
                 isB2BAdminAuthProtected={false}
@@ -356,6 +396,7 @@ class App extends Component {
                 isCorporateAuthProtected={false}
                 isB2BClientAuthProtected={false}
                 isSampleCollectorAuthProtected={false}
+                isDoctorAuthProtected={false}
                 isfinanceOfficerAuthProtected={false}
                 isfinanceAdminAuthProtected={false}
                 isB2BAdminAuthProtected={false}
@@ -388,6 +429,7 @@ class App extends Component {
                 isB2BAdminAuthProtected={false}
                 isAuditorAuthProtected={false}
                 isDonorAuthProtected={false}
+                isDoctorAuthProtected={false}
                 isRegistrationAdminAuthProtected={false}
                 isMarketerAdminAuthProtected={false}
                 isCSRAdminAuthProtected={false}
@@ -416,6 +458,7 @@ class App extends Component {
                 isAuditorAuthProtected={false}
                 isDonorAuthProtected={false}
                 isRegistrationAdminAuthProtected={false}
+                isDoctorAuthProtected={false}
                 isMarketerAdminAuthProtected={false}
                 isCSRAdminAuthProtected={false}
                 isCSRAuthProtected={false}
@@ -446,6 +489,7 @@ class App extends Component {
                 isMarketerAdminAuthProtected={false}
                 isCSRAdminAuthProtected={false}
                 isCSRAuthProtected={false}
+                isDoctorAuthProtected={false}
                 isAuditorAdminAuthProtected={false}
                 isHRAdminAuthProtected={false}
                 exact
@@ -467,6 +511,7 @@ class App extends Component {
                 isfinanceAdminAuthProtected={false}
                 isB2BAdminAuthProtected={false}
                 isAuditorAuthProtected={false}
+                isDoctorAuthProtected={false}
                 isDonorAuthProtected={false}
                 isRegistrationAdminAuthProtected={false}
                 isMarketerAdminAuthProtected={false}
@@ -488,6 +533,7 @@ class App extends Component {
                 isPatientAuthProtected={false}
                 isCorporateAuthProtected={false}
                 isB2BClientAuthProtected={false}
+                isDoctorAuthProtected={false}
                 isSampleCollectorAuthProtected={false}
                 isfinanceOfficerAuthProtected={false}
                 isfinanceAdminAuthProtected={true}
@@ -516,6 +562,7 @@ class App extends Component {
                 isCorporateAuthProtected={false}
                 isB2BClientAuthProtected={false}
                 isSampleCollectorAuthProtected={false}
+                isDoctorAuthProtected={false}
                 isfinanceOfficerAuthProtected={false}
                 isfinanceAdminAuthProtected={false}
                 isB2BAdminAuthProtected={false}
@@ -545,6 +592,7 @@ class App extends Component {
                 isSampleCollectorAuthProtected={false}
                 isfinanceOfficerAuthProtected={false}
                 isfinanceAdminAuthProtected={false}
+                isDoctorAuthProtected={false}
                 isB2BAdminAuthProtected={false}
                 isAuditorAuthProtected={false}
                 isDonorAuthProtected={false}
@@ -573,6 +621,7 @@ class App extends Component {
                 isfinanceOfficerAuthProtected={false}
                 isfinanceAdminAuthProtected={false}
                 isB2BAdminAuthProtected={false}
+                isDoctorAuthProtected={false}
                 isAuditorAuthProtected={false}
                 isDonorAuthProtected={false}
                 isRegistrationAdminAuthProtected={false}

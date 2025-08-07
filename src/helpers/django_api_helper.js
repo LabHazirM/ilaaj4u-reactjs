@@ -157,7 +157,53 @@ export const postB2bClientInformation = (id, b2bclient) => {
       throw message;
     });
 };
+// Post Patient Information
+export const postDoctorInformation = (id, doctor) => {
+  let formData = new FormData();
+  formData.append("email", doctor.email);
+  formData.append("cnic", doctor.cnic);
+  formData.append("doctor_name", doctor.name);
+  formData.append("contact", doctor.contact);
+  formData.append("PMDC_number", doctor.PMDC_number);
+  formData.append("bank_name", doctor.bank_name);
+  formData.append("account_no", doctor.account_no);
+  formData.append("city_id", doctor.city_id);
+  formData.append("doctor_image", doctor.doctor_image);
 
+  return axios
+    .post(`${url.POST_DOCTOR_INFORMATION}/${id}`, formData, {
+      headers: getHeader(authHeader()),
+    })
+    .then(response => {
+      if (response.status >= 200 || response.status <= 299)
+        return response.data;
+      throw response.data;
+    })
+    .catch(err => {
+      let message;
+      if (err.response && err.response.status) {
+        switch (err.response.status) {
+          case 400:
+            message = err.response.data;
+            break;
+          case 404:
+            message = "Sorry! the page you are looking for could not be found";
+            break;
+          case 500:
+            message =
+              "Sorry! something went wrong, please contact our support team";
+            break;
+          case 401:
+            message = "Invalid credentials";
+            break;
+          default:
+            message = err[1];
+            break;
+        }
+      }
+      throw message;
+    });
+};
 // Post Patient Information
 export const postDonorInformation = (id, donor) => {
   let formData = new FormData();
@@ -1841,6 +1887,24 @@ export const updateDonorProfile = (donorProfile, id) => {
   });
 };
 
+// ------------- Doctor Profile requests -------------
+export const getDoctorProfile = id =>
+  get(`${url.GET_DOCTOR_PROFILE}/${id}`, {
+    headers: getHeader(authHeader()),
+  });
+
+export const updateDoctorProfile = (doctorProfile, id) => {
+  let formData = new FormData();
+  // formData.append("account_id", id);
+  formData.append("doctor_name", doctorProfile.doctor_name);
+  formData.append("contact", doctorProfile.contact);
+  formData.append("email", doctorProfile.email);
+
+  return axios.put(`${url.UPDATE_DOCTOR_PROFILE}/${id}`, formData, {
+    headers: getHeader(authHeader()),
+  });
+};
+
 // ------------- Donor -------------
 export const getDonorReferredAppointmentsList = id =>
   get(`${url.GET_DONOR_REFERRED_APPOINTMENTS_LIST}/${id}`, {
@@ -2326,6 +2390,33 @@ export const approveUnapproveDonor = data => {
   formData.append("is_approved", data.isApproved);
 
   return axios.put(`${url.APPROVE_UNAPPROVE_DONOR}/${data.id}`, formData, {
+    headers: getHeader(authHeader()),
+  });
+};
+
+//--------------------dOCTOR SECTION IN REGISTRATION ADMIN----------------
+
+export const getPendingDoctors = () =>
+  get(`${url.GET_PENDING_DOCTORS}`, {
+    headers: getHeader(authHeader()),
+  });
+
+export const getApprovedDoctors = () =>
+  get(`${url.GET_APPROVED_DOCTORS}`, {
+    headers: getHeader(authHeader()),
+  });
+
+export const getUnapprovedDoctors = () =>
+  get(`${url.GET_UNAPPROVED_DOCTORS}`, {
+    headers: getHeader(authHeader()),
+  });
+
+export const approveUnapproveDoctor = data => {
+  let formData = new FormData();
+  formData.append("donor_id", data.doctorId);
+  formData.append("is_approved", data.isApproved);
+
+  return axios.put(`${url.APPROVE_UNAPPROVE_DOCTOR}/${data.id}`, formData, {
     headers: getHeader(authHeader()),
   });
 };
@@ -2958,11 +3049,13 @@ export const updateBankaccount = bankAccount => {
   formData.append("account_no", bankAccount.account_no);
   formData.append("status", bankAccount.status);
   if (bankAccount.creating_at) {
+    // ISO‑8601, e.g. "2025-07-07T14:40:00Z"
     formData.append(
       "creating_at",
       new Date(bankAccount.creating_at).toISOString()
     );
   }
+
   return axios.put(`${url.UPDATE_BANKACCOUNT}/${bankAccount.id}`, formData, {
     headers: getHeader(authHeader()),
   });

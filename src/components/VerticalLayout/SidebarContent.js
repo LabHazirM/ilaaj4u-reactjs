@@ -196,6 +196,43 @@ class SidebarContent extends Component {
             </div>
           </SimpleBar>
         )}
+        {this.state.account_type && this.state.account_type == "doctor" && (
+          <SimpleBar className="h-100" ref={this.refDiv}>
+            <div id="sidebar-menu">
+              <ul className="metismenu list-unstyled" id="side-menu">
+                <li>
+                  <Link to={"/dashboard-doctor"}>
+                    <i className="bx bx-home-circle" />
+                    <span>{this.props.t("Dashboard")}</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link to={"/donor-account-statements"}>
+                    <i className="bx bx-receipt" />
+                    <span>{this.props.t("Statement")}</span>
+                  </Link>
+                </li>
+
+                <li className="menu-title">{this.props.t("DOCTOR")}</li>
+
+                {/* Donor Appointments List */}
+                <li>
+                  <Link to={"/donor-appointment"}>
+                    <i className="bx bx-receipt" />
+                    <span>{this.props.t("Appointments Traceability")}</span>
+                  </Link>
+                </li>
+                {/* Donor payment Method */}
+                {/* <li>
+                  <Link to={"/donor-payment"}>
+                    <i className="far fa-money-bill-alt" />
+                    <span>{this.props.t("Payment Method")}</span>
+                  </Link>
+                </li> */}
+              </ul>
+            </div>
+          </SimpleBar>
+        )}
         {this.state.account_type && this.state.account_type == "b2b-admin" && (
           <SimpleBar className="h-100" ref={this.refDiv}>
             <div id="sidebar-menu">
@@ -683,6 +720,30 @@ class SidebarContent extends Component {
                       </li>
                     </ul>
                   </li>
+                    {/* Doctor Approval Routes */}
+                  <li>
+                    <Link to="/#" className="has-arrow">
+                      <i className="mdi mdi-office-building" />
+                      <span>{this.props.t("Doctors")}</span>
+                    </Link>
+                    <ul className="sub-menu" aria-expanded="false">
+                      <li>
+                        <Link to={"/pending-doctors"}>
+                          {this.props.t("Pending")}
+                        </Link>
+                      </li>
+                      <li>
+                        <Link to={"/approved-doctors"}>
+                          {this.props.t("Approved")}
+                        </Link>
+                      </li>
+                      <li>
+                        <Link to={"/unapproved-doctors"}>
+                          {this.props.t("Unapproved")}
+                        </Link>
+                      </li>
+                    </ul>
+                  </li>
 
                   {/* Donor Approval Routes */}
                   <li>
@@ -732,13 +793,14 @@ class SidebarContent extends Component {
                           {this.props.t("Corporates Reffrel Fee")}
                         </Link>
                       </li>
+
                     </ul>
                   </li>
                   <li>
-                        <Link to={"/review-performance"}>
-                          <i className="mdi mdi-chart-line" />
-                          <span>{this.props.t("Review Performance")}</span> 
-                        </Link>
+                    <Link to={"/review-performance"}>
+                      <i className="mdi mdi-chart-line" />
+                      <span>{this.props.t("Review Performance")}</span> 
+                    </Link>
                   </li>
 
                 </ul>

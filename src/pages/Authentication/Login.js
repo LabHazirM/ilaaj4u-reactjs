@@ -108,10 +108,10 @@ class Login extends Component {
 
     if (passwordInput && passwordInput.type === 'password') {
       passwordInput.type = 'text';
-      eyeIcon.className = 'mdi mdi-eye-outline';
+      eyeIcon.className = 'mdi mdi-eye-off-outline';
     } else if (passwordInput) {
       passwordInput.type = 'password';
-      eyeIcon.className = 'mdi mdi-eye-off-outline';
+      eyeIcon.className = 'mdi mdi-eye-outline';
     }
   };
 
@@ -400,6 +400,8 @@ class Login extends Component {
                                       this.props.history.push("/dashboard-donor");
                                     } else if (success.account_type === "corporate") {
                                       this.props.history.push("/dashboard-corporate");
+                                    } else if (success.account_type === "doctor") {
+                                      this.props.history.push("/dashboard-doctor");
                                     }
                                   }
                                 }, 1000);
@@ -463,7 +465,7 @@ class Login extends Component {
                                       id="password-addon"
                                       onClick={this.togglePasswordVisibility}
                                     >
-                                      <i id="eye-icon" className="mdi mdi-eye-off-outline"></i>
+                                      <i id="eye-icon" className="mdi mdi-eye-outline"></i>
                                     </button>
                                   </div>
                                   <ErrorMessage

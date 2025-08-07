@@ -18,6 +18,7 @@ export * from "./auth/changepwd/actions";
 export * from "./auth/labprofile/actions";
 export * from "./auth/b2bprofile/actions";
 export * from "./auth/donorprofile/actions";
+export * from "./auth/doctorprofile/actions";
 export * from "./auth/staffprofile/actions";
 export * from "./auth/samplecollectorprofile/actions";
 export * from "./auth/labsettings/actions";
@@ -25,6 +26,7 @@ export * from "./auth/payments/actions";
 export * from "./auth/donorsettings/actions";
 export * from "./auth/patientprofile/actions";
 export * from "./auth/corporateprofile/actions";
+export * from "./auth/doctorinformation/actions.js"
 // lab market
 export * from "./labmarket/actions";
 export * from "./review-performance/actions";

@@ -214,7 +214,7 @@ class Checkout extends Component {
       alert("Insufficient wallet balance to book this appointment.");
       return;
     }
-      let paymentMethod;
+       let paymentMethod;
       if (this.state.user_id && this.state.user_type !== "CSR") {
         paymentMethod =
           this.props.patientProfile.corporate_payment === "Payment by Coorporate to LH"
@@ -592,7 +592,7 @@ class Checkout extends Component {
     var cityBounds = new google.maps.LatLngBounds(
       new google.maps.LatLng(this.state.latitude, this.state.longitude)
     );
-
+ 
     const options = {
       bounds: cityBounds,
       types: ["establishment"],
@@ -702,7 +702,7 @@ class Checkout extends Component {
     console.log('Payment Data:', paymentData); // Log the payment data
 
     // try {
-    //     const response = await axios.post('https://labhazirapi.com/api/patient/hblcartpayments', paymentData);
+    //     const response = await axios.post('https://hbl.labhazirapi.com/api/hbl-payment/', paymentData);
     //     console.log('Response:', response); // Log the response for debugging
 
     //     if (response.data.message === 'Success') {
@@ -1653,7 +1653,46 @@ getCommonPaymentMethods = (checkoutItems) => {
                                                   </Tr>
                                                 ) : null}
 
-                                              
+                                                {["platform_fee_service_fee_hs", "platform_fee_service_fee_ss", "platform_fee_service_fee"].map((key) =>
+                                                  checkoutItem[key] ? (
+                                                    <Tr key={key}>
+                                                      <Td colSpan="4">
+                                                        <div className="bg-info bg-soft p-3 rounded">
+                                                          <h5 className="font-size-14 text-info mb-0">
+                                                            <i className="mdi mdi-cash-multiple me-2 font-size-22" />{" "}
+                                                            Platform Charges{" "}
+                                                            <span className="float-end">
+                                                              Rs.{" "}
+                                                              {checkoutItem[key]
+                                                                .toString()
+                                                                .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                                                            </span>
+                                                          </h5>
+                                                        </div>
+                                                      </Td>
+                                                    </Tr>
+                                                  ) : null
+                                                )}
+
+                                                 {checkoutItem.tax_amount ? (
+                                                  <Tr>
+                                                    <Td colSpan="4">
+                                                      <div className="bg-primary bg-soft p-3 rounded">
+                                                        <h5 className="font-size-14 text-primary mb-0">
+                                                          <i className="mdi mdi-cash-multiple me-2 font-size-22" />{" "}
+                                                          Tax{" "}
+                                                          <span className="float-end">
+                                                            Rs.{" "}
+                                                            {(checkoutItem.tax_amount || 0) // Use 0 if undefined
+                                                              .toString()
+                                                              .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                                                          </span>
+                                                        </h5>
+                                                      </div>
+                                                    </Td>
+                                                  </Tr>
+                                                ) : null}
+                                             
                                                 <Tr>
                                                   <Td colSpan="4">
                                                     <div className="bg-success bg-soft p-3 rounded">
@@ -1775,17 +1814,17 @@ getCommonPaymentMethods = (checkoutItems) => {
                                 {this.state.payment_method !== "Card" ? (
                                   <Col sm="6">
                                   <div className="text-end">
-                                   <button
+                                    <button
   className="btn btn-success mb-4"
-  onClick={this.handleFullProceedClick}
+                                      onClick={this.handleFullProceedClick}
   disabled={
     this.props.patientProfile.corporate_payment === "Payment by Coorporate to LH" &&
     this.state.checkoutItems.reduce((acc, item) => acc + (item.total_test_cost || 0), 0) >
     (this.props.donationCheck.length > 0 ? this.props.donationCheck[0].available_credit : 0)
   }
->
+                                    >
   <i className="mdi mdi-truck-fast me-1" /> Book Appointment
-</button>
+                                    </button>
 
                                   </div>
                                 </Col>

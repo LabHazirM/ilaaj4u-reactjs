@@ -33,6 +33,7 @@ import Logout from "../pages/Authentication/Logout";
 import Register from "../pages/Authentication/Register";
 import PatientInformation from "../pages/Authentication/PatientInformation";
 import B2bClientInformation from "../pages/Authentication/B2bClientInformation";
+import DoctorInformation from "../pages/Authentication/DoctorInformation"
 import DonorInformation from "../pages/Authentication/DonorInformation";
 import LabInformation from "../pages/Authentication/LabInformation";
 import CorporateInformation from "../pages/Authentication/CorporateInformation";
@@ -157,7 +158,9 @@ import B2bProfile from "pages/Authentication/B2bProfile";
 
 // Donor
 import DonorDashboard from "pages/Dashboard-Donor/index";
+import DoctorDashboard from "pages/Dashboard-Doctor/index";
 import DonorProfile from "pages/Authentication/DonorProfile";
+import DoctorProfile from "pages/Authentication/DoctorProfile";
 import DonorAppointments from "pages/DonorReferredAppointments/referred-appointments-list";
 import DonorPayments from "pages/DonorPaymentMathods/payment-mathod";
 import DonorSettings from "pages/Authentication/DonorSettings";
@@ -220,6 +223,9 @@ import UnapprovedB2bClients from "pages/RegistrationAdmin/unapproved-b2b-clients
 import PendingDonors from "pages/RegistrationAdmin/pending-donors";
 import ApprovedDonors from "pages/RegistrationAdmin/approved-donors";
 import UnapprovedDonors from "pages/RegistrationAdmin/unapproved-donors";
+import PendingDoctors from "pages/RegistrationAdmin/pending-doctors";
+import ApprovedDoctors from "pages/RegistrationAdmin/approved-doctors";
+import UnapprovedDoctors from "pages/RegistrationAdmin/unapproved-doctors";
 import ReferrelLab from "pages/RegistrationAdmin/referrelfeelab";
 import ApproveReferrelLab from "pages/RegistrationAdmin/Approvereferrelfeelab";
 import labsRating from "../pages/RegistrationAdmin/labs-rating";
@@ -350,6 +356,7 @@ const publicRoutes = [
   { path: "/:token/confirm-password", component: ConfirmPwd },
   { path: "/patient-information/:id/:guest_id?/:uuid?", component: PatientInformation },
   { path: "/b2bclient-information/:id", component: B2bClientInformation },
+  { path: "/doctor-information/:id", component: DoctorInformation },
   { path: "/donor-information/:id", component: DonorInformation },
   { path: "/lab-information/:id", component: LabInformation },
   { path: "/corporate-information/:id", component: CorporateInformation },
@@ -679,6 +686,20 @@ const donorAuthProtectedRoutes = [
   { path: "/donors-account-statements", component: DonorsAccountStatements },
 
 ];
+const doctorAuthProtectedRoutes = [
+  { path: "/dashboard-doctor", component: DoctorDashboard },
+  
+  { path: "/doctor-profile", component: DoctorProfile },
+  { path: "/donor-appointment", component: DonorAppointments },
+  { path: "/donor-payment", component: DonorPayments },
+  {
+    path: "/donor-settings",
+    component: DonorSettings,
+  },
+  { path: "/donor-account-statements", component: DonorAccountStatements },
+  { path: "/donors-account-statements", component: DonorsAccountStatements },
+
+];
 // const b2badminAuthProtectedRoutes = [
 //   { path: "/offeredlabs-shares/:id", component: OfferedLabsshares },
 //   { path: "/b2blist", component: B2bAllClients },
@@ -750,6 +771,11 @@ const registrationAdminAuthProtectedRoutes = [
   { path: "/pending-b2b-clients", component: PendingB2bClients },
   { path: "/approved-b2b-clients", component: ApprovedB2bClients },
   { path: "/unapproved-b2b-clients", component: UnapprovedB2bClients },
+
+  { path: "/pending-doctors", component: PendingDoctors },
+  { path: "/approved-doctors", component: ApprovedDoctors },
+  { path: "/unapproved-doctors", component: UnapprovedDoctors },
+
   { path: "/pending-donors", component: PendingDonors },
   { path: "/approved-donors", component: ApprovedDonors },
   { path: "/unapproved-donors", component: UnapprovedDonors },
@@ -1090,6 +1116,7 @@ export {
   labAuthProtectedRoutes,
   b2bclientAuthProtectedRoutes,
   donorAuthProtectedRoutes,
+  doctorAuthProtectedRoutes,
   sampleCollectorAuthProtectedRoutes,
   b2badminAuthProtectedRoutes,
   auditorAuthProtectedRoutes,

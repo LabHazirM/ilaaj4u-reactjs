@@ -20,6 +20,7 @@ import ChangePassword from "./auth/changepwd/reducer";
 import LabProfile from "./auth/labprofile/reducer";
 import B2bProfile from "./auth/b2bprofile/reducer";
 import DonorProfile from "./auth/donorprofile/reducer";
+import DoctorProfile from "./auth/doctorprofile/reducer";
 import StaffProfile from "./auth/staffprofile/reducer";
 import SampleCollectorProfile from "./auth/samplecollectorprofile/reducer";
 import LabSettings from "./auth/labsettings/reducer";
@@ -195,11 +196,12 @@ import bankAccount from "./bankaccount/reducer";
 import cemployeeData from "./corporatedata/reducer";
 import activitylogauditor from "./activtylogAuditor/reducer";
 import ReviewPerformance from "./review-performance/reducer";
-
+import doctorInformation from "./auth/doctorinformation/reducer";
 
 const rootReducer = combineReducers({
   // public
   Dashboard,
+  doctorInformation,
   ReviewPerformance,
   activitylogauditor,
   donorsaccountStatements,
@@ -219,6 +221,7 @@ const rootReducer = combineReducers({
   msgs,
   bankaccounts,
   DonorProfile,
+  DoctorProfile,
   LabInformation,
   CorporateInformation,
   ForgetPassword,

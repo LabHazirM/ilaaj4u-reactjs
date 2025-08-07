@@ -187,6 +187,16 @@ class Register extends Component {
           />
         );
       }
+       else if (this.props.userAccountType == "doctor") {
+        return (
+          <Redirect
+            to={{
+              pathname: "/doctor-information/" + this.props.userID,
+              state: { redirectState: null }, // sending state so that corporate page doesn't redirect back to register
+            }}
+          />
+        );
+      }
       else if (this.props.userAccountType == "donor") {
         return (
           <Redirect
@@ -483,8 +493,11 @@ class Register extends Component {
                                     >
                                       <option value="patient">Patient</option>
                                       <option value="labowner">Lab</option>
-                                      <option value="b2bclient">
+                                      {/* <option value="b2bclient">
                                         B2B Client
+                                      </option> */}
+                                      <option value="doctor">
+                                        Doctor
                                       </option>
                                       <option value="donor">
                                         Donor
@@ -535,8 +548,11 @@ class Register extends Component {
                                     >
                                       <option value="patient">Patient</option>
                                       <option value="labowner">Lab</option>
-                                      <option value="b2bclient">
+                                      {/* <option value="b2bclient">
                                         B2B Client
+                                      </option> */}
+                                      <option value="doctor">
+                                        Doctor
                                       </option>
                                       <option value="donor">
                                         Donor

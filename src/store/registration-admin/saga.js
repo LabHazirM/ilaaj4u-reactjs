@@ -19,6 +19,10 @@ import {
   GET_APPROVED_DONORS,
   GET_UNAPPROVED_DONORS,
   APPROVE_UNAPPROVE_DONOR,
+  GET_PENDING_DOCTORS,
+  GET_APPROVED_DOCTORS,
+  GET_UNAPPROVED_DOCTORS,
+  APPROVE_UNAPPROVE_DOCTOR,
 } from "./actionTypes";
 
 import {
@@ -54,6 +58,14 @@ import {
   getUnapprovedDonorsFail,
   approveUnapproveDonorSuccess,
   approveUnapproveDonorFail,
+  getPendingDoctorsSuccess,
+  getPendingDoctorsFail,
+  getApprovedDoctorsSuccess,
+  getApprovedDoctorsFail,
+  getUnapprovedDoctorsSuccess,
+  getUnapprovedDoctorsFail,
+  approveUnapproveDoctorSuccess,
+  approveUnapproveDoctorFail,
 } from "./actions";
 
 //Include Both Helper File with needed methods
@@ -71,8 +83,12 @@ import {
   approveUnapproveB2BClient,
   getApprovedB2BClients,
   getUnapprovedB2BClients,
+  getPendingDoctors,
+  getUnapprovedDoctors,
+  getApprovedDoctors,
   getPendingDonors,
   approveUnapproveDonor,
+  approveUnapproveDoctor,
   getApprovedDonors,
   getUnapprovedDonors,
 } from "../../helpers/django_api_helper";
@@ -219,6 +235,44 @@ function* onApproveUnapproveDonor(object) {
   }
 }
 
+//Starting Donors Section
+
+function* fetchPendingDoctors() {
+  try {
+    const response = yield call(getPendingDoctors);
+    yield put(getPendingDoctorsSuccess(response));
+  } catch (error) {
+    yield put(getPendingDoctorsFail(error));
+  }
+}
+
+function* fetchApprovedDoctors(object) {
+  try {
+    const response = yield call(getApprovedDoctors, object.payload.id);
+    yield put(getApprovedDoctorsSuccess(response));
+  } catch (error) {
+    yield put(getApprovedDoctorsFail(error));
+  }
+}
+
+function* fetchUnapprovedDoctors(object) {
+  try {
+    const response = yield call(getUnapprovedDoctors, object.payload.id);
+    yield put(getUnapprovedDoctorsSuccess(response));
+  } catch (error) {
+    yield put(getUnapprovedDoctorsFail(error));
+  }
+}
+
+function* onApproveUnapproveDoctor(object) {
+  try {
+    const response = yield call(approveUnapproveDoctor, object.payload.data);
+    yield put(approveUnapproveDoctorSuccess(response));
+  } catch (error) {
+    yield put(approveUnapproveDoctorFail(error));
+  }
+}
+
 function* registrationAdminSaga() {
   yield takeEvery(GET_PENDING_CORPORATE, fetchPendingCorporate);
   yield takeEvery(GET_APPROVED_CORPORATE, fetchApprovedCorporate);
@@ -237,6 +291,11 @@ function* registrationAdminSaga() {
   yield takeEvery(GET_APPROVED_DONORS, fetchApprovedDonors);
   yield takeEvery(GET_UNAPPROVED_DONORS, fetchUnapprovedDonors);
   yield takeEvery(APPROVE_UNAPPROVE_DONOR, onApproveUnapproveDonor);
+  //doctor
+  yield takeEvery(GET_PENDING_DOCTORS, fetchPendingDoctors);
+  yield takeEvery(GET_APPROVED_DOCTORS, fetchApprovedDoctors);
+  yield takeEvery(GET_UNAPPROVED_DOCTORS, fetchUnapprovedDoctors);
+  yield takeEvery(APPROVE_UNAPPROVE_DOCTOR, onApproveUnapproveDoctor);
 }
 
 export default registrationAdminSaga;
